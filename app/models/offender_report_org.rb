@@ -1,0 +1,2 @@
+class OffenderReportOrg < ApplicationRecord
+end

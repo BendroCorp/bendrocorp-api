@@ -1,0 +1,2 @@
+class ResearchProjectTaskAssignee < ApplicationRecord
+end

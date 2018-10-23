@@ -1,0 +1,2 @@
+class CharacterSpecy < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class ReportStatusType < ApplicationRecord
+end

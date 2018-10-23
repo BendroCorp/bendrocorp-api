@@ -1,0 +1,2 @@
+class MailQueueTemplate < ApplicationRecord
+end

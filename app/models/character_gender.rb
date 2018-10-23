@@ -1,0 +1,2 @@
+class CharacterGender < ApplicationRecord
+end

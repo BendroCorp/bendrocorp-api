@@ -1,0 +1,2 @@
+class SystemMapAtmoGase < ApplicationRecord
+end

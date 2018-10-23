@@ -1,0 +1,2 @@
+class SystemMapObjectKind < ApplicationRecord
+end

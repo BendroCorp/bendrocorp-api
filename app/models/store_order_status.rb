@@ -1,0 +1,2 @@
+class StoreOrderStatus < ApplicationRecord
+end

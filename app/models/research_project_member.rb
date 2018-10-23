@@ -1,0 +1,2 @@
+class ResearchProjectMember < ApplicationRecord
+end

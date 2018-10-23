@@ -1,0 +1,2 @@
+class ResearchProjectTaskStatus < ApplicationRecord
+end

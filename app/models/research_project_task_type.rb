@@ -1,0 +1,2 @@
+class ResearchProjectTaskType < ApplicationRecord
+end

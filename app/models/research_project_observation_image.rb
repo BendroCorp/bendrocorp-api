@@ -1,0 +1,2 @@
+class ResearchProjectObservationImage < ApplicationRecord
+end

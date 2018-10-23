@@ -1,0 +1,2 @@
+class SystemMapSystemConnectionStatus < ApplicationRecord
+end

@@ -1,0 +1,2 @@
+class ResearchProjectRequest < ApplicationRecord
+end

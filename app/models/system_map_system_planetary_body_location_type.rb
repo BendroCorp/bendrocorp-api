@@ -1,0 +1,2 @@
+class SystemMapSystemPlanetaryBodyLocationType < ApplicationRecord
+end
