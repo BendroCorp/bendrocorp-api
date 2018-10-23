@@ -11,12 +11,16 @@ deploy:
   script: bash ./deploy.sh
   on: master
 before_install:
-  - openssl aes-256-cbc -K $encrypted_6a9b6433a992_key -iv $encrypted_6a9b6433a992_iv
-    -in .travis/deploy.key.enc -out .travis/deploy.key -d
-  - chmod +x ./deploy.sh
-  - eval "$(ssh-agent -s)"
-  - chmod 600 .travis/deploy.key
-  - ssh-add .travis/deploy.key
-  - ssh-keyscan daleslab.com >> ~/.ssh/known_hosts
-  - git remote add deploy dokku@daleslab.com:bendrocorp-api
-  - git config --global push.default simple
+- openssl aes-256-cbc -K $encrypted_6a9b6433a992_key -iv $encrypted_6a9b6433a992_iv
+  -in .travis/deploy.key.enc -out .travis/deploy.key -d
+- chmod +x ./deploy.sh
+- eval "$(ssh-agent -s)"
+- chmod 600 .travis/deploy.key
+- ssh-add .travis/deploy.key
+- ssh-keyscan daleslab.com >> ~/.ssh/known_hosts
+- git remote add deploy dokku@daleslab.com:bendrocorp-api
+- git config --global push.default simple
+notifications:
+  slack:
+    rooms:
+      secure: TqcPOOimYPuk3I/VV6tYhb6lvhs0WQW6suQ3MAO1ob3ALzsUWu5BpM6MxKRmLgvy8URCoMjWmRsahyHdDWZ+2O8MB+N+CKGny8TyHx5e3qAIZuWPVWpmj9FaoxbhdDcfyo708NtboxFX7v8Sex/QXkA9KMCkgbydEP437TBrRP+EyoSl0BT8td2lt3f5u4wK1oS1AAXJGuhnSIpN5YJC4I7snrgoZvr7/UpdkB31N7wlCGt/J5mwpkal3owyqkcjg3TWkjYffLiEAPLJMzEu3ayzp7yV5H6cEvPaFddvGAPEwAAr8G0Gd0GaAPC+QRThWwynYioOMqPTd5bPtWHg0XFy/B6NCg28fA6By1BfyEcIrQqVA89zwjT/bXgWPfsz/dn0Q2X+DFJKKWdbJNfZ0hpU+hVrCPWtjjnXb4Li5sHLL9xsMwXJZLK2UqyLGI15XOeNuWYrHm70tFd9ZQks7ddOU37gnyrSVZOZjPOozSFuDsBLKiMAKlVGyn7/GKE0YXThdfJrLXSICY6MN5lRiyVvrrlpRuLUQFgs5TfiI5KKIVsm/qalc0/iWdCYL9Zlw9IHrnoTBK6ND2kDnMYHd5Gm2tasVIokJKHox7Kxct6OTeKQyJFPH3hagW/KnFWovc7iASTpDOuDulxX9DUeacTW13ZKpj6dqSx6+RXRlK4=
