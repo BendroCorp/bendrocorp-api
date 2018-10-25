@@ -56,7 +56,7 @@ class OauthController < ApplicationController
             # redirect_to link
             render status: 200, json: { message: link }
           else
-            render status: 400, json: { message: "Rediret uri not passed. Cannot process request. #{params[:request][:client_id]}" }
+            render status: 400, json: { message: "Redirect uri not passed. Cannot process request. #{params[:request][:client_id]}" }
           end
         else
           # puts "Token could not be created."

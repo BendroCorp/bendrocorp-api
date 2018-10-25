@@ -27,15 +27,9 @@ class FlightLogsController < ApplicationController
     # owned_ship_id in (?) OR owned_ids,
 
     @flight_logs = FlightLog.where(log_owner_id: current_user.main_character.id).where(archived: false).order("created_at desc")
-    # @ship_count = @owned_ships.count
 
     render status: 200, json: @flight_logs.as_json(methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}})
 
-    # render :json => {
-    #   :your_flight_logs => @your_flight_logs.as_json(methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}}),
-    #   :ship_count => @ship_count.as_json,
-    #   :your_ships => @owned_ships.as_json(include: { ship: {}}, methods: :full_ship_title)
-    # }
   end
 
   # GET api/flight-logs/ships

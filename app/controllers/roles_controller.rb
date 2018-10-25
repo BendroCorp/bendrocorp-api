@@ -6,11 +6,7 @@ class RolesController < ApplicationController
 
   before_action except: [:list] do |a|
    a.require_one_role([9]) # CEO only
- end
-
-   # A role is an ID, title, Description
-   # Nested role is ID, role_id (the role) role_nested_id (the role you are nesting in the role)
-   # Example role_id (CEO-9) to (Executive-2)
+  end
 
   # GET api/role
   def list

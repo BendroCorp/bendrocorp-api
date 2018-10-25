@@ -1,7 +1,7 @@
 class CommoditiesController < ApplicationController
   before_action :require_user
   before_action :require_member
-  before_action except: [:index, :list] do |a|
+  before_action except: [] do |a| #:index, :list
     a.require_one_role([9]) #for now CEO only :)
   end
 

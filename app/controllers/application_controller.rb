@@ -56,10 +56,12 @@ class ApplicationController < ActionController::API
     end
   end
 
+  # checks to make sure that a user is "logged in"
   def require_user
     render status: 401, json: { message: 'You are not logged in/authorization required/you are not authorized to use this application.' }  unless current_user != nil
   end
 
+  # make sure that the current user in the member role
   def require_member
     render status: 403, json: { message: 'You are not authorized to use this endpoint.' } unless current_user.isinrole(0) #current_user.is_member?
   end
@@ -93,7 +95,7 @@ class ApplicationController < ActionController::API
   end
 
   def create_activity
-
+    # TODO:
   end
 
   def new_approval approval_k_id, owner_id = 0, approval_group = 0, approverIdList = []
@@ -162,6 +164,7 @@ class ApplicationController < ActionController::API
     end
   end
 
+  # remove an existing approval. This is usually done if some kind of error occurs in the process
   def cancel_approval approvalId
     @approval = Approval.find_by_id(approvalId)
     if @approval
@@ -176,9 +179,9 @@ class ApplicationController < ActionController::API
   end
 
   def email_members(subject, message)
-    users = User.all.where("is_member = ?", true)
+    users = User.all #.where("is_member = ?", true)
     users.each do |user|
-      send_email(user.email, subject, message)
+      send_email(user.email, subject, message) if user.isinrole(0)
     end
   end
 
@@ -189,8 +192,8 @@ class ApplicationController < ActionController::API
       role = Role.find_by id: roleId
       if role != nil
         #role.users.where("is_member = ?", true).each do |user|
-        User.where("is_member = ?", true).each do |user|
-          emailsArray << user.email if user.isinrole(roleId) == true
+        User.all.each do |user|
+          emailsArray << user.email if user.isinrole(roleId) && user.isinrole(0)
           #
         end #loop to get user emails
       end #check to make sure role exists
@@ -233,6 +236,7 @@ class ApplicationController < ActionController::API
   def queue_email sg_email_json
     # actually send the email or just log the contents
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) if ENV['SENDGRID_API_KEY'] != nil
+    # send the email through SendGrid if the API key is set
     response = sg.client.mail._("send").post(request_body: sg_email_json)  if ENV['SENDGRID_API_KEY'] != nil
 
     if ENV['SENDGRID_API_KEY'] == nil
