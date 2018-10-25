@@ -1,6 +1,6 @@
 class ApplicationsController < ApplicationController
   before_action :require_user
-  before_action :require_member, except: [:advance_application_status, :reject_application, :fetch, :create]
+  before_action :require_member, except: [:fetch, :create] # :advance_application_status, :reject_application,
 
   before_action only: [:advance_application_status, :reject_application] do |a|
     a.require_one_role([9,12])

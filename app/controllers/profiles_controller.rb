@@ -46,7 +46,8 @@ class ProfilesController < ApplicationController
     @character = Character.find_by_id(params[:character][:id])
     if @character != nil
       # Security check
-      if current_user.id === @character.user_id || current_user.isinrole(7) # HR
+      # the character is owned by the current user or the user is in the HR role
+      if current_user.id === @character.user_id || current_user.isinrole(7)
 
         # if the user is not in the HR role
         if !current_user.isinrole(7)
@@ -75,6 +76,7 @@ class ProfilesController < ApplicationController
     @character = Character.find_by_id(params[:character][:id])
     if @character != nil
       # Security check
+      # the character is owned by the current user or the user is in the HR role
       if current_user.id === @character.user_id || current_user.isinrole(7) # HR
 
         # check for an avatar update

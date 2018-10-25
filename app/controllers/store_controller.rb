@@ -137,7 +137,7 @@ class StoreController < ApplicationController
   end
 
   # GET api/store/checkout
-  def checkout #aka create order
+  def checkout # aka create order
     # Check to make sure the cart exists
     if current_user.current_cart != nil
       # Check to make sure that all of the items are in stock
@@ -305,13 +305,13 @@ class StoreController < ApplicationController
             pt = PointTransaction.create(user_id: current_user.id, amount: @order.point_transaction.amount.abs, approved: true, reason: "Refund for BendroCorp store purchase.")
           else
             render status: 403, json: { message: "You do not have enough operations points to complete this transaction." }
-            return #exit out without completing the transaction
+            return # exit out without completing the transaction
           end
         else
           raise 'Currency type not handled.'
         end
 
-        @order.status_id = 5 #refunded
+        @order.status_id = 5 # refunded
 
         # save back the order
         if @order.save

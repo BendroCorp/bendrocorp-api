@@ -10,7 +10,7 @@ class AccountController < ApplicationController
     if current_user.authenticate(params[:password][:original_password])
       if params[:password][:password] === params[:password][:password_confirmation]
         @user = User.find_by_id(current_user.id)
-        @user.password = params[:password][:password];
+        @user.password = params[:password][:password]
         @user.password_confirmation = params[:password][:password_confirmation]
         if @user.save
           render status: 200, json: { message: 'Password successfully updated.' }

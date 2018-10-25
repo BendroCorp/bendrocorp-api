@@ -3,8 +3,8 @@ class SystemMapController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  #temporary till systemp map is ready
-  #system map role IDS: 22 - Editor, 23 - Admin (admins can delete objects)
+  # temporary till system map is ready
+  # system map role IDS: 22 - Editor, 23 - Admin (admins can delete/archive objects)
   # before_action except: [] do |a|
   #   a.require_one_role([9]) #for now CEO only :)
   # end

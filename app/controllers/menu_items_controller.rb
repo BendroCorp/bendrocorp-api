@@ -3,7 +3,7 @@ class MenuItemsController < ApplicationController
   before_action :require_member
 
   before_action only: [:create, :update, :delete, :add_role, :delete_role] do |a|
-    a.require_one_role([34]) # offender report admin
+    a.require_one_role([34]) # menu editor
   end
 
   # GET api/menu

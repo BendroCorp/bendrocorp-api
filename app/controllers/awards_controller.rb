@@ -16,7 +16,7 @@ class AwardsController < ApplicationController
     @award = Award.new(award_params)
     #eventually we will have the create request here
     if @award.save
-      render :show, status: :created, json: @award
+      render status: :created, json: @award
     else
       render json: @award.errors, status: :unprocessable_entity
     end
@@ -25,7 +25,7 @@ class AwardsController < ApplicationController
   # PATCH/PUT api/award/:award_id
   def update
     if @award.update(award_params)
-      render :show, status: :ok, json: @award
+      render status: 200, json: @award
     else
       render json: @award.errors, status: :unprocessable_entity
     end
