@@ -22,6 +22,7 @@ class AdminController < ApplicationController
 
   # GET api/admin/impersonate/:impersonate_user_id
   def impersonate
+    # TODO: This is not working yet
     @user = User.find_by_id(params[:impersonate_user_id].to_i)
 
     if @user != nil

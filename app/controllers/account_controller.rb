@@ -3,7 +3,7 @@ class AccountController < ApplicationController
   before_action :require_member
 
   # POST /api/account/change-password
-  # :password[original_password, password_confirmation]
+  # :password[original_password, :password, password_confirmation]
   def change_password
     puts "Starting password change..."
     puts params.inspect
