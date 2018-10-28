@@ -11,7 +11,7 @@ class EventsController < ApplicationController
   # GET api/events
   def list
     render status: 200,
-    json: Event.where('end_date >= ?', Time.now).order('start_date asc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+    json: Event.where('end_date >= ?', Time.now).order('start_date asc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { only: [:id], methods: [:full_name] }, escort_leader: { only: [:id], methods: [:full_name] }, communications_designee: { only: [:id], methods: [:full_name] }, reporting_designee: { only: [:id], methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { only: [:id], methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
   end
 
   # GET api/events/expired
@@ -19,10 +19,10 @@ class EventsController < ApplicationController
   def list_expired
     if params[:count] && params[:count].to_i
       render status: 200,
-      json: Event.where('end_date < ?', Time.now).order('start_date desc').limit(params[:count].to_i).as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+      json: Event.where('end_date < ?', Time.now).order('start_date desc').limit(params[:count].to_i).as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { only: [:id], methods: [:full_name] }, escort_leader: { only: [:id], methods: [:full_name] }, communications_designee: { only: [:id], methods: [:full_name] }, reporting_designee: { only: [:id], methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { only: [:id], methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
     else
       render status: 200,
-      json: Event.where('end_date < ?', Time.now).order('start_date desc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+      json: Event.where('end_date < ?', Time.now).order('start_date desc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { only: [:id], methods: [:full_name] }, escort_leader: { only: [:id], methods: [:full_name] }, communications_designee: { only: [:id], methods: [:full_name] }, reporting_designee: { only: [:id], methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { only: [:id], methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
     end
   end
 
@@ -180,7 +180,7 @@ class EventsController < ApplicationController
 
   # POST api/events/attend
   # Allows an individual user to set their attendence
-  # Body should contain event_id and attendence_type_id (1=Attending,2=Not Attending,3=No Response)
+  # Body should containa event_id and attendence_type_id (1=Attending,2=Not Attending,3=No Response)
   def set_attendence
     @event = Event.find_by id: params[:event_id].to_i
     # Look if the event exists and if it has already been submitted_for_certification
@@ -191,7 +191,7 @@ class EventsController < ApplicationController
         @attendence.attendence_type_id = params[:attendence_type_id].to_i
 
         if @attendence.save
-          render status: 200, json: @attendence.as_json(include: { character: { methods: [:full_name] }, attendence_type: { } })
+          render status: 200, json: @attendence.as_json(include: { character: { only: [:id], methods: [:full_name] }, attendence_type: { } })
         else
           render status: 500, json: { message: 'Error: Attendence could not be updated.' }
         end
@@ -201,7 +201,7 @@ class EventsController < ApplicationController
                                     character_id: current_user.main_character.id,
                                     attendence_type_id: params[:attendence_type_id].to_i)
         if @attendence.save
-          render status: 201, json: @attendence.as_json(include: { character: { methods: [:full_name] }, attendence_type: { } })
+          render status: 201, json: @attendence.as_json(include: { character: { only: [:id], methods: [:full_name] }, attendence_type: { } })
         else
           render status: 500, json: { message: 'Error: Attendence could not be updated.' }
         end

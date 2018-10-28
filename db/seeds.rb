@@ -651,7 +651,7 @@ apptypes = ApplicationStatus.create([{id: 1, title: 'Submitted', description: 'Y
 
 user_sys = User.create(id: 0, username: 'System', email: 'no-reply@bendrocorp.com', password: 'gqsUIhu2uUhghJiMIdNr', password_confirmation: 'gqsUIsdfgdsfghu2uUhghJiMIdNrdsfg45', is_member: true, is_admin: true, email_verified: true, locked: true, login_allowed: false)
 user2 = User.create(id: 2, username: 'Stevo', email: 'dale@daleslab.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
-user1 = User.create(id: 1, username: 'Rindzer', email: 'dale.myszewski@gmail.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
+user1 = User.create(id: 1, username: 'Rindzer', email: 'testing@daleslab.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
 
 user1.roles << roles[8]
 user1.roles << Role.find_by_id(0)

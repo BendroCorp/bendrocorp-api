@@ -286,16 +286,306 @@ Returns:
 A message object
 
 #### Approvals
-##### `GET api/approvals/:approval_id/:approval_type` (Auth Required)
-As the current user attempt to change your approval status with the approval type id bound to `:approval_type` for the approval whose id is bound to `:approval_id`. If the user authorized user is not an approver of the provided `:approval_id` an error code will be returned.
+##### `GET api/approvals/:approval_id/:approval_type` (A) (M)
+As the current authorized user attempt to change your approval status with the approval type id bound to `:approval_type` for the approval whose id is bound to `:approval_id`. If the user authorized user is not an approver of the provided `:approval_id` an error code will be returned.
 
 Returns:
 
 A message object
 
 #### Divisions
-##### `GET api/division` (A) (M)
+##### `GET api/divisions` (A) (M)
 Get an array of all of the current Divisions within BendroCorp.
+
+Returns:
+
+```
+[
+  {
+    "id": number,
+    "name": string,
+    "color": string,
+    "short_name": string,
+    "description": string,
+    "can_have_ships": boolean,
+    "ordinal": number,
+    "is_hidden": boolean,
+    "font_color": string
+  },
+  ...
+]
+```
+
+#### Events
+##### `GET api/events` (A) (M)
+Get an array of all upcoming events.
+
+Returns:
+
+```
+[
+  {
+    "id": number,
+    "name": string,
+    "description": string,
+    "weekly_reccurance": boolean,
+    "event_type_id": number,
+    "livestream_url": string,
+    "submitted_for_certification": boolean,
+    "certified": boolean,
+    "event_certification_request_id": number,
+    "show_on_dashboard": boolean,
+    "published": boolean,
+    "published_date": string,
+    "briefing_id": number,
+    "debriefing_id": number,
+    "classification_level_id": number,
+    "start_date_ms": number,
+    "end_date_ms": number,
+    "is_expired": boolean,
+    "event_type": {
+      "id": number,
+      "title": string,
+      "description": string
+    },
+    "briefing": {
+      "id": number,
+      "operational_leader_id": number,
+      "reporting_designee_id": number,
+      "communications_designee_id": number,
+      "escort_leader_id": number,
+      "objective": string,
+      "notes": string,
+      "starting_system_id": number,
+      "ending_system_id": number,
+      "published": boolean,
+      "published_when": string,
+      "event_id": number
+    },
+    "debriefing": {
+      "id": number,
+      "text": string,
+      "published": boolean,
+      "published_when": string,
+      "event_id": number
+    },
+    "awards": [], // currently not in use
+    "attendences": [
+      {
+        "id": number,
+        "attendence_type_id": number,
+        "certified": boolean,
+        "user_id": number,
+        "character_id": number,
+        "event_id": number,
+        "created_at": string,
+        "updated_at": string,
+        "character": {
+          "id": number,
+          "full_name": string
+        },
+        "attendence_type": {
+          "id": number,
+          "title": string,
+        }
+      }
+    ]
+  }
+]
+```
+
+##### `GET api/events/expired/` or `GET api/events/expired/:count` (A) (M) (R)
+Get an array of all expired events or a specific number of events based on the number bound `:count` from the most recent to the oldest.
+
+Returns:
+
+```
+[
+  {
+    "id": number,
+    "name": string,
+    "description": string,
+    "weekly_reccurance": boolean,
+    "event_type_id": number,
+    "livestream_url": string,
+    "submitted_for_certification": boolean,
+    "certified": boolean,
+    "event_certification_request_id": number,
+    "show_on_dashboard": boolean,
+    "published": boolean,
+    "published_date": string,
+    "briefing_id": number,
+    "debriefing_id": number,
+    "classification_level_id": number,
+    "start_date_ms": number,
+    "end_date_ms": number,
+    "is_expired": boolean,
+    "event_type": {
+      "id": number,
+      "title": string,
+      "description": string
+    },
+    "briefing": {
+      "id": number,
+      "operational_leader_id": number,
+      "reporting_designee_id": number,
+      "communications_designee_id": number,
+      "escort_leader_id": number,
+      "objective": string,
+      "notes": string,
+      "starting_system_id": number,
+      "ending_system_id": number,
+      "published": boolean,
+      "published_when": string,
+      "event_id": number
+    },
+    "debriefing": {
+      "id": number,
+      "text": string,
+      "published": boolean,
+      "published_when": string,
+      "event_id": number
+    },
+    "awards": [], // currently not in use
+    "attendences": [
+      {
+        "id": number,
+        "attendence_type_id": number,
+        "certified": boolean,
+        "user_id": number,
+        "character_id": number,
+        "event_id": number,
+        "created_at": string,
+        "updated_at": string,
+        "character": {
+          "id": number,
+          "full_name": string
+        },
+        "attendence_type": {
+          "id": number,
+          "title": string,
+        }
+      }
+    ]
+  }
+]
+```
+
+##### `GET api/events/:event_id` (A) (M)
+Fetch a particular events based on the id value bound to `:event_id`
+
+Returns:
+
+```
+{
+  "id": number,
+  "name": string,
+  "description": string,
+  "weekly_reccurance": boolean,
+  "event_type_id": number,
+  "livestream_url": string,
+  "submitted_for_certification": boolean,
+  "certified": boolean,
+  "event_certification_request_id": number,
+  "show_on_dashboard": boolean,
+  "published": boolean,
+  "published_date": string,
+  "briefing_id": number,
+  "debriefing_id": number,
+  "classification_level_id": number,
+  "start_date_ms": number,
+  "end_date_ms": number,
+  "is_expired": boolean,
+  "event_type": {
+    "id": number,
+    "title": string,
+    "description": string
+  },
+  "briefing": {
+    "id": number,
+    "operational_leader_id": number,
+    "reporting_designee_id": number,
+    "communications_designee_id": number,
+    "escort_leader_id": number,
+    "objective": string,
+    "notes": string,
+    "starting_system_id": number,
+    "ending_system_id": number,
+    "published": boolean,
+    "published_when": string,
+    "event_id": number
+  },
+  "debriefing": {
+    "id": number,
+    "text": string,
+    "published": boolean,
+    "published_when": string,
+    "event_id": number
+  },
+  "awards": [], // currently not in use
+  "attendences": [
+    {
+      "id": number,
+      "attendence_type_id": number,
+      "certified": boolean,
+      "user_id": number,
+      "character_id": number,
+      "event_id": number,
+      "created_at": string,
+      "updated_at": string,
+      "character": {
+        "id": number,
+        "full_name": string
+      },
+      "attendence_type": {
+        "id": number,
+        "title": string,
+      }
+    }
+  ]
+}
+```
+
+##### `POST api/events/attend` (A) (M)
+Adjust the event attendance status for the currently authorized user.
+
+Requires:
+
+```
+{
+  event_id: number
+  attendence_type_id: number // 1 - Attending, 2 - Not, 3 - No response
+}
+```
+
+Returns:
+```
+{
+  "id": number,
+  "event_id": number,
+  "character_id": number,
+  "user_id": number,
+  "certified": boolean,
+  "character": {
+    "id": number,
+    "full_name": string
+  },
+  "attendence_type_id": number,
+  "attendence_type": {
+    "id": number,
+    "title": string
+  }
+}
+```
+
+##### `GET api/events/:event_id/certify`
+Called before the corresponding post event. Creates attendance objects for all current members for the event id bound to `:event_id` 
+
+Returns:
+
+```
+...
+```
 
 ## Development
 
