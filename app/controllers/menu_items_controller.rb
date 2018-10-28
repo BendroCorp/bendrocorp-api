@@ -13,8 +13,10 @@ class MenuItemsController < ApplicationController
     @menu_items = []
     # Loop through
     MenuItem.where('nested_under_id is NULL').order('ordinal').each do |item|
+      # are protected by role
       if item.roles.count > 0
         item.roles.each do |role|
+          item.title = "#{item.title} *" # add an * to show it is protected by role
           @menu_items << item if current_user.isinrole(role.id)
         end
       else
