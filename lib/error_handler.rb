@@ -25,17 +25,19 @@ module Error
               puts 'Send email:'
               puts mail_json
               puts
-              sg = SendGrid::API.new(api_key: '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')#
-              response = sg.client.mail._("send").post(request_body: mail_json)
+              if ENV['SENDGRID_API_KEY'] != nil
+                sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])#
+                response = sg.client.mail._("send").post(request_body: mail_json)
+                
+                puts "SendGrid response code:"
+                puts "#{response.status_code}"
+                puts
 
-              #ENV['SENDGRID_API_KEY']
-              # response.status_code
-              puts "SendGrid response code:"
-              puts response.status_code
-              puts
-              if !(response.status_code == 200 || response.status_code == 202)
-                puts response.body
+                if !(response.status_code == 200 || response.status_code == 202)
+                  puts response.body
+                end
               end
+
             end
           rescue SocketError => e
             puts e.message
