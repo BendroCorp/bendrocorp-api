@@ -17,7 +17,7 @@ module Error
 
               # the actual email itself
               from = Email.new(email: 'no-reply@bendrocorp.com')
-              to = Email.new(email: 'dale@daleslab.com') # NOTE: Just me for now. Might better to send this out to everyone
+              to = Email.new(email: ENV['ADMIN_EMAIL']) # NOTE: Just me for now. Might better to send this out to everyone
               subject = "BendroCorp - Error Message - #{e.message.to_s}"
               content = Content.new(type: 'text/html', value: message_in + outro)
               mail = SendGrid::Mail.new(from, subject, to, content) # https://github.com/sendgrid/sendgrid-ruby/issues/67
@@ -28,7 +28,7 @@ module Error
               if ENV['SENDGRID_API_KEY'] != nil
                 sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])#
                 response = sg.client.mail._("send").post(request_body: mail_json)
-                
+
                 puts "SendGrid response code:"
                 puts "#{response.status_code}"
                 puts
