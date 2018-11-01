@@ -4,6 +4,7 @@ class CreateUserTokens < ActiveRecord::Migration[5.1]
       t.belongs_to :user
       t.text :token
       t.datetime :expires
+      t.text :device
       t.timestamps
     end
   end

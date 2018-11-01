@@ -1954,6 +1954,7 @@ ActiveRecord::Schema.define(version: 20180728045926) do
     t.integer "user_id"
     t.text "token"
     t.datetime "expires"
+    t.text "device"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_tokens_on_user_id"
