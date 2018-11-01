@@ -12,6 +12,6 @@ class UserToken < ApplicationRecord
   end
 
   def expires_ms
-    self.expires.to_f * 1000
+    self.expires.to_f * 1000 if self.expires
   end
 end
