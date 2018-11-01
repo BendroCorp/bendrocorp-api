@@ -3,7 +3,7 @@ class SessionsController < ApplicationController
   # Non-oauth method this requires you to have the users password and email to create a token
   # The created token will be full scope
   def auth
-   if params[:session] && params[:session][:email] && params[:session][:password]
+   if params[:session] && params[:session][:email] && params[:session][:password] && params[:session][:device]
      @user = User.find_by email: params[:session][:email]
      # Does the user exist?
      if @user != nil
@@ -12,7 +12,10 @@ class SessionsController < ApplicationController
          # puts "User is authorized: #{@user && !@user.active && @user.authenticate(params[:session][:password]) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code]))) && (!@user.locked && @user.login_allowed)}"
          # puts "Creating token"
          token_text = make_token
-         new_token = UserToken.new(token: token_text, expires: Time.now + 12.hours)
+         # token is not perpetual
+         new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 12.hours) if !params[:session][:perpetual]
+         # token is perpetual
+         new_token = UserToken.new(token: token_text, device: params[:session][:device]) if params[:session][:perpetual]
          @user.user_tokens << new_token
          @user.login_attempts = 0
          if @user.save

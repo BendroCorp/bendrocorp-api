@@ -1,8 +1,14 @@
 class UserToken < ApplicationRecord
   belongs_to :user, :class_name => 'User', :foreign_key => 'user_id'
+  validates :token, presence: true
+  validates :device, presence: true
 
   def is_expired?
-    self.expires < Time.now
+    if self.expires
+      return false
+    else
+      self.expires < Time.now
+    end
   end
 
   def expires_ms
