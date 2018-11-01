@@ -3,8 +3,8 @@ class UserToken < ApplicationRecord
   validates :token, presence: true
   validates :device, presence: true
 
-  def is_expired?
-    if self.expires
+  def is_expired
+    if self.expires == nil
       return false
     else
       self.expires < Time.now
