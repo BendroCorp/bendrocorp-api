@@ -40,7 +40,7 @@ class ApplicationController < ActionController::API
     if bearer_token
       if /^[a-z0-9]+$/.match bearer_token
         @token = UserToken.find_by token: bearer_token
-        if @token != nil && !@token.is_expired?
+        if @token != nil && !@token.is_expired
           @current_user = @token.user
           @current_user
         else
