@@ -33,6 +33,7 @@ class AdminController < ApplicationController
       send_email(@user.email, 'Admin Impersonation Notification', email_message)
 
       # create a new token for the user
+      token_text = make_token
       new_token = UserToken.new(token: token_text, device: "Impersonation", expires: Time.now + 2.hours)
       @user.user_tokens << new_token
 
