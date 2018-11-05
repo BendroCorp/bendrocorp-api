@@ -1248,6 +1248,7 @@ ActiveRecord::Schema.define(version: 20180728045926) do
 
   create_table "site_logs", force: :cascade do |t|
     t.text "module"
+    t.text "submodule"
     t.text "message"
     t.integer "site_log_type_id"
     t.datetime "created_at", null: false
