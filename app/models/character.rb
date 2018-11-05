@@ -76,12 +76,13 @@ class Character < ActiveRecord::Base
       else
         self.job_trackings.order('created_at desc').offset(1).first.job
       end
-    else
+    # else
       # this is mainly to catch any debug users. If you get this for a user something is either seriously wrong
       # or this is a debug user
-      j = Job.new(title: "No Job (something is wrong here...everyone has a job...)")
-      j.division = Division.new(name:"(Debug user?)")
-      j
+      #j = Job.new(title: "No Job")
+      #j.division = Division.new(name:"(Debug user?)")
+      #j
+
     end
   end
 

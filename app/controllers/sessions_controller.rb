@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
            puts
            puts "User authenticated and token created!"
            puts
-           render status: 200, json: { id: @user.id, character: @user.main_character.as_json(only: [:id, :first_name, :last_name], methods: [:full_name, :avatar_url]), tfa_enabled: @user.use_two_factor, token: token_text, token_expires: new_token.expires_ms, claims: @user.claims }
+           render status: 200, json: { id: @user.id, character: @user.main_character.as_json(only: [:id, :first_name, :last_name], methods: [:full_name, :avatar_url, :current_job]), tfa_enabled: @user.use_two_factor, token: token_text, token_expires: new_token.expires_ms, claims: @user.claims }
          else
            render status: 500, json: { message: "Login was not successful because: #{@user.errors.full_messages.to_sentence}" }
          end
