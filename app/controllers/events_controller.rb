@@ -185,26 +185,30 @@ class EventsController < ApplicationController
     @event = Event.find_by id: params[:event_id].to_i
     # Look if the event exists and if it has already been submitted_for_certification
     if @event != nil && !@event.submitted_for_certification
-      # Look and see if the attendence already exists if so we are just going to update it
-      @attendence = Attendence.where('user_id = ? AND event_id = ?', current_user.id, params[:event_id]).first
-      if @attendence != nil
-        @attendence.attendence_type_id = params[:attendence_type_id].to_i
+      if !@event.is_expired
+        # Look and see if the attendence already exists if so we are just going to update it
+        @attendence = Attendence.where('user_id = ? AND event_id = ?', current_user.id, params[:event_id]).first
+        if @attendence != nil
+          @attendence.attendence_type_id = params[:attendence_type_id].to_i
 
-        if @attendence.save
-          render status: 200, json: @attendence.as_json(include: { character: { methods: [:full_name] }, attendence_type: { } })
-        else
-          render status: 500, json: { message: 'Error: Attendence could not be updated.' }
+          if @attendence.save
+            render status: 200, json: @attendence.as_json(include: { character: { methods: [:full_name] }, attendence_type: { } })
+          else
+            render status: 500, json: { message: 'Error: Attendence could not be updated.' }
+          end
+        else # if the attendence does not exist then we are going to create it
+          @attendence = Attendence.new(event_id: params[:event_id].to_i,
+                                      user_id: current_user.id,
+                                      character_id: current_user.main_character.id,
+                                      attendence_type_id: params[:attendence_type_id].to_i)
+          if @attendence.save
+            render status: 201, json: @attendence.as_json(include: { character: { methods: [:full_name] }, attendence_type: { } })
+          else
+            render status: 500, json: { message: 'Error: Attendence could not be updated.' }
+          end
         end
-      else # if the attendence does not exist then we are going to create it
-        @attendence = Attendence.new(event_id: params[:event_id].to_i,
-                                    user_id: current_user.id,
-                                    character_id: current_user.main_character.id,
-                                    attendence_type_id: params[:attendence_type_id].to_i)
-        if @attendence.save
-          render status: 201, json: @attendence.as_json(include: { character: { methods: [:full_name] }, attendence_type: { } })
-        else
-          render status: 500, json: { message: 'Error: Attendence could not be updated.' }
-        end
+      else
+        render status: 403, json: { message: 'Event expired. Attendance cannot be changed!' }
       end
     else
       render status: 404, json: { message: 'Event not found.' }
