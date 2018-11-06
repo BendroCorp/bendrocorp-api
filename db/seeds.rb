@@ -13,7 +13,10 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
                  { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
-                 { id: 12, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 }])
+                 { id: 12, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 },
+                 { id: 13, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 13 }])
+
+MenuItemRole.create([{id: 1, menu_item_id: 13, role_id: 32}])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
@@ -410,6 +413,7 @@ nested_roles = NestedRole.create([{role_id: 9, role_nested_id:2}, #CEO roles
                                   {role_id: 9, role_nested_id:28},
                                   {role_id: 9, role_nested_id:30},
                                   {role_id: 9, role_nested_id:31},
+                                  {role_id: 9, role_nested_id:32},
                                   {role_id: 10, role_nested_id:2},#COO Roles
                                   {role_id: 10, role_nested_id:3},
                                   {role_id: 10, role_nested_id:4},
