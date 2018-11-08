@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   # The created token will be full scope
   def auth
    if params[:session] && params[:session][:email] && params[:session][:password] && params[:session][:device]
-     @user = User.find_by email: params[:session][:email]
+     @user = User.find_by email: params[:session][:email].to_s.downcase 
      # Does the user exist?
      if @user != nil
        if !@user.locked && @user.login_allowed && @user.active
