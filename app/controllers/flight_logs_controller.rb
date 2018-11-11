@@ -123,7 +123,7 @@ class FlightLogsController < ApplicationController
       if (@log.owned_ship_id != nil && can_create_log(@log.owned_ship_id)) || @log.owned_ship_id == nil
         @log.archived = true
         if @log.save
-          render status: 200, json: { message: 'Flight log deleted.' }
+          render status: 200, json: { message: 'Flight log archived!' }
         else
           render status: 500, json: { message: 'Flight log could not be removed.' }
         end
