@@ -78,6 +78,7 @@ Rails.application.routes.draw do
   get 'api/flight-logs/ships' => 'flight_logs#list_ships'
   get 'api/flight-logs/:flight_log_id' => 'flight_logs#show'
   post 'api/flight-logs' => 'flight_logs#create'
+  put 'api/flight-logs' => 'flight_logs#update'
   patch 'api/flight-logs' => 'flight_logs#update'
   delete 'api/flight-logs/:flight_log_id' => 'flight_logs#delete'
 
