@@ -162,7 +162,7 @@ class FlightLogsController < ApplicationController
 
   private
   def flight_log_params
-    params.require(:flight_log).permit(:id, :title, :text, :owned_ship_id, :ship_id, :system_id, :planet_id, :moon_id)
+    params.require(:flight_log).permit(:title, :text, :owned_ship_id, :ship_id, :system_id, :planet_id, :moon_id)
   end
 
 end
