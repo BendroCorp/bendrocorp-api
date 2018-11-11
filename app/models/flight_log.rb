@@ -1,4 +1,6 @@
 class FlightLog < ApplicationRecord
+  validates :title, presence: true
+
   belongs_to :owned_ship, :class_name => 'OwnedShip', :foreign_key => 'owned_ship_id', optional: true
   belongs_to :system, :class_name => 'SystemMapSystem', :foreign_key => 'system_id', optional: true
   belongs_to :moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'moon_id', optional: true
@@ -16,7 +18,7 @@ class FlightLog < ApplicationRecord
   accepts_nested_attributes_for :image_uploads
 
   def log_title
-    "#{self.text[0..20]}..."
+    self.title
   end
 
   def full_location
