@@ -12,7 +12,7 @@ class User < ActiveRecord::Base
 
   has_secure_password # cause we like secure things. :)
   has_many :user_tokens
-
+  has_many :user_push_tokens
 
   has_one :user_setting
   belongs_to :user_account_type

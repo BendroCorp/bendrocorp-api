@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :require_user
   before_action :require_member
-  before_action except: [:me, :approvals, :approvals_count] do |a|
+  before_action except: [:list] do |a|
     a.require_one_role([2])
   end
 
@@ -28,5 +28,25 @@ class UsersController < ApplicationController
   # GET api/user/oauth-tokens
   def oauth_tokens
     render status: 200, json: OauthToken.where(user: current_user).as_json(methods: [:client_title])
+  end
+
+  # POST api/user/push-token
+  # Must contain token and user_device_type_id (1 = iOS, 2(TODO) = Amazon)
+  def add_push_token
+    if params[:token] && params[:user_device_type_id]
+      device_type = UserDeviceType.find_by_id(params[:user_device_type_id].to_i)
+      if device_type
+        current_user.user_push_tokens << UserPushToken.new(token: params[:token], user_device_type: device_type)
+        if current_user.save
+          render status: 200, json: { message: 'Device token added!' }
+        else
+          render status: 500, json: { message: "A push token could not be added because: #{current_user.errors.full_messages.to_sentence}" }
+        end
+      else
+        render status: 400, json: { message: 'Device type if not found!' }
+      end
+    else
+      render status: 400, json: { message: 'Incorrect parameters provided or parameters missing.' }
+    end
   end
 end
