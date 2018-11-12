@@ -94,6 +94,9 @@ class EventsController < ApplicationController
         @event.published = true
         @event.published_date = Time.now
         if @event.save
+          # send push notifications
+          send_push_notification_to_members("New Event Posted - #{@event.name}")
+
           # email members about new even posting
           email_members("New Event Posted - #{@event.name}",
           "<p>A new #{@event.event_type.title.downcase} event has been posted on the BendroCorp Dashboard called <b>#{@event.name}</b> with the following description:</p><p>#{@event.description}</p>If you would like more information on this event please visit the events page on the BendroCorp Dashboard.")

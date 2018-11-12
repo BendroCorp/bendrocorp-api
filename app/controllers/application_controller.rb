@@ -146,6 +146,10 @@ class ApplicationController < ActionController::API
         # add all of the approvers to the approval and email them
         usersArray.each do |user|
           new_approval.approval_approvers << ApprovalApprover.new(user_id: user.id, approval_type_id: 1)
+          # send push notifications
+          send_push_notification user.id, "You have a new Approval Request"
+
+          # send emails
           send_email(user.email, "New Approval Request",
           "<p>Hello #{user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
           ) #to, subject, message
@@ -253,6 +257,29 @@ class ApplicationController < ActionController::API
       else
         puts response.body
         return false
+      end
+    end
+  end
+
+  def send_push_notification_to_members message
+    User.all.each do |user|
+      send_push_notification user.id, message if user.isinrole(0)
+    end
+  end
+
+  def send_push_notification user_id, message
+    user = User.find_by_id(user_id.to_i)
+    if user
+      user.user_push_tokens.each do |push_token|
+        # iOS
+        if push_token.user_device_type_id == 1
+          n = Rpush::Apns::Notification.new
+          n.app = Rpush::Apnsp8::App.find_by_name(push_token.user_device_type.name)
+          n.device_token = push_token.token # 64-character hex string
+          n.alert = message
+          # n.data = { foo: :bar }
+          n.save!
+        end
       end
     end
   end

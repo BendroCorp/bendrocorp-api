@@ -2,6 +2,8 @@ puts ""
 puts "Seeding things..."
 puts ""
 
+UserDeviceType.create([{ id: 1, title: 'ios_app' } ])
+
 MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
                  { id: 3, title: 'Events', icon: 'fa-calendar', link: '/events', ordinal: 3 },

@@ -24,6 +24,12 @@ gem 'bcrypt', '~> 3.1.7'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+# push notifications
+gem 'rpush'
+
+#
+gem 'rb-readline'
+
 # one time password library
 gem 'rotp'
 

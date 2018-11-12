@@ -39,6 +39,9 @@ class ApprovalsController < ApplicationController
                 if @approval.approved
                   # TODO: Data drive this more!!
                   if @approval.approval_workflow == 1 # standard workflow
+                    # push notification
+                    send_push_notification user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Approved"
+
                     # email the user here
                     send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Approved",
                     "<p>Hello #{@approval.approval_source.user.username}!</p><p>Your #{@approval.approval_kind.title} for #{@approval.approval_source_requested_item} has been approved.</p>"
@@ -53,6 +56,9 @@ class ApprovalsController < ApplicationController
                     # do nothing
                   end
                 else
+                  # push notification
+                  send_push_notification user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Denied"
+
                   # email the user that the request was denied
                   send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Denied",
                   "<p>Hello #{@approval.approval_source.user.username}!</p><p>Your #{@approval.approval_kind.title} for #{@approval.approval_source_requested_item} has been denied. You can view your request from the relevant request page to get more information.</p>"
