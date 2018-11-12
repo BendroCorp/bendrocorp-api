@@ -49,4 +49,10 @@ class UsersController < ApplicationController
       render status: 400, json: { message: 'Incorrect parameters provided or parameters missing.' }
     end
   end
+
+  # GET api/user/push
+  def push_self
+    send_push_notification current_user.id, "This is a test. You sent this to your devices. :)"
+    render status: 200, json: { message: 'Self push succeeded!' }
+  end
 end
