@@ -2017,12 +2017,12 @@ ActiveRecord::Schema.define(version: 20181112002334) do
 
   create_table "user_push_tokens", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "user_device_type_id_id"
+    t.integer "user_device_type_id"
     t.text "token"
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_device_type_id_id"], name: "index_user_push_tokens_on_user_device_type_id_id"
+    t.index ["user_device_type_id"], name: "index_user_push_tokens_on_user_device_type_id"
     t.index ["user_id"], name: "index_user_push_tokens_on_user_id"
   end
 
