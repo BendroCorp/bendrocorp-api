@@ -87,4 +87,9 @@ class ApprovalsController < ApplicationController
       render status: 404, :json => { message: "Approval does not exist..." }
     end
   end
+
+  # GET api/approval/types
+  def approval_types
+    render status: 200, json: ApprovalType.all
+  end
 end
