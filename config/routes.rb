@@ -35,8 +35,9 @@ Rails.application.routes.draw do
   get 'api/approval-kinds' => 'approval_kind#list'
 
   # approvals controller
+  get 'api/approval/types' => 'approvals#approval_types'
   get 'api/approvals/:approval_id/:approval_type' => 'approvals#approval_request'
-
+  
   # awards
   get 'api/award' => 'awards#list'
   post 'api/award' => 'awards#create'
