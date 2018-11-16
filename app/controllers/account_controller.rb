@@ -1,6 +1,6 @@
 class AccountController < ApplicationController
-  before_action :require_user
-  before_action :require_member
+  before_action :require_user, except: [:forgot_password, :forgot_password_complete]
+  before_action :require_member, except: [:forgot_password, :forgot_password_complete]
 
   # POST /api/account/change-password
   # :password[original_password, password_confirmation]
@@ -22,6 +22,48 @@ class AccountController < ApplicationController
       end
     else
       render status: 403, json: { message: 'Your original password seems to be incorrect. Please try again.' }
+    end
+  end
+
+  # POST /api/account/forgot-password
+  # Must include params[:user][:email]
+  def forgot_password
+    #
+    @user = User.find_by email: params[:user][:email]
+    SiteLog.create(module: 'Forgot Password', submodule: 'Request', message: "Forgot password request made for user ##{@user.id}!", site_log_type_id: 2) if @user
+    if @user && @user.login_allowed
+      o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
+      new_token = Digest::SHA256.hexdigest (0...50).map { o[rand(o.length)] }.join
+      @user.password_reset_token = new_token
+      @user.password_reset_requested = true
+      if @user.save
+        puts "Forgot password request processed"
+        SiteLog.create(module: 'Forgot Password', submodule: 'Success', message: "Forgot password request successfully made for user ##{@user.id}!", site_log_type_id: 2) if @user
+        send_email(@user.email, "BendroCorp - Forgotten Password", "<h1>Forgot Your Password..?</h1><p>No worries. Just click the link below and you will be able to reset your password.</p><br /><p><a href=\'http://localhost:4200/password-reset/#{new_token}\'>Password Reset</a></p>")
+      end
+    end
+
+    # we reply with the same thing no matter what
+    render status: 200, json: { message: "If your email exists in our system you will receive an email with intructions on how to reset your password shortly." }
+  end
+
+  # POST /api/account/reset-password
+  # Must contained [:user][:password|:password_confirmation]
+  def forgot_password_complete
+    #
+    @user = User.find_by password_reset_token: params[:user][:password_reset_token]
+
+    if @user != nil && @user.login_allowed
+      @user.update_attributes(reset_params)
+      @user.password_reset_token = nil
+      @user.password_reset_requested = false
+      if @user.save
+        render status: 200, json: { message: "Password reset successful. Please login below." }
+      else
+        render status: 500, json: { message: "Password reset could not be completed because: #{@user.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 500, json: { message: "Either this user does not exist or no forgot password request was submitted." }
     end
   end
 
@@ -68,6 +110,16 @@ class AccountController < ApplicationController
 
   def fetch_user_countries
     render status: 200, json: { user_countries: UserCountry.all.order('title') }
+  end
+
+  private
+  def reset_params
+    params.require(:user).permit(:password, :password_confirmation)
+  end
+
+  private
+  def forgot_params
+    params.require(:user).permit(:email)
   end
 
   private
