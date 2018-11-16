@@ -108,6 +108,20 @@ class AccountController < ApplicationController
     end
   end
 
+  # DELETE api/account/token/:token
+  def remove_user_token
+    @token = UserToken.where(user: current_user, token: params[:token])
+    if @token
+      if @token.destroy
+        render status: 200, json: { message: 'Token removed!' }
+      else
+        render status: 500, json: { message: "The token could not be removed because: #{@token.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 404, json: { message: 'Token not found. It may have already been removed.' }
+    end
+  end
+
   def fetch_user_countries
     render status: 200, json: { user_countries: UserCountry.all.order('title') }
   end
