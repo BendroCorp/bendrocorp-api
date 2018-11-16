@@ -40,7 +40,7 @@ class ApprovalsController < ApplicationController
                   # TODO: Data drive this more!!
                   if @approval.approval_workflow == 1 # standard workflow
                     # push notification
-                    send_push_notification user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Approved"
+                    send_push_notification @approval.approval_source.user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Approved"
 
                     # email the user here
                     send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Approved",
@@ -57,7 +57,7 @@ class ApprovalsController < ApplicationController
                   end
                 else
                   # push notification
-                  send_push_notification user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Denied"
+                  send_push_notification @approval.approval_source.user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Denied"
 
                   # email the user that the request was denied
                   send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Denied",
