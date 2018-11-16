@@ -30,6 +30,11 @@ class UsersController < ApplicationController
     render status: 200, json: OauthToken.where(user: current_user).as_json(methods: [:client_title])
   end
 
+  # GET api/user/auth-tokens
+  def auth_tokens
+    render status: 200, json: UserToken.where(user: current_user).order('created_at desc').as_json(methods: [:is_expired])
+  end
+
   # POST api/user/push-token
   # Must contain token and user_device_type_id (1 = iOS, 2(TODO) = Amazon)
   def add_push_token

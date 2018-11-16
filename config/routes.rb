@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   # approvals controller
   get 'api/approval/types' => 'approvals#approval_types'
   get 'api/approvals/:approval_id/:approval_type' => 'approvals#approval_request'
-  
+
   # awards
   get 'api/award' => 'awards#list'
   post 'api/award' => 'awards#create'
@@ -211,6 +211,7 @@ Rails.application.routes.draw do
   get 'api/user/approvals' => 'users#approvals'
   get 'api/user/approvals-count' => 'users#approvals_count'
   get 'api/user/oauth-tokens' => 'users#oauth_tokens'
+  get 'api/user/auth-tokens' => 'users#auth_tokens'
   post 'api/user/push-token' => 'users#add_push_token'
   get 'api/user/push' => 'users#push_self'
 
