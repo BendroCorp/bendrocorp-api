@@ -11,6 +11,9 @@ Rails.application.routes.draw do
   post 'api/account/change-password' => 'account#change_password'
   get 'api/account/fetch-tfa' => 'account#fetch_two_factor_auth'
   post 'api/account/enable-tfa' => 'account#enable_two_factor_auth'
+  post 'api/account/forgot-password' => 'account#forgot_password'
+  post 'api/account/reset-password' => 'account#forgot_password_complete'
+  delete 'api/account/token/:token' => 'account#remove_user_token'
 
   # admin
   get 'api/admin/users' => 'admin#fetch_users'
