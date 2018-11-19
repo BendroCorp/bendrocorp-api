@@ -32,7 +32,7 @@ class UsersController < ApplicationController
 
   # GET api/user/auth-tokens
   def auth_tokens
-    render status: 200, json: UserToken.where(user: current_user).order('created_at desc').as_json(methods: [:is_expired])
+    render status: 200, json: UserToken.where(user: current_user).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
   # POST api/user/push-token
