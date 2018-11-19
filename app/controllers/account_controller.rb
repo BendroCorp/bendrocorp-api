@@ -110,7 +110,7 @@ class AccountController < ApplicationController
 
   # DELETE api/account/token/:token
   def remove_user_token
-    @token = UserToken.where(user: current_user, token: params[:token])
+    @token = UserToken.find_by(user: current_user, token: params[:token])
     if @token
       if @token.destroy
         render status: 200, json: { message: 'Token removed!' }

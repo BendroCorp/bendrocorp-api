@@ -3,6 +3,10 @@ class UserToken < ApplicationRecord
   validates :token, presence: true
   validates :device, presence: true
 
+  def perpetual
+    self.expires == nil
+  end
+
   def is_expired
     if self.expires == nil
       return false
