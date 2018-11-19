@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   before_action :require_user
   before_action :require_member
-  before_action except: [:list] do |a|
+  before_action only: [:list] do |a|
     a.require_one_role([2])
   end
 
