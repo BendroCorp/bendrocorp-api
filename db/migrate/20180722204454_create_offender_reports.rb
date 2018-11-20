@@ -20,6 +20,8 @@ class CreateOffenderReports < ActiveRecord::Migration[5.1]
       t.belongs_to :location
       t.belongs_to :offender_report_approval_request
 
+      t.belongs_to :force_level_applied
+
       t.boolean :archived, default: false
 
       t.belongs_to :classification_level

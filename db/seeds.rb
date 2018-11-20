@@ -163,6 +163,22 @@ OffenderReportViolenceRating.create([{ id: 1, title: "Neusance", description: "T
                                      { id: 2, title: "Dangerous", description: "Fired directly on a ship and/or person but did not attempt to destroy/kill. Should be approached with caution.", color:"orange" },
                                      { id: 3, title: "Lethal Threat", description: "Intended to destroy/disable/kill a ship and/or person(s) or has attempted to sieze mercantile cargo or corporate equipment by force. Should be approached with extreme caution.", color:"red" }])
 
+OffenderReportInfraction.create([{ id: 1, title: "Theft", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(2) },
+                                 { id: 2, title: "Piracy", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(3) },
+                                 { id: 3, title: "Attempted Murder", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(3) },
+                                 { id: 4, title: "Murder", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(3) },
+                                 { id: 5, title: "Manslaughter", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(3) },
+                                 { id: 6, title: "Trepass", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(2) },
+                                 { id: 7, title: "Nuisance", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(1) },
+                                 { id: 8, title: "Endangerment", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(1) },
+                                 { id: 9, title: "Destruction", description: "", violence_rating: OffenderReportViolenceRating.find_by_id(2) },])
+
+OffenderReportForceLevel.create([{ id: 1, title: "None", description: "No force was used to stop the offender (ex. verbal) (explain)", ordinal: 1 },
+                                 { id: 2, title: "Non-Lethal", description: "Force not designed to cause harm was used to stop the offender.", ordinal: 2 },
+                                 { id: 3, title: "Less-than-lethal", description: "Less-than-lethal force was used to subdue the offender. (ex. stun weapons, disrupters, warning shot)", ordinal: 3 },
+                                 { id: 4, title: "Lethal", description: "Lethal force was used to stop the offender", ordinal: 4 },
+                                 { id: 5, title: "None (Unable)", description: "Force could not be used to stop the offender (explain)", ordinal: 5 }])
+
 SystemMapSystemSafetyRating.create([{ id: 1, title: "No Threat", description: "There have been no recent reports of BendroCorp ships being attacked here.", color:"green" },
                                    { id: 2, title: "Threat Exists", description: "There have been recent but non-frequent reports of BendroCorp ships being fired on this area or along this flight path. Exercise caution.", color:"yellow" },
                                    { id: 3, title: "Escort Required", description: "There have been recent and frequent reports of BendroCorp ships being attacked in this area or along this flight path. Corporate freighters and medium-large ships on sanctioned missions are required to have an escort in this area.", color:"red" }])
