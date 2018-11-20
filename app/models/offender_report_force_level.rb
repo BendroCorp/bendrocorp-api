@@ -1,0 +1,2 @@
+class OffenderReportForceLevel < ApplicationRecord
+end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181112002334) do
+ActiveRecord::Schema.define(version: 20181119162754) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -806,6 +806,32 @@ ActiveRecord::Schema.define(version: 20181112002334) do
     t.index ["user_id"], name: "index_offender_report_approval_requests_on_user_id"
   end
 
+  create_table "offender_report_force_levels", force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.integer "ordinal"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "offender_report_infractions", force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.integer "violence_rating_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["violence_rating_id"], name: "index_offender_report_infractions_on_violence_rating_id"
+  end
+
+  create_table "offender_report_infractions_committeds", force: :cascade do |t|
+    t.integer "infraction_id"
+    t.integer "report_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["infraction_id"], name: "index_offender_report_infractions_committeds_on_infraction_id"
+    t.index ["report_id"], name: "index_offender_report_infractions_committeds_on_report_id"
+  end
+
   create_table "offender_report_offenders", force: :cascade do |t|
     t.text "offender_name"
     t.text "offender_handle"
@@ -856,12 +882,14 @@ ActiveRecord::Schema.define(version: 20181112002334) do
     t.integer "settlement_id"
     t.integer "location_id"
     t.integer "offender_report_approval_request_id"
+    t.integer "force_level_applied_id"
     t.boolean "archived", default: false
     t.integer "classification_level_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["classification_level_id"], name: "index_offender_reports_on_classification_level_id"
     t.index ["created_by_id"], name: "index_offender_reports_on_created_by_id"
+    t.index ["force_level_applied_id"], name: "index_offender_reports_on_force_level_applied_id"
     t.index ["location_id"], name: "index_offender_reports_on_location_id"
     t.index ["moon_id"], name: "index_offender_reports_on_moon_id"
     t.index ["offender_id"], name: "index_offender_reports_on_offender_id"

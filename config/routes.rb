@@ -112,9 +112,11 @@ Rails.application.routes.draw do
   get 'api/offender-report/mine' => 'offender_reports#list_mine'
   get 'api/offender-report/admin' => 'offender_reports#list_admin'
   post 'api/offender-report/submit' => 'offender_reports#submit'
+  get 'api/offender-report/infractions' => 'offender_reports#list_infractions'
+  get 'api/offender-report/force-levels' => 'offender_reports#list_force_levels'
   get 'api/offender-report/:report_id' => 'offender_reports#fetch'
   post 'api/offender-report' => 'offender_reports#create'
-  patch 'api/offender-report' => 'offender_reports#update'
+  patch 'api/offender-report' => 'offender_reports#update'  
 
   # page entries
   get 'api/pages' => 'page_entries#list'

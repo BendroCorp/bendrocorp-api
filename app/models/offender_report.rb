@@ -17,6 +17,11 @@ class OffenderReport < ApplicationRecord
 
   belongs_to :classification_level, optional: true
 
+  has_many :infractions_committed, class_name: 'OffenderReportInfractionsCommitted', foreign_key: 'report_id'
+  has_many :infractions, through: :infractions_committed, class_name: 'OffenderReportInfraction', foreign_key: 'infraction_id'
+
+  belongs_to :force_level_applied, class_name: 'OffenderReportForceLevel', foreign_key: 'force_level_applied_id'
+
   accepts_nested_attributes_for :offender
   accepts_nested_attributes_for :offender_report_approval_request
 
