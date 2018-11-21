@@ -1,3 +1,5 @@
+require 'httparty'
+
 class OffenderReportsController < ApplicationController
   before_action :require_user
   before_action :require_member
@@ -20,17 +22,23 @@ class OffenderReportsController < ApplicationController
       @offenders << offender if offender.offender_reports.count > 0
     end
 
-    render status: 200, json: @offenders.as_json(include: { offender_reports: { include: { infractions: {}, force_level_applied: {}, created_by: { } }, methods: [:occured_when_ms, :full_location] } })
+    render status: 200, json: @offenders.as_json(include: { offender_rating: { }, offender_report_org: { include: { violence_rating: { }, known_offenders: { } } }, offender_reports: { include: { infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location] } })
   end
 
   # GET api/offender-report/offender/:offender_id
-  def fetch
+  def fetch_offender
     @offender = OffenderReportOffender.find_by_id(params[:offender_id])
     if @offender
-      render status: 200, json: @offender.as_json(include: { offender_reports: { include: { infractions: {}, force_level_applied: {}, created_by: { } }, methods: [:occured_when_ms, :full_location] } })
+      render status: 200, json: @offender.as_json(include: { offender_rating: { }, offender_report_org: { include: { violence_rating: { }, known_offenders: { } } }, offender_reports: { include: { infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location] } })
     else
       render status: 404, json: { message: "Offender not found!" }
     end
+  end
+
+  # GET api/offender-reports/verify/:rsi_handle
+  def verify_rsi_handle
+    page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{params[:rsi_handle]}")
+    render status: 200, json: page.code == 200
   end
 
   # GET api/offender-report/types
@@ -45,12 +53,18 @@ class OffenderReportsController < ApplicationController
 
   # GET api/offender-report/admin
   def list_admin
-    render status: 200, json: OffenderReport.all.order('occured_when desc').as_json(include: { infractions: {}, force_level_applied: {}, created_by:{}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
+    render status: 200, json: OffenderReport.all.order('occured_when desc').as_json(include: { infractions: {}, force_level_applied: {}, created_by:{ only: [:username], methods: [:main_character] }, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
   end
 
   # GET api/offender-report/:report_id
   def fetch
-
+    @report = OffenderReport.find_by_id(params[:report_id])
+    # Exists & Security Check
+    if @report && (@report.report_approved || (@offender_report.created_by == current_user || current_user.isinrole(16)))
+      render status: 200, json: @report.as_json(include: { offender: {}, infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location])
+    else
+      render status: 404, json: { message: "Offender report not found!" }
+    end
   end
 
   # POST api/offender-report
@@ -76,6 +90,9 @@ class OffenderReportsController < ApplicationController
       @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
     end
 
+    puts "#{@offender_report.infractions_committed.inspect}"
+    puts "Infractions: #{@offender_report.infractions_committed.count}"
+
     # lastly save the item to the db
     if @offender_report.save
       render status: 200, json: @offender_report.as_json(include: { infractions: {}, force_level_applied: {}, created_by:{}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
@@ -83,6 +100,7 @@ class OffenderReportsController < ApplicationController
       puts @offender_report.errors.inspect
       render status: 500, json: { message: "Offender report could not be created because: #{@offender_report.errors.full_messages.to_sentence}" }
     end
+
   end
 
   # PATCH api/offender-report
@@ -94,22 +112,24 @@ class OffenderReportsController < ApplicationController
       if @offender_report.created_by == current_user || current_user.isinrole(16) # offender report admin
         @offender_report.occured_when = Time.at(params[:offender_report][:occured_when_ms].to_f / 1000)
 
+        # Handle removing the infractions from params[:offender_report][:remove_infractions]
+        params[:offender_report][:remove_infractions].each do |infraction|
+          @offender_report.infractions_committed.where(infraction_id: infraction[:id].to_i).delete_all
+        end
+
         # Handle adding the intial infractions from params[:offender_report][:new_infractions]
         params[:offender_report][:new_infractions].each do |infraction|
           found_infraction = OffenderReportInfraction.find_by_id(infraction[:id].to_i)
           @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
         end
 
-        # Handle removing the infractions from params[:offender_report][:remove_infractions]
-        params[:offender_report][:remove_infractions].each do |infraction|
-          @offender_report.infractions.where(id: infraction[:id].to_i).delete_all
-        end
-
+        # Save back
         if @offender_report.update_attributes(offender_report_update_params)
           render status: 200, json: @offender_report.as_json(include: { infractions: {}, force_level_applied: {}, created_by:{}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
         else
-          render status: 500, json: { message:'An error occured and the offender report could not be updated.', data: @offender_report }
+          render status: 500, json: { message:"The offender report could not be updated because: #{@offender_report.errors.full_messages.to_sentence}" }
         end
+
       else
         render status: 403, json: { message: "You do not have the rights to edit this offender report!" }
       end

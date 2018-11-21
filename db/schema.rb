@@ -837,9 +837,12 @@ ActiveRecord::Schema.define(version: 20181119162754) do
     t.text "offender_handle"
     t.boolean "offender_handle_verified"
     t.text "offender_rsi_url"
+    t.text "offender_rsi_avatar"
     t.integer "offender_rating_percentage"
     t.integer "offender_rating_id"
     t.integer "offender_report_org_id"
+    t.integer "offender_org_rank"
+    t.text "org_title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["offender_rating_id"], name: "index_offender_report_offenders_on_offender_rating_id"
@@ -848,14 +851,18 @@ ActiveRecord::Schema.define(version: 20181119162754) do
 
   create_table "offender_report_orgs", force: :cascade do |t|
     t.text "title"
+    t.text "spectrum_id"
     t.text "description"
     t.integer "member_count"
     t.string "model"
     t.string "commitment"
     t.string "primary_activity"
     t.string "secondary_activity"
+    t.integer "violence_rating_id"
+    t.text "logo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["violence_rating_id"], name: "index_offender_report_orgs_on_violence_rating_id"
   end
 
   create_table "offender_report_violence_ratings", force: :cascade do |t|
