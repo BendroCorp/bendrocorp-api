@@ -37,7 +37,7 @@ class EventCertificationRequest < ApplicationRecord
     end
 
     #check to see if this is suppose to recur
-    if self.event.weekly_reccurance
+    if self.event.weekly_recurrence || self.event.monthly_recurrence
       @event = Event.new
       @event.name = self.event.name
       @event.description = self.event.description
@@ -45,8 +45,11 @@ class EventCertificationRequest < ApplicationRecord
       @event.event_type_id = self.event.event_type_id
       @event.livestream_url = self.event.livestream_url
 
-      @event.start_date = self.event.start_date + 7.days
-      @event.end_date = self.event.end_date + 7.days
+      @event.start_date = self.event.start_date + 7.days if self.event.weekly_recurrence
+      @event.end_date = self.event.end_date + 7.days if self.event.weekly_recurrence
+
+      @event.start_date = self.event.start_date + 4.weeks if self.event.monthly_recurrence
+      @event.end_date = self.event.end_date + 4.weeks if self.event.monthly_recurrence
 
       @event.briefing = EventBriefing.new
       @event.debriefing = EventDebriefing.new
