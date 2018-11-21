@@ -291,11 +291,11 @@ class EventsController < ApplicationController
 
   private
   def event_params
-    params.require(:event).permit(:name, :description, :weekly_reccurance, :event_type_id, :show_on_dashboard)
+    params.require(:event).permit(:name, :description, :weekly_reccurance, :monthly_recurrence, :event_type_id, :show_on_dashboard)
   end
 
   def event_update_params
-    params.require(:event).permit(:id, :name, :description, :start_date, :end_date, :weekly_reccurance, :event_type_id, :show_on_dashboard)
+    params.require(:event).permit(:name, :description, :weekly_reccurance, :monthly_recurrence, :event_type_id, :show_on_dashboard)
   end
 
   private
