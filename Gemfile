@@ -24,6 +24,10 @@ gem 'bcrypt', '~> 3.1.7'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
+# jobs
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+
 # push notifications
 gem 'rpush'
 
@@ -50,7 +54,8 @@ gem 'aws-sdk'#, '~> 2.3'
 # prod database
 gem 'pg'
 
-# for web requsts to other apis :)
+# for web requsts to other apis and scraping :)
+gem 'nokogiri'
 gem 'httparty'
 
 group :development, :test do

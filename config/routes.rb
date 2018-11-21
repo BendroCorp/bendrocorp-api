@@ -114,9 +114,11 @@ Rails.application.routes.draw do
   post 'api/offender-report/submit' => 'offender_reports#submit'
   get 'api/offender-report/infractions' => 'offender_reports#list_infractions'
   get 'api/offender-report/force-levels' => 'offender_reports#list_force_levels'
+  get 'api/offender-reports/verify/:rsi_handle' => 'offender_reports#verify_rsi_handle'
+  get 'api/offender-report/offender/:offender_id' => 'offender_reports#fetch_offender'
   get 'api/offender-report/:report_id' => 'offender_reports#fetch'
   post 'api/offender-report' => 'offender_reports#create'
-  patch 'api/offender-report' => 'offender_reports#update'  
+  patch 'api/offender-report' => 'offender_reports#update'
 
   # page entries
   get 'api/pages' => 'page_entries#list'

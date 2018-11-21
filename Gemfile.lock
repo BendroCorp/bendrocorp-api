@@ -567,9 +567,14 @@ GEM
     connection_pool (2.2.2)
     crass (1.0.4)
     erubi (1.7.1)
+    et-orbi (1.1.6)
+      tzinfo
     faraday (0.12.2)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.25)
+    fugit (1.1.6)
+      et-orbi (~> 1.1, >= 1.1.6)
+      raabro (~> 1.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     http-2 (0.9.0)
@@ -615,6 +620,7 @@ GEM
       terrapin (~> 0.6.0)
     pg (0.21.0)
     puma (3.12.0)
+    raabro (1.1.6)
     rack (2.0.5)
     rack-protection (2.0.0)
       rack
@@ -661,9 +667,20 @@ GEM
       thor (>= 0.18.1, < 2.0)
     ruby_dep (1.5.0)
     ruby_http_client (3.3.0)
+    rufus-scheduler (3.5.2)
+      fugit (~> 1.1, >= 1.1.5)
     sendgrid-ruby (5.2.0)
       ruby_http_client (~> 3.2)
       sinatra (>= 1.4.7, < 3)
+    sidekiq (5.2.3)
+      connection_pool (~> 2.2, >= 2.2.2)
+      rack-protection (>= 1.5.0)
+      redis (>= 3.3.5, < 5)
+    sidekiq-scheduler (3.0.0)
+      redis (>= 3, < 5)
+      rufus-scheduler (~> 3.2)
+      sidekiq (>= 3)
+      tilt (>= 1.4.0)
     sinatra (2.0.0)
       mustermann (~> 1.0)
       rack (~> 2.0)
@@ -705,6 +722,7 @@ DEPENDENCIES
   httparty
   listen (>= 3.0.5, < 3.2)
   mail
+  nokogiri
   paperclip
   pg
   puma (~> 3.7)
@@ -714,6 +732,8 @@ DEPENDENCIES
   rotp
   rpush
   sendgrid-ruby
+  sidekiq
+  sidekiq-scheduler
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3

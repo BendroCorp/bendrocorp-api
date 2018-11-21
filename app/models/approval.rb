@@ -157,7 +157,7 @@ class Approval < ApplicationRecord
       "/events/#{e.event.id}"
     elsif self.approval_kind_id == 7
       e = OffenderReportApprovalRequest.find_by approval_id: self.id
-      "/offender-reports/report-#{e.offender_report.id}"
+      "/offender-reports/report/#{e.offender_report.id}"
     elsif self.approval_kind_id == 18
       e = JobBoardMissionCompletionRequest.find_by approval_id: self.id
       puts

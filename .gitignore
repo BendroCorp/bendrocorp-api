@@ -22,3 +22,6 @@
 # Credentials
 .travis/*.key
 .travis/*.key.pub
+
+# random
+dump.rdb
