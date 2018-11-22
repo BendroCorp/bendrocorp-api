@@ -6,7 +6,7 @@ class CreateEvents < ActiveRecord::Migration[5.1]
       t.datetime :start_date
       t.datetime :end_date
       t.boolean :weekly_recurrence, default: false
-      t.boolean :monthly_recurrence, default: false
+      t.boolean :monthly_recurrence, default: false 
       t.references :event_type
       t.text :livestream_url
       t.boolean :submitted_for_certification, default: false
