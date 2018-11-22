@@ -72,8 +72,8 @@ class EventsController < ApplicationController
       @event.description = params[:event][:description]
       @event.start_date = Time.at(params[:event][:start_date_ms] / 1000.0)
       @event.end_date = Time.at(params[:event][:end_date_ms] / 1000.0)
-      @event.weekly_reccurence = params[:event][:weekly_reccurence]
-      @event.monthly_reccurence = params[:event][:monthly_reccurence]
+      @event.weekly_recurrence = params[:event][:weekly_recurrence]
+      @event.monthly_recurrence = params[:event][:monthly_recurrence]
       @event.event_type_id = params[:event][:event_type_id]
       @event.show_on_dashboard = params[:event][:show_on_dashboard]
       if @event.save
@@ -292,11 +292,11 @@ class EventsController < ApplicationController
 
   private
   def event_params
-    params.require(:event).permit(:name, :description, :weekly_reccurance, :monthly_recurrence, :event_type_id, :show_on_dashboard)
+    params.require(:event).permit(:name, :description, :weekly_recurrence, :monthly_recurrence, :event_type_id, :show_on_dashboard)
   end
 
   def event_update_params
-    params.require(:event).permit(:name, :description, :weekly_reccurance, :monthly_recurrence, :event_type_id, :show_on_dashboard)
+    params.require(:event).permit(:name, :description, :weekly_recurrence, :monthly_recurrence, :event_type_id, :show_on_dashboard)
   end
 
   private
