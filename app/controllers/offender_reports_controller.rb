@@ -58,10 +58,10 @@ class OffenderReportsController < ApplicationController
 
   # GET api/offender-report/:report_id
   def fetch
-    @report = OffenderReport.find_by_id(params[:report_id])
+    @offender_report = OffenderReport.find_by_id(params[:report_id])
     # Exists & Security Check
-    if @report && (@report.report_approved || (@offender_report.created_by == current_user || current_user.isinrole(16)))
-      render status: 200, json: @report.as_json(include: { offender: {}, infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location])
+    if @offender_report && (@offender_report.report_approved || (@offender_report.created_by == current_user || current_user.isinrole(16)))
+      render status: 200, json: @offender_report.as_json(include: { offender: {}, infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location])
     else
       render status: 404, json: { message: "Offender report not found!" }
     end
