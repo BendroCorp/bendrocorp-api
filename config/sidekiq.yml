@@ -1,4 +1,10 @@
 :schedule:
   offender_worker:
-    every: 1m   # Runs once per minute
+    every: 10m   # Runs once per minute
     class: OffenderScraperWorker
+  kaiden_worker:
+    every: 1m   # Runs once per minute
+    class: KaidenEventAnnouncerWorker
+  dormant_approval_worker:
+    cron: '0 20 * * *'   # Run at 10pm UTC every day
+    class: DormantApprovalWorker
