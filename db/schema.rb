@@ -1866,9 +1866,11 @@ ActiveRecord::Schema.define(version: 20181119162754) do
     t.integer "on_planet_id"
     t.integer "on_moon_id"
     t.integer "primary_image_id"
+    t.integer "discovered_by_id"
     t.integer "minimum_criminality_rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["discovered_by_id"], name: "index_system_map_system_settlements_on_discovered_by_id"
     t.index ["faction_affiliation_id"], name: "index_system_map_system_settlements_on_faction_affiliation_id"
     t.index ["on_moon_id"], name: "index_system_map_system_settlements_on_on_moon_id"
     t.index ["on_planet_id"], name: "index_system_map_system_settlements_on_on_planet_id"
