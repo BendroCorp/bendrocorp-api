@@ -41,7 +41,8 @@ class EventCertificationRequest < ApplicationRecord
       @event = Event.new
       @event.name = self.event.name
       @event.description = self.event.description
-      @event.weekly_reccurance = self.event.weekly_reccurance
+      @event.weekly_recurrence = self.event.weekly_recurrence
+      @event.monthly_recurrence = self.event.monthly_recurrence
       @event.event_type_id = self.event.event_type_id
       @event.livestream_url = self.event.livestream_url
 
