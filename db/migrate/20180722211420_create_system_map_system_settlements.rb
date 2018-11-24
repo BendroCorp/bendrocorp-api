@@ -11,6 +11,7 @@ class CreateSystemMapSystemSettlements < ActiveRecord::Migration[5.1]
       t.belongs_to :on_planet
       t.belongs_to :on_moon
       t.belongs_to :primary_image
+      t.belongs_to :discovered_by
       t.integer :minimum_criminality_rating
       t.timestamps
     end

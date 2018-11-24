@@ -199,6 +199,7 @@ Rails.application.routes.draw do
   get 'api/approvals/:approval_id/:approval_type' => 'approvals#approval_request'
 
   # system map routes
+  get 'api/system-map/types' => 'system_map#list_types'
   get 'api/system-map' => 'system_map#list'
   post 'api/system-map/planet' => 'system_map#add_planet'
   patch 'api/system-map/planet' => 'system_map#update_planet'
@@ -211,6 +212,14 @@ Rails.application.routes.draw do
   post 'api/system-map/system-object' => 'system_map#add_system_object'
   patch 'api/system-map/system-object' => 'system_map#update_system_object'
   delete 'api/system-map/system-object/:so_id' => 'system_map#delete_system_object'
+
+  post 'api/system-map/settlement' => 'system_map#add_settlement'
+  patch 'api/system-map/settlement' => 'system_map#update_settlement'
+  delete 'api/system-map/settlement/:settlement_id' => 'system_map#delete_settlement'
+
+  post 'api/system-map/location' => 'system_map#add_location'
+  patch 'api/system-map/location' => 'system_map#update_location'
+  delete 'api/system-map/location/:so_id' => 'system_map#delete_location'
 
   # users
   get 'api/user' => 'users#list'

@@ -64,6 +64,7 @@ class SystemMapController < ApplicationController
                       :jp_sizes => @jp_sizes.as_json,
                       :jp_statues => @jp_statues.as_json,
                       :system_object_types => @system_object_types.as_json,
+                      :location_types => @location_types.as_json
                     }
   end
 
@@ -126,6 +127,7 @@ class SystemMapController < ApplicationController
     end
   end
 
+  # POST api/system-map/planet
   def add_planet
     @planet = SystemMapSystemPlanetaryBody.new
 
@@ -139,25 +141,29 @@ class SystemMapController < ApplicationController
     @planet.tempature_min = params[:planet][:tempature_min]
     @planet.tempature_max = params[:planet][:tempature_max]
     @planet.minimum_criminality_rating = params[:planet][:minimum_criminality_rating]
-    if params[:planet][:primary_image] != nil
+
+    @planet.discovered_by = current_user
+
+    if params[:planet][:new_primary_image] != nil
       if @planet.primary_image != nil
-        @planet.primary_image.image = "data:#{params[:planet][:primary_image][:image][:filetype]};base64,#{params[:planet][:primary_image][:image][:base64]}" #params[:planet][:primary_image]
-        @planet.primary_image.image_file_name = params[:planet][:primary_image][:image][:filename]
+        @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
+        @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
       else
-        @planet.primary_image = SystemMapImage.create(image: "data:#{params[:planet][:primary_image][:image][:filetype]};base64,#{params[:planet][:primary_image][:image][:base64]}", image_file_name: params[:planet][:primary_image][:image][:filename], title: @planet.title, description: @planet.title)
+        @planet.primary_image = SystemMapImage.create(image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @moon.title, description: @moon.title)
       end
     end
     #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
 
     if @planet.save
-      render status: 200, json: { message: "Planet successfully updated. " }
+      render status: 200, json: @planet.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { include: { system_map_images: {} }, methods: [:primary_image_url] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
     else
-      render status: 500, json: { message: "Planet could not be saved. Check logs." }
+      render status: 500, json: { message: "Planet could not be created because: #{@planet.errors.full_messages.to_sentence}." }
     end
   end
 
+  # PATCH|PUT api/system-map/planet
   def update_planet
-    @planet = SystemMapSystemPlanetaryBody.find_by_id(params[:planet_id].to_i)
+    @planet = SystemMapSystemPlanetaryBody.find_by_id(params[:planet][:id].to_i)
     if @planet != nil
       @planet.title = params[:planet][:title]
       @planet.description = params[:planet][:description]
@@ -169,35 +175,36 @@ class SystemMapController < ApplicationController
       @planet.tempature_min = params[:planet][:tempature_min]
       @planet.tempature_max = params[:planet][:tempature_max]
       @planet.minimum_criminality_rating = params[:planet][:minimum_criminality_rating]
-      if params[:planet][:primary_image] != nil
+      if params[:planet][:new_primary_image] != nil
         if @planet.primary_image != nil
-          @planet.primary_image.image = "data:#{params[:planet][:primary_image][:image][:filetype]};base64,#{params[:planet][:primary_image][:image][:base64]}" #params[:planet][:primary_image]
-          @planet.primary_image.image_file_name = params[:planet][:primary_image][:image][:filename]
+          @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
+          @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
         else
-          @planet.primary_image = SystemMapImage.create(image: "data:#{params[:planet][:primary_image][:image][:filetype]};base64,#{params[:planet][:primary_image][:image][:base64]}", image_file_name: params[:planet][:primary_image][:image][:filename], title: @planet.title, description: @planet.title)
+          @planet.primary_image = SystemMapImage.create(image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @moon.title, description: @moon.title)
         end
       end
       #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
 
       if @planet.save
-        render status: 200, json: { message: "Planet successfully updated. " }
+        render status: 200, json: @planet.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { include: { system_map_images: {} }, methods: [:primary_image_url] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
       else
-        render status: 500, json: { message: "Planet could not be saved. Check logs." }
+        render status: 500, json: { message: "Planet could not be updated because: #{@planet.errors.full_messages.to_sentence}" }
       end
     else
       render status: 404, json: { message: "Planet not found" }
     end
   end
 
+  # DELETE api/system-map/planet/:planet_id
   def delete_planet
     begin
         @planet = SystemMapSystemPlanetaryBody.find_by_id(params[:planet_id].to_i)
         if @planet != nil
           @planet.archived = true
           if @planet.save
-            render status: 200, json: { message: "Success" }
+            render status: 200, json: { message: "Planet archived." }
           else
-            render status: 500, json: { message: "ERROR Occured: Gravity well could not be rmeoved."}
+            render status: 500, json: { message: "ERROR Occured: Planet could not be rmeoved."}
           end
         else
           render status: 404, json: { message: "Gravity well not found." }
@@ -207,6 +214,7 @@ class SystemMapController < ApplicationController
     end
   end
 
+  # POST api/system-map/moon
   def add_moon
     @moon = SystemMapSystemPlanetaryBodyMoon.new()
     # :title, :description, :orbits_planet_id
@@ -222,23 +230,26 @@ class SystemMapController < ApplicationController
     @moon.tempature_min = params[:moon][:tempature_min]
     @moon.minimum_criminality_rating = params[:moon][:minimum_criminality_rating]
 
-    if params[:moon][:primary_image] != nil
+    @moon.discovered_by = current_user
+
+    if params[:moon][:new_primary_image] != nil
       if @moon.primary_image != nil
-        @moon.primary_image.image = "data:#{params[:moon][:primary_image][:image][:filetype]};base64,#{params[:moon][:primary_image][:image][:base64]}" #params[:moon][:primary_image]
-        @moon.primary_image.image_file_name = params[:moon][:primary_image][:image][:filename]
+        @moon.primary_image.image = params[:moon][:new_primary_image][:base64]
+        @moon.primary_image.image_file_name = params[:moon][:new_primary_image][:name]
       else
-        @moon.primary_image = SystemMapImage.create(image: "data:#{params[:moon][:primary_image][:image][:filetype]};base64,#{params[:moon][:primary_image][:image][:base64]}", image_file_name: params[:moon][:primary_image][:image][:filename], title: @moon.title, description: @moon.title)
+        @moon.primary_image = SystemMapImage.create(image: params[:moon][:new_primary_image][:base64], image_file_name: params[:moon][:new_primary_image][:name], title: @moon.title, description: @moon.title)
       end
     end
     if @moon.save
-      render status: 200, json: { message: "Moon created" }
+      render status: 201, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
     else
-      render status: 500, json: { message: "Moon could not be created" }
+      render status: 500, json: { message: "Moon could not be created because: #{@moon.errors.full_messages.to_sentence}" }
     end
   end
 
+  # PATCH/PUT api/system-map/moon
   def update_moon
-    @moon = SystemMapSystemPlanetaryBodyMoon.find_by_id(params[:moon_id].to_i)
+    @moon = SystemMapSystemPlanetaryBodyMoon.find_by_id(params[:moon][:id].to_i)
     if @moon != nil
 
       @moon.title = params[:moon][:title]
@@ -251,16 +262,16 @@ class SystemMapController < ApplicationController
       @moon.tempature_max = params[:moon][:tempature_max]
       @moon.minimum_criminality_rating = params[:moon][:minimum_criminality_rating]
 
-      if params[:moon][:primary_image] != nil
+      if params[:moon][:new_primary_image] != nil
         if @moon.primary_image != nil
-          @moon.primary_image.image = "data:#{params[:moon][:primary_image][:image][:filetype]};base64,#{params[:moon][:primary_image][:image][:base64]}" #params[:moon][:primary_image]
-          @moon.primary_image.image_file_name = params[:moon][:primary_image][:image][:filename]
+          @moon.primary_image.image = params[:moon][:new_primary_image][:base64]
+          @moon.primary_image.image_file_name = params[:moon][:new_primary_image][:name]
         else
-          @moon.primary_image = SystemMapImage.create(image: "data:#{params[:moon][:primary_image][:image][:filetype]};base64,#{params[:moon][:primary_image][:image][:base64]}", image_file_name: params[:moon][:primary_image][:image][:filename], title: @moon.title, description: @moon.title)
+          @moon.primary_image = SystemMapImage.create(image: params[:moon][:new_primary_image][:base64], image_file_name: params[:moon][:new_primary_image][:name], title: @moon.title, description: @moon.title)
         end
       end
       if @moon.update_attributes(moon_params)
-        render status: 200, json: { message: "Moon created" }
+        render status: 200, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
       else
         render status: 500, json: { message: "Moon could not be created" }
       end
@@ -270,21 +281,22 @@ class SystemMapController < ApplicationController
     end
   end
 
+  # DELETE api/system-map/moon/:moon_id
   def delete_moon
     begin
         @moon = SystemMapSystemPlanetaryBodyMoon.find_by_id(params[:moon_id].to_i)
         if @moon != nil
           @moon.archived = true
           if @moon.save
-            render status: 200, json: { message: "Success" }
+            render status: 200, json: { message: "Moon archived." }
           else
-            render status: 500, json: { message: "ERROR Occured: Gravity well could not be rmeoved."}
+            render status: 500, json: { message: "ERROR Occured: Moon could not be removed."}
           end
         else
-          render status: 404, json: { message: "Gravity well not found." }
+          render status: 404, json: { message: "Moon not found." }
         end
     rescue => e
-      render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
+      render status: 500, json: { message: "ERROR Occured: Moon could not be saved: " + e.message}
     end
   end
 
@@ -296,19 +308,19 @@ class SystemMapController < ApplicationController
         @so.object_type_id = params[:system_object][:object_type_id]
         @so.orbits_planet_id = params[:system_object][:orbits_planet_id]
         @so.orbits_moon_id = params[:system_object][:orbits_moon_id]
-        if params[:system_object][:primary_image] != nil
+        if params[:system_object][:new_primary_image] != nil
           if @so.primary_image != nil
-            @so.primary_image.image = "data:#{params[:system_object][:primary_image][:image][:filetype]};base64,#{params[:system_object][:primary_image][:image][:base64]}" #params[:so][:primary_image]
-            @so.primary_image.image_file_name = params[:system_object][:primary_image][:image][:filename]
+            @so.primary_image.image = params[:system_object][:new_primary_image][:base64]
+            @so.primary_image.image_file_name = params[:system_object][:new_primary_image][:name]
           else
-            @so.primary_image = SystemMapImage.create(image: "data:#{params[:system_object][:primary_image][:image][:filetype]};base64,#{params[:system_object][:primary_image][:image][:base64]}", image_file_name: params[:system_object][:primary_image][:image][:filename], title: @so.title, description: @so.title)
+            @so.primary_image = SystemMapImage.create(image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @so.title, description: @so.title)
           end
         end
 
         if @so.save
           render status: 200, json: { message: "Success" }
         else
-          render status: 500, json: { message: "ERROR Occured: System object could not be created."}
+          render status: 500, json: { message: "System object could not be created because: #{@so.errors.full_messages.to_sentence}"}
         end
     rescue => e
       render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
@@ -324,18 +336,21 @@ class SystemMapController < ApplicationController
           @so.object_type_id = params[:system_object][:object_type_id]
           @so.orbits_planet_id = params[:system_object][:orbits_planet_id]
           @so.orbits_moon_id = params[:system_object][:orbits_moon_id]
-          if params[:system_object][:primary_image] != nil
+          if params[:system_object][:new_primary_image] != nil
             if @so.primary_image != nil
-              @so.primary_image.image = "data:#{params[:system_object][:primary_image][:image][:filetype]};base64,#{params[:system_object][:primary_image][:image][:base64]}" #params[:so][:primary_image]
-              @so.primary_image.image_file_name = params[:system_object][:primary_image][:image][:filename]
+              @so.primary_image.image = params[:system_object][:new_primary_image][:base64]
+              @so.primary_image.image_file_name = params[:system_object][:new_primary_image][:name]
             else
-              @so.primary_image = SystemMapImage.create(image: "data:#{params[:system_object][:primary_image][:image][:filetype]};base64,#{params[:system_object][:primary_image][:image][:base64]}", image_file_name: params[:system_object][:primary_image][:image][:filename], title: @so.title, description: @so.title)
+              @so.primary_image = SystemMapImage.create(image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @so.title, description: @so.title)
             end
           end
+
+          @so.discovered_by = current_user
+
           if @so.save
             render status: 200, json: { message: "Success" }
           else
-            render status: 500, json: { message: "ERROR Occured: System object could not be updated."}
+            render status: 500, json: { message: "System object could not be updated because: #{@so.errors.full_messages.to_sentence}"}
           end
         else
           render status: 404, json: { message: "System object not found." }
@@ -364,41 +379,38 @@ class SystemMapController < ApplicationController
   end
 
   def add_settlement
-    puts params[:settlement]
-
-    saveCount = 0
-    params[:settlement].each do |settle|
-      @settlement = SystemMapSystemSettlement.new
-      if settle[:new_primary_image] != nil
-        new_primary_image = SystemMapImage.create(image: "data:#{settle[:new_primary_image][:filetype]};base64,#{settle[:new_primary_image][:base64]}", image_file_name: settle[:new_primary_image][:filename])
-        @settlement.primary_image = new_primary_image
+    @settlement = SystemMapSystemSettlement.new
+    if params[:settlement][:new_primary_image] != nil
+      if @settlement.primary_image != nil
+        @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
+        @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
       else
-        @settlement.primary_image = SystemMapImage.new
+        @settlement.primary_image = SystemMapImage.create(image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name], title: @settlement.title, description: @settlement.title)
       end
-      @settlement.title = settle[:title]
-      @settlement.description = settle[:description]
-      @settlement.on_planet_id = settle[:on_planet_id]
-      @settlement.on_moon_id = settle[:on_moon_id]
-      @settlement.save
-      saveCount = saveCount + 1
     end
+    @settlement.title = params[:settlement][:title]
+    @settlement.description = params[:settlement][:description]
+    @settlement.on_planet_id = params[:settlement][:on_planet_id]
+    @settlement.on_moon_id = params[:settlement][:on_moon_id]
 
-    if saveCount === params[:settlement].count
-      render status: 200, json: { message: "Success" }
+    @settlement.discovered_by = current_user
+
+    if @settlement.save
+      render status: 200, json: @settlement
     else
       render status: 500, json: { message: "ERROR Occured: New settlement could not be saved."}
     end
   end
 
   def update_settlement
-    @settlement = SystemMapSystemSettlement.find_by_id(params[:settlement_id].to_i)
+    @settlement = SystemMapSystemSettlement.find_by_id(params[:settlement][:id].to_i)
     if @settlement != nil
       if params[:settlement][:new_primary_image] != nil
         if @settlement.primary_image != nil
-          @settlement.primary_image.image = "data:#{params[:settlement][:new_primary_image][:filetype]};base64,#{params[:settlement][:new_primary_image][:base64]}"
-          @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:filename]
+          @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
+          @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
         else
-          new_primary_image = SystemMapImage.create(image: "data:#{params[:settlement][:new_primary_image][:filetype]};base64,#{params[:settlement][:new_primary_image][:base64]}", image_file_name: params[:settlement][:new_primary_image][:filename])
+          new_primary_image = SystemMapImage.create(image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name])
           @settlement.primary_image = new_primary_image
         end
       end
@@ -432,73 +444,59 @@ class SystemMapController < ApplicationController
 
   def add_location
     #@locations = SystemMapSystemPlanetaryBodyLocation.create(location_params)
+    @location = SystemMapSystemPlanetaryBodyLocation.new
 
-    saveCount = 0
-    params[:location].each do |loc|
-      @location = SystemMapSystemPlanetaryBodyLocation.new
-
-      if loc[:new_primary_image] != nil
-        new_primary_image = SystemMapImage.create(image: "data:#{loc[:new_primary_image][:filetype]};base64,#{loc[:new_primary_image][:base64]}", image_file_name: loc[:new_primary_image][:filename])
-        @location.primary_image = new_primary_image
+    if params[:location][:new_primary_image] != nil
+      if @location.primary_image != nil
+        @location.primary_image.image = params[:location][:new_primary_image][:base64]
+        @location.primary_image.image_file_name = params[:location][:new_primary_image][:name]
       else
-        @location.primary_image = SystemMapImage.new
+        @location.primary_image = SystemMapImage.create(image: params[:location][:new_primary_image][:base64], image_file_name: params[:location][:new_primary_image][:name], title: @location.title, description: @location.title)
       end
-
-      @location.title = loc[:title]
-      @location.description = loc[:description]
-      @location.on_planet_id = loc[:on_planet_id]
-      @location.on_moon_id = loc[:on_moon_id]
-      @location.on_system_object_id = loc[:on_system_object_id]
-      @location.on_settlement_id = loc[:on_settlement_id]
-      @location.discovered_by = current_user
-      @location.save
-      saveCount = saveCount + 1
     end
 
-    if saveCount === params[:location].count
-      render status: 200, json: { message: "Success" }
+    @location.title = params[:location][:title]
+    @location.description = params[:location][:description]
+    @location.on_planet_id = params[:location][:on_planet_id]
+    @location.on_moon_id = params[:location][:on_moon_id]
+    @location.on_system_object_id = params[:location][:on_system_object_id]
+    @location.on_settlement_id = params[:location][:on_settlement_id]
+    @location.discovered_by = current_user
+
+    if @location.save
+      render status: 200, json: @location
     else
-      render status: 500, json: { message: "ERROR Occured: New settlement could not be saved."}
+      render status: 500, json: { message: "Location could not be created because: #{@location.errors.full_messages.to_sentence}"}
     end
   end
 
   def update_location
-    saveCount = 0
-    params[:location].each do |loc|
-      @location = SystemMapSystemPlanetaryBodyLocation.find_by_id(loc[:id].to_i)
-      if @location != nil
-        if params[:new_primary_image] != nil
-          if @location.primary_image != nil
-            @location.primary_image.image = "data:#{loc[:new_primary_image][:filetype]};base64,#{loc[:new_primary_image][:base64]}"
-            @location.primary_image.image_file_name = loc[:new_primary_image][:filename]
-          else
-            new_primary_image = SystemMapImage.create(image: "data:#{loc[:new_primary_image][:filetype]};base64,#{loc[:new_primary_image][:base64]}", image_file_name: loc[:new_primary_image][:filename])
-            @location.primary_image = new_primary_image
-          end
-        end
-
-        @location.title = loc[:title]
-        @location.description = loc[:description]
-        @location.on_planet_id = loc[:on_planet_id]
-        @location.on_moon_id = loc[:on_moon_id]
-        @location.on_system_object_id = loc[:on_system_object_id]
-        @location.on_settlement_id = loc[:on_settlement_id]
-
-        if @location.save
-          saveCount = saveCount + 1
-          #render status: 200, json: { message: "Success" }
+    @location = SystemMapSystemPlanetaryBodyLocation.find_by_id(params[:location][:id].to_i)
+    if @location != nil
+      if params[:new_primary_image] != nil
+        if @location.primary_image != nil
+          @location.primary_image.image = params[:location][:new_primary_image][:base64]
+          @location.primary_image.image_file_name = params[:location][:new_primary_image][:name]
         else
-          #render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
+          new_primary_image = SystemMapImage.create(image: params[:location][:new_primary_image][:base64], image_file_name: params[:location][:new_primary_image][:name])
+          @location.primary_image = new_primary_image
         end
-      else
-        render status: 404, json: { message: "Location not found." }
       end
-    end #location loop
 
-    if saveCount === params[:location].count
-      render status: 200, json: { message: "Success" }
+      @location.title = params[:location][:title]
+      @location.description = params[:location][:description]
+      @location.on_planet_id = params[:location][:on_planet_id]
+      @location.on_moon_id = params[:location][:on_moon_id]
+      @location.on_system_object_id = params[:location][:on_system_object_id]
+      @location.on_settlement_id = params[:location][:on_settlement_id]
+
+      if @location.save
+        render status: 200, json: @location
+      else
+        render status: 500, json: { message: "Location could not be updated because: #{@location.errors.full_messages.to_sentence}"}
+      end
     else
-      render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
+      render status: 404, json: { message: "Location not found." }
     end
   end
 
@@ -508,7 +506,7 @@ class SystemMapController < ApplicationController
       if @location.destroy
         render status: 200, json: { message: "Success" }
       else
-        render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
+        render status: 500, json: { message: "Location could not be archived because: #{@location.errors.full_messages.to_sentence}" }
       end
     else
       render status: 404, json: { message: "Settlement not found." }

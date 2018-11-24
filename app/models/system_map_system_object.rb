@@ -2,11 +2,11 @@ class SystemMapSystemObject < ApplicationRecord
 
   belongs_to :object_type, :class_name => 'SystemMapSystemObjectType', :foreign_key => 'object_type_id'
 
-  belongs_to :orbits_system, :class_name => 'SystemMapSystemObject', :foreign_key => 'orbits_system_id'
-  belongs_to :orbits_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'orbits_planet_id'
-  belongs_to :orbits_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'orbits_moon_id'
+  belongs_to :orbits_system, :class_name => 'SystemMapSystemObject', :foreign_key => 'orbits_system_id', optional: true
+  belongs_to :orbits_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'orbits_planet_id', optional: true
+  belongs_to :orbits_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'orbits_moon_id', optional: true
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_system_object_id'
   has_many :observations, :class_name => 'SystemMapObservation', :foreign_key => 'of_system_object_id'
@@ -16,7 +16,7 @@ class SystemMapSystemObject < ApplicationRecord
   has_many :flora, :class_name => 'SystemMapFlora', :foreign_key => 'on_system_object_id'
   has_many :fauna, :class_name => 'SystemMapFauna', :foreign_key => 'on_system_object_id'
 
-  belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id'
+  belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id', optional: true
 
   has_many :atmo_compositions, :class_name => 'SystemMapAtmoComposition', :foreign_key => 'for_system_object_id'
   has_many :atmo_gases, through: :atmo_compositions, :class_name => 'SystemMapAtmoGase', :foreign_key => 'atmo_gas_id'
