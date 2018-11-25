@@ -473,7 +473,9 @@ class SystemMapController < ApplicationController
   def update_location
     @location = SystemMapSystemPlanetaryBodyLocation.find_by_id(params[:location][:id].to_i)
     if @location != nil
-      if params[:new_primary_image] != nil
+
+      # check for a new primary image
+      if params[:location][:new_primary_image] != nil
         if @location.primary_image != nil
           @location.primary_image.image = params[:location][:new_primary_image][:base64]
           @location.primary_image.image_file_name = params[:location][:new_primary_image][:name]
