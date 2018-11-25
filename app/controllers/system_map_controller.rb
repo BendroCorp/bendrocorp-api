@@ -180,7 +180,7 @@ class SystemMapController < ApplicationController
           @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
           @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
         else
-          @planet.primary_image = SystemMapImage.create(image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @moon.title, description: @moon.title)
+          @planet.primary_image = SystemMapImage.create(image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @planet.title, description: @planet.title)
         end
       end
       #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
