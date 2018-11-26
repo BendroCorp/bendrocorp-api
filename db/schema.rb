@@ -1520,6 +1520,7 @@ ActiveRecord::Schema.define(version: 20181119162754) do
   create_table "system_map_images", force: :cascade do |t|
     t.text "title"
     t.text "description"
+    t.integer "created_by_id"
     t.boolean "is_default_image", default: false
     t.integer "of_system_id"
     t.integer "of_planet_id"
@@ -1534,6 +1535,7 @@ ActiveRecord::Schema.define(version: 20181119162754) do
     t.string "image_content_type"
     t.integer "image_file_size"
     t.datetime "image_updated_at"
+    t.index ["created_by_id"], name: "index_system_map_images_on_created_by_id"
     t.index ["of_gravity_well_id"], name: "index_system_map_images_on_of_gravity_well_id"
     t.index ["of_location_id"], name: "index_system_map_images_on_of_location_id"
     t.index ["of_moon_id"], name: "index_system_map_images_on_of_moon_id"

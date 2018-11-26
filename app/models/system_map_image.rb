@@ -7,6 +7,8 @@ class SystemMapImage < ApplicationRecord
   belongs_to :of_location, :class_name => 'SystemMapSystemPlanetaryBodyLocation', :foreign_key => 'of_location_id', optional: true
   belongs_to :of_settlement, :class_name => 'SystemMapSystemSettlement', :foreign_key => 'of_settlement_id', optional: true
 
+  belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true
+
   has_attached_file :image, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :big => "200x200#", :original => "1920x1080>" },
                     #content_type: { content_type: ["image/jpg", "image/jpeg", "image/png"] },
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",

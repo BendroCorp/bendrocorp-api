@@ -203,23 +203,33 @@ Rails.application.routes.draw do
   get 'api/system-map' => 'system_map#list'
   post 'api/system-map/planet' => 'system_map#add_planet'
   patch 'api/system-map/planet' => 'system_map#update_planet'
+  put 'api/system-map/planet' => 'system_map#update_planet'
   delete 'api/system-map/planet/:planet_id' => 'system_map#delete_planet'
 
   post 'api/system-map/moon' => 'system_map#add_moon'
   patch 'api/system-map/moon' => 'system_map#update_moon'
+  put 'api/system-map/moon' => 'system_map#update_moon'
   delete 'api/system-map/moon/:moon_id' => 'system_map#delete_moon'
 
   post 'api/system-map/system-object' => 'system_map#add_system_object'
   patch 'api/system-map/system-object' => 'system_map#update_system_object'
+  put 'api/system-map/system-object' => 'system_map#update_system_object'
   delete 'api/system-map/system-object/:so_id' => 'system_map#delete_system_object'
 
   post 'api/system-map/settlement' => 'system_map#add_settlement'
   patch 'api/system-map/settlement' => 'system_map#update_settlement'
+  put 'api/system-map/settlement' => 'system_map#update_settlement'
   delete 'api/system-map/settlement/:settlement_id' => 'system_map#delete_settlement'
 
   post 'api/system-map/location' => 'system_map#add_location'
   patch 'api/system-map/location' => 'system_map#update_location'
+  put 'api/system-map/location' => 'system_map#update_location'
   delete 'api/system-map/location/:so_id' => 'system_map#delete_location'
+
+  post 'api/system-map/image' => 'system_map#add_system_image'
+  patch 'api/system-map/image' => 'system_map#update_system_image'
+  put 'api/system-map/image' => 'system_map#update_system_image'
+  delete 'api/system-map/image/:image_id' => 'system_map#delete_system_image'
 
   # users
   get 'api/user' => 'users#list'
