@@ -649,52 +649,77 @@ class SystemMapController < ApplicationController
     end
   end
 
+  # POST api/system-map/image
   def add_system_image
     begin
       @image = SystemMapImage.new(system_image_params)
-      if @image != nil
+      @image.image = params[:image][:new_image][:base64]
+      @image.image_file_name = params[:image][:new_image][:name]
 
-        #If its the system objects first image make it the default image
-        #:of_system_id, :of_planet_id, :of_moon_id, :of_system_object_id, :of_settlement_id, :of_location_id, :of_gravity_well_id
-        if @image.of_system_id != nil && @image.of_system_id != 0
-          @image.is_default_image = true unless @image.of_system.system_map_images.count > 0
+      @image.created_by = current_user
 
-        elsif @image.of_planet_id != nil && @image.of_planet_id != 0
-          @image.is_default_image = true unless @image.of_planet_id.system_map_images.count > 0
+      #If its the system objects first image make it the default image
+      #:of_system_id, :of_planet_id, :of_moon_id, :of_system_object_id, :of_settlement_id, :of_location_id, :of_gravity_well_id
+      # if @image.of_system_id != nil && @image.of_system_id != 0
+      #   @image.is_default_image = true unless @image.of_system.system_map_images.count > 0
+      #
+      # elsif @image.of_planet_id != nil && @image.of_planet_id != 0
+      #   @image.is_default_image = true unless @image.of_planet_id.system_map_images.count > 0
+      #
+      # elsif @image.of_moon_id != nil && @image.of_moon_id != 0
+      #   @image.is_default_image = true unless @image.of_moon_id.system_map_images.count > 0
+      #
+      # elsif @image.of_system_object_id != nil && @image.of_system_object_id != 0
+      #   @image.is_default_image = true unless @image.of_system_object_id.system_map_images.count > 0
+      #
+      # elsif @image.of_location_id != nil && @image.of_location_id != 0
+      #   @image.is_default_image = true unless @image.of_location_id.system_map_images.count > 0
+      #
+      # elsif @image.of_gravity_well_id != nil && @image.of_gravity_well_id != 0
+      #   @image.is_default_image = true unless @image.of_gravity_well_id.system_map_images.count > 0
+      # end
 
-        elsif @image.of_moon_id != nil && @image.of_moon_id != 0
-          @image.is_default_image = true unless @image.of_moon_id.system_map_images.count > 0
-
-        elsif @image.of_system_object_id != nil && @image.of_system_object_id != 0
-          @image.is_default_image = true unless @image.of_system_object_id.system_map_images.count > 0
-
-        elsif @image.of_location_id != nil && @image.of_location_id != 0
-          @image.is_default_image = true unless @image.of_location_id.system_map_images.count > 0
-
-        elsif @image.of_gravity_well_id != nil && @image.of_gravity_well_id != 0
-          @image.is_default_image = true unless @image.of_gravity_well_id.system_map_images.count > 0
-        end
-
-        if @image.save
-          render status: 200, json: { message: 'Image added'}
-        else
-          render status: 500, json: {message: "Error Occured: Image could not be saved."}
-        end
+      if @image.save
+        render status: 200, json: @image.as_json(include: { created_by: { only: [:id, :username], methods: [:main_character] } })
       else
-        render status: 500, json: {message: "Error Occured: Image could not be saved."}
+        render status: 500, json: {message: "System Image could not be created because: #{@image.errors.full_messages.to_sentence}"}
       end
     rescue => e
       render status: 500, json: { message: "ERROR Occured: New image could not be saved: " + e.message}
     end
   end
 
+  # PATCH|PUT api/system-map/image
+  def update_system_image
+    @image = SystemMapImage.find_by_id(params[:image][:id])
+    if @image
+      if params[:image][:new_image]
+        @image.image = params[:image][:new_image][:base64]
+        @image.image_file_name = params[:image][:new_image][:name]
+      end
+
+      if @image.update_attributes(system_image_params)
+        render status: 200, json: @image.as_json(include: { created_by: { only: [:id, :username], methods: [:main_character] } })
+      else
+        render status: 500, json: {message: "System Image could not be created because: #{@image.errors.full_messages.to_sentence}"}
+      end
+    else
+      render status: 404, json: { message: "System image not found" }
+    end
+  end
+
+  # DELETE api/system-map/image/:image_id
   def delete_system_image
     begin
       @image = SystemMapImage.find_by_id(params[:image_id].to_i)
-      if @image.destroy
-        render status: 200, json: { message: 'Image added'}
+      if @image
+        if @image.destroy
+          render status: 200, json: { message: 'Image added'}
+        else
+          render status: 500, json: {message: "Error Occured: Image could not be deleted."}
+        end
       else
-        render status: 500, json: {message: "Error Occured: Image could not be deleted."}
+        render status: 404, json: { message: "System image not found" }
       end
     rescue => e
       render status: 500, json: { message: "ERROR Occured: Image could not be deleted: " + e.message }

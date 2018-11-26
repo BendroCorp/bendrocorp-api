@@ -3,6 +3,7 @@ class CreateSystemMapImages < ActiveRecord::Migration[5.1]
     create_table :system_map_images do |t|
       t.text :title
       t.text :description
+      t.belongs_to :created_by
 
       t.boolean :is_default_image, default: false
 
