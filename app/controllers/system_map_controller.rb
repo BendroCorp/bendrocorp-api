@@ -14,8 +14,8 @@ class SystemMapController < ApplicationController
    a.require_one_role([22,23]) #editor
   end
 
-  #delete methods should only be available to admins
-  before_action only: [:delete_system_object, :delete_moon, :delete_planet, :delete_gravity_well, :create, :update, :add_planet, :add_moon, :add_system_image, :add_location, :add_settlement, :add_system_object] do |a|
+  # all others methods should only be available to admins
+  before_action except: [:list, :update_location, :update_settlement, :update_system_object, :update_moon, :update_planet, :delete_atmo_comp, :update_atmo_comps] do |a|
    a.require_one_role([23]) #admin
   end
 
