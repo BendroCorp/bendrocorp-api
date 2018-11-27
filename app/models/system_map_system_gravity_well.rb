@@ -22,6 +22,10 @@ class SystemMapSystemGravityWell < ApplicationRecord
     end
   end
 
+  def primary_image_url_full
+    self.primary_image.image_url if self.primary_image
+  end
+
   accepts_nested_attributes_for :primary_image
   accepts_nested_attributes_for :system_map_images
   accepts_nested_attributes_for :observations

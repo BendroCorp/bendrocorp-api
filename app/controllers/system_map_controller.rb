@@ -33,9 +33,9 @@ class SystemMapController < ApplicationController
     # ready the json object!
     render status: 200, json: SystemMapSystem.all.as_json(include: {
         discovered_by: { only: [], methods: [:main_character] },
-        system_objects: { include: { flora: {}, fauna: {}, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] },
-        planets: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, locations: { include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } } }, methods: [:primary_image_url] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] },
-        gravity_wells: { include: { observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, gravity_well_type: { }, luminosity_class: { } }, methods: [:primary_image_url] } },
+        system_objects: { include: { flora: {}, fauna: {}, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full] },
+        planets: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, locations: { include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } } }, methods: [:primary_image_url, :primary_image_url_full] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, locations: { methods: [:primary_image_url, :primary_image_url_full] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full] },
+        gravity_wells: { include: { observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, gravity_well_type: { }, luminosity_class: { } }, methods: [:primary_image_url, :primary_image_url_full] } },
         methods: :jump_points)
 
   end
@@ -137,6 +137,7 @@ class SystemMapController < ApplicationController
     @planet.population_density = params[:planet][:population_density]
     @planet.economic_rating = params[:planet][:economic_rating]
     @planet.general_radiation = params[:planet][:general_radiation]
+    @planet.atmospheric_height = params[:planet][:atmospheric_height]
     @planet.atmo_pressure = params[:planet][:atmo_pressure]
     @planet.tempature_min = params[:planet][:tempature_min]
     @planet.tempature_max = params[:planet][:tempature_max]
@@ -155,7 +156,7 @@ class SystemMapController < ApplicationController
     #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
 
     if @planet.save
-      render status: 200, json: @planet.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { include: { system_map_images: {} }, methods: [:primary_image_url] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
+      render status: 200, json: @planet.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { include: { system_map_images: {} }, methods: [:primary_image_url, :primary_image_url_full] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
     else
       render status: 500, json: { message: "Planet could not be created because: #{@planet.errors.full_messages.to_sentence}." }
     end
@@ -171,6 +172,7 @@ class SystemMapController < ApplicationController
       @planet.population_density = params[:planet][:population_density]
       @planet.economic_rating = params[:planet][:economic_rating]
       @planet.general_radiation = params[:planet][:general_radiation]
+      @planet.atmospheric_height = params[:planet][:atmospheric_height]
       @planet.atmo_pressure = params[:planet][:atmo_pressure]
       @planet.tempature_min = params[:planet][:tempature_min]
       @planet.tempature_max = params[:planet][:tempature_max]
@@ -186,7 +188,7 @@ class SystemMapController < ApplicationController
       #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
 
       if @planet.save
-        render status: 200, json: @planet.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { include: { system_map_images: {} }, methods: [:primary_image_url] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
+        render status: 200, json: @planet.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { include: { system_map_images: {} }, methods: [:primary_image_url, :primary_image_url_full] }, moons: { include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full] }, planet_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
       else
         render status: 500, json: { message: "Planet could not be updated because: #{@planet.errors.full_messages.to_sentence}" }
       end
@@ -224,6 +226,7 @@ class SystemMapController < ApplicationController
     @moon.population_density = params[:moon][:population_density]
     @moon.economic_rating = params[:moon][:economic_rating]
     @moon.general_radiation = params[:moon][:general_radiation]
+    @moon.atmospheric_height = params[:moon][:atmospheric_height]
     @moon.atmo_pressure = params[:moon][:atmo_pressure]
     @moon.tempature_min = params[:moon][:tempature_min]
     @moon.tempature_max = params[:moon][:tempature_max]
@@ -241,7 +244,7 @@ class SystemMapController < ApplicationController
       end
     end
     if @moon.save
-      render status: 201, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
+      render status: 201, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
     else
       render status: 500, json: { message: "Moon could not be created because: #{@moon.errors.full_messages.to_sentence}" }
     end
@@ -257,6 +260,7 @@ class SystemMapController < ApplicationController
       @moon.population_density = params[:moon][:population_density]
       @moon.economic_rating = params[:moon][:economic_rating]
       @moon.general_radiation = params[:moon][:general_radiation]
+      @moon.atmospheric_height = params[:moon][:atmospheric_height]
       @moon.atmo_pressure = params[:moon][:atmo_pressure]
       @moon.tempature_min = params[:moon][:tempature_min]
       @moon.tempature_max = params[:moon][:tempature_max]
@@ -271,9 +275,9 @@ class SystemMapController < ApplicationController
         end
       end
       if @moon.update_attributes(moon_params)
-        render status: 200, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url] } }, methods: [:primary_image_url] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url])
+        render status: 200, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
       else
-        render status: 500, json: { message: "Moon could not be created" }
+        render status: 500, json: { message: "Moon could not be created because: #{@so.errors.full_messages.to_sentence}"}
       end
     else
       #
@@ -290,7 +294,7 @@ class SystemMapController < ApplicationController
           if @moon.save
             render status: 200, json: { message: "Moon archived." }
           else
-            render status: 500, json: { message: "ERROR Occured: Moon could not be removed."}
+            render status: 500, json: { message: "Moon could not be archived because: #{@so.errors.full_messages.to_sentence}"}
           end
         else
           render status: 404, json: { message: "Moon not found." }
@@ -318,7 +322,7 @@ class SystemMapController < ApplicationController
         end
 
         if @so.save
-          render status: 200, json: { message: "Success" }
+          render status: 200, json: @so.as_json(include: { flora: {}, fauna: {}, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
         else
           render status: 500, json: { message: "System object could not be created because: #{@so.errors.full_messages.to_sentence}"}
         end
@@ -348,7 +352,7 @@ class SystemMapController < ApplicationController
           @so.discovered_by = current_user
 
           if @so.save
-            render status: 200, json: { message: "Success" }
+            render status: 200, json: @so.as_json(include: { flora: {}, fauna: {}, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
           else
             render status: 500, json: { message: "System object could not be updated because: #{@so.errors.full_messages.to_sentence}"}
           end
@@ -368,7 +372,7 @@ class SystemMapController < ApplicationController
           if @so.save
             render status: 200, json: { message: "Success" }
           else
-            render status: 500, json: { message: "ERROR Occured: Gravity well could not be rmeoved."}
+            render status: 500, json: { message: "System object could not be archived because: #{@so.errors.full_messages.to_sentence}"}
           end
         else
           render status: 404, json: { message: "Gravity well not found." }
@@ -396,7 +400,7 @@ class SystemMapController < ApplicationController
     @settlement.discovered_by = current_user
 
     if @settlement.save
-      render status: 200, json: @settlement
+      render status: 200, json: @settlement.as_json(include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
     else
       render status: 500, json: { message: "ERROR Occured: New settlement could not be saved."}
     end
@@ -420,7 +424,7 @@ class SystemMapController < ApplicationController
       @settlement.on_moon_id = params[:settlement][:on_moon_id]
 
       if @settlement.save
-        render status: 200, json: { message: "Success" }
+        render status: 200, json: @settlement.as_json(include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
       else
         render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
       end
@@ -464,7 +468,7 @@ class SystemMapController < ApplicationController
     @location.discovered_by = current_user
 
     if @location.save
-      render status: 200, json: @location
+      render status: 200, json: @location.as_json(methods: [:primary_image_url, :primary_image_url_full])
     else
       render status: 500, json: { message: "Location could not be created because: #{@location.errors.full_messages.to_sentence}"}
     end
@@ -493,7 +497,7 @@ class SystemMapController < ApplicationController
       @location.on_settlement_id = params[:location][:on_settlement_id]
 
       if @location.save
-        render status: 200, json: @location
+        render status: 200, json: @location.as_json(methods: [:primary_image_url, :primary_image_url_full])
       else
         render status: 500, json: { message: "Location could not be updated because: #{@location.errors.full_messages.to_sentence}"}
       end
