@@ -28,6 +28,10 @@ class SystemMapSystemPlanetaryBodyLocation < ApplicationRecord
     end
   end
 
+  def primary_image_url_full
+    self.primary_image.image_url if self.primary_image
+  end
+
   def title_with_settlement
     if self.on_settlement != nil
       "#{self.title}, #{self.on_settlement.title}"

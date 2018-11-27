@@ -36,6 +36,10 @@ class SystemMapSystemPlanetaryBodyMoon < ApplicationRecord
     end
   end
 
+  def primary_image_url_full
+    self.primary_image.image_url if self.primary_image
+  end
+
   def title_with_kind
     "#{self.title} (Moon)"
   end
