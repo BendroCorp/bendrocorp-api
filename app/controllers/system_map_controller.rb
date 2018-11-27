@@ -333,7 +333,7 @@ class SystemMapController < ApplicationController
 
   def update_system_object
     begin
-        @so = SystemMapSystemObject.find_by_id(params[:so_id].to_i)
+        @so = SystemMapSystemObject.find_by_id(params[:system_object][:id].to_i)
         if @so != nil
           @so.title = params[:system_object][:title]
           @so.description = params[:system_object][:description]
