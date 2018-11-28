@@ -71,6 +71,33 @@ class ProfilesController < ApplicationController
     end
   end
 
+  # PATCH|PUT api/profile/handle
+  # params[:character][:id|:handle]
+  def update_handle
+    @character = Character.find_by_id(params[:character][:id].to_i)
+    if @character
+      # Security check
+      # the character is owned by the current user or the user is in the HR role
+      if current_user.id === @character.user_id || current_user.isinrole(7) # HR
+        page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{params[:character][:handle].downcase}")
+        if page.code == 200
+          @character.user.rsi_handle = params[:character][:handle]
+          if @character.user.save
+            render status: 200, json: { message: "Character/user handle updated!" }
+          else
+            render status: 500, json: { message: "Character/user handle could not be updated because: #{@character.errors.full_messages.to_sentence}" }
+          end
+        else
+          render status: 400, json: { message: "Handle could not be verified with RSI." }
+        end
+      else
+        render status: 403, json: { message: 'You are not authorized to update this character.' }
+      end
+    else
+      render status: 404, json: { message: 'Character not found.' }
+    end
+  end
+
   # PATCH api/profile/avatar
   def update_avatar
     @character = Character.find_by_id(params[:character][:id])
