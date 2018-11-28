@@ -142,6 +142,8 @@ Rails.application.routes.draw do
   patch 'api/profile/avatar' => 'profiles#update_avatar'
   post 'api/profile/ship' => 'profiles#add_ship'
   patch 'api/profile/ship' => 'profiles#update_ship'
+  patch 'api/profile/handle' => 'profiles#update_handle'
+  put 'api/profile/handle' => 'profiles#update_handle'
   delete 'api/profile/ship/:owned_ship_id' => 'profiles#remove_ship'
   post 'api/profile/comment' => 'profiles#add_application_comment'
   # keep these at the bottom of the profile list
