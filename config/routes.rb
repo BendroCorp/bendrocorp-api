@@ -200,6 +200,9 @@ Rails.application.routes.draw do
 
   get 'api/approvals/:approval_id/:approval_type' => 'approvals#approval_request'
 
+  # Site Logs
+  get 'api/site-logs' => 'site_log#list'
+
   # system map routes
   get 'api/system-map/types' => 'system_map#list_types'
   get 'api/system-map' => 'system_map#list'
