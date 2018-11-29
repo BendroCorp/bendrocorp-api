@@ -29,6 +29,7 @@ class OffenderScraperWorker
         type2_offense_count = (collected_infractions.select { |item| item.violence_rating_id == 2 }).count # dangerous
         type3_offense_count = (collected_infractions.select { |item| item.violence_rating_id == 3 }).count # lethal
 
+        # three offense levels are currently weighted equally
         percentage = ((((type1_offense_count * 0.33) + (type2_offense_count * 0.66) + (type3_offense_count * 0.99)) / total_infractions_count) * 100).round
 
         if percentage > 0 && percentage <= 33
@@ -47,7 +48,7 @@ class OffenderScraperWorker
         offender.save!
 
         # Next go scrape the handle off RSI
-        scrape_results = scrape offender.offender_handle
+        scrape_results = scrape offender.offender_handle.to_s
 
         if scrape_results
           # TODO: Verify the scrape results. This will make sure that if CIG changes anything on the page that everything doesn't explode
