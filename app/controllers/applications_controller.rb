@@ -56,7 +56,7 @@ class ApplicationsController < ApplicationController
 
           # lastly add the request to the current_user
           # approvalRequest.user = current_user # may not need to actually use this
-          approvalRequest.application_id = @character.application.id
+          approvalRequest.application = @character.application
 
           @character.application.applicant_approval_request = approvalRequest
           if @character.save
