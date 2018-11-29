@@ -11,6 +11,7 @@ class ApplicationsController < ApplicationController
   # POST api/apply
   def create
     @character = Character.new(application_params)
+    puts params[:character].inspect
     if Character.where('first_name = ? AND last_name = ?', @character.first_name, @character.last_name).count == 0
       @character.is_main_character = true
       @character.user = current_user
