@@ -2,7 +2,6 @@ require 'httparty'
 
 class DormantApprovalWorker
   include Sidekiq::Worker
-  include Error::ErrorHandler
   include SendGrid
 
   def perform(*args)

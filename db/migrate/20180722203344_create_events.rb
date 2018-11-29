@@ -6,7 +6,7 @@ class CreateEvents < ActiveRecord::Migration[5.1]
       t.datetime :start_date
       t.datetime :end_date
       t.boolean :weekly_recurrence, default: false
-      t.boolean :monthly_recurrence, default: false 
+      t.boolean :monthly_recurrence, default: false
       t.references :event_type
       t.text :livestream_url
       t.boolean :submitted_for_certification, default: false
@@ -16,6 +16,7 @@ class CreateEvents < ActiveRecord::Migration[5.1]
       t.boolean :show_on_dashboard, default: true
       t.boolean :published, default: false
       t.datetime :published_date
+      t.boolean :published_discord
 
       t.belongs_to :briefing
       t.belongs_to :debriefing

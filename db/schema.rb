@@ -461,6 +461,7 @@ ActiveRecord::Schema.define(version: 20181119162754) do
     t.boolean "show_on_dashboard", default: true
     t.boolean "published", default: false
     t.datetime "published_date"
+    t.boolean "published_discord"
     t.integer "briefing_id"
     t.integer "debriefing_id"
     t.integer "classification_level_id"
