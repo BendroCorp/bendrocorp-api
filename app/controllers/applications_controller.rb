@@ -34,6 +34,7 @@ class ApplicationsController < ApplicationController
         # err
         #try to save
         if @character.save
+          SiteLog.create(module: 'Application', submodule: 'Application Success', message: "Application successfully created for #{@character.id}", site_log_type_id: 1)
           approverIds = []
           User.where('is_member = ?', true).each do |user|
             approverIds << user.id if user.isinrole(2) # executive role
@@ -59,22 +60,18 @@ class ApplicationsController < ApplicationController
 
           @character.application.applicant_approval_request = approvalRequest
           if @character.save
-            #queue email to group - eventually this will be queued out.
-            #mail Exec, Directors and HR
+            SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
+            # mail Exec, Directors and HR
             email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
             render status: 200, json: @character.application.as_json(include: { application_status: { } })
           else
-            # @jobs = Job.where(["hiring = ?",true]) #on the form we want to display the hiring title but assign the recruit job id
-            # @ships = Ship.all
-            # flash[:danger] = "There was an error saving your application."
-            # render 'new', :layout => 'login_background'
+            puts @character.errors.full_messages.inspect
+            SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
             render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
           end
         else
-          # @jobs = Job.where(["hiring = ?",true]) #on the form we want to display the hiring title but assign the recruit job id
-          # @ships = Ship.all
-          # flash[:danger] = "There was an error saving your application."
-          # render 'new', :layout => 'login_background'
+          puts @character.errors.full_messages.inspect
+          SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
           render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
         end
       else
