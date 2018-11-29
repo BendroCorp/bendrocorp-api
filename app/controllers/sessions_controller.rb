@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   # The created token will be full scope
   def auth
    if params[:session] && params[:session][:email] && params[:session][:password] && params[:session][:device]
-     @user = User.find_by email: params[:session][:email].to_s.downcase 
+     @user = User.find_by email: params[:session][:email].to_s.downcase
      # Does the user exist?
      if @user != nil
        if !@user.locked && @user.login_allowed && @user.active
@@ -55,7 +55,7 @@ class SessionsController < ApplicationController
          render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
        end
      else
-       SiteLog.create(module: 'Session', submodule: 'User does not exist', message: "User could not authenticated. User does not exist!", site_log_type_id: 1)
+       SiteLog.create(module: 'Session', submodule: 'User does not exist', message: "User could not authenticated. User does not exist! Used: #{params[:session][:email]}", site_log_type_id: 1)
        render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
      end
    else

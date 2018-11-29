@@ -1,3 +1,5 @@
+require 'httparty'
+
 class ApplicationsController < ApplicationController
   before_action :require_user
   before_action :require_member, except: [:fetch, :create] # :advance_application_status, :reject_application,
@@ -9,53 +11,65 @@ class ApplicationsController < ApplicationController
   # POST api/apply
   def create
     @character = Character.new(application_params)
+    puts params[:character].inspect
     if Character.where('first_name = ? AND last_name = ?', @character.first_name, @character.last_name).count == 0
       @character.is_main_character = true
       @character.user = current_user
       @character.application.application_status_id = 1
       @character.application.interview = ApplicationInterview.new #create the interview packet
       applicantjob = Job.find_by id: 21 # applicant job id - cause everyone starts as an applicant
-      @character.jobs << applicantjob
+      # @character.jobs << applicantjob
+      @character.job_trackings << JobTracking.new(job: applicantjob)
 
       @character.application.last_status_change = Time.now
       @character.application.last_status_changed_by = current_user
 
       # update rsi_handle
-      @character.user.rsi_handle = params[:character][:user_attributes][:rsi_handle]
+      @character.user.rsi_handle = params[:character][:user_attributes][:rsi_handle].downcase
 
-      # puts @character.user.rsi_handle
-      # err
-      #try to save
-      if @character.save
-        approverIds = []
-        User.where('is_member = ?', true).each do |user|
-          approverIds << user.id if user.isinrole(2) # executive role
-          approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
-          approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
-          approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
-        end
+      page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{@character.user.rsi_handle.downcase}")
 
-        # make sure there are no duplicates
-        approverIds.uniq!
-
-        #Create the new approval request
-        approvalRequest = ApplicantApprovalRequest.new
-
-        approvalRequest.user = current_user
-
-        # put the approval instance in the request
-        approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
-
-        # lastly add the request to the current_user
-        # approvalRequest.user = current_user # may not need to actually use this
-        approvalRequest.application_id = @character.application.id
-
-        @character.application.applicant_approval_request = approvalRequest
+      # Check to make sure the handle check passed
+      if page.code == 200
+        # err
+        #try to save
         if @character.save
-          #queue email to group - eventually this will be queued out.
-          #mail Exec, Directors and HR
-          email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
-          render status: 200, json: @character.application.as_json(include: { application_status: { } })
+          approverIds = []
+          User.where('is_member = ?', true).each do |user|
+            approverIds << user.id if user.isinrole(2) # executive role
+            approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
+            approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
+            approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
+          end
+
+          # make sure there are no duplicates
+          approverIds.uniq!
+
+          #Create the new approval request
+          approvalRequest = ApplicantApprovalRequest.new
+
+          approvalRequest.user = current_user
+
+          # put the approval instance in the request
+          approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
+
+          # lastly add the request to the current_user
+          # approvalRequest.user = current_user # may not need to actually use this
+          approvalRequest.application_id = @character.application.id
+
+          @character.application.applicant_approval_request = approvalRequest
+          if @character.save
+            #queue email to group - eventually this will be queued out.
+            #mail Exec, Directors and HR
+            email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
+            render status: 200, json: @character.application.as_json(include: { application_status: { } })
+          else
+            # @jobs = Job.where(["hiring = ?",true]) #on the form we want to display the hiring title but assign the recruit job id
+            # @ships = Ship.all
+            # flash[:danger] = "There was an error saving your application."
+            # render 'new', :layout => 'login_background'
+            render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
+          end
         else
           # @jobs = Job.where(["hiring = ?",true]) #on the form we want to display the hiring title but assign the recruit job id
           # @ships = Ship.all
@@ -64,12 +78,9 @@ class ApplicationsController < ApplicationController
           render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
         end
       else
-        # @jobs = Job.where(["hiring = ?",true]) #on the form we want to display the hiring title but assign the recruit job id
-        # @ships = Ship.all
-        # flash[:danger] = "There was an error saving your application."
-        # render 'new', :layout => 'login_background'
-        render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
+        render status: 400, json: { message: "RSI handle could not be verified. Please double check your entry." }
       end
+
     else
       # flash[:warning] = "A character with the first and last name combination you entered already exists. Please enter another."
       # render 'new', :layout => 'login_background'

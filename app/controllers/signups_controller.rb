@@ -7,7 +7,8 @@ class SignupsController < ApplicationController
     puts "Preparing to create user"
     if @user.save
       #email the verfification
-      send_email(@user.email, "BendroCorp Email Verification", "<h1>Welcome!</h1><p>Hey there #{@user.username}! Before we can let you apply to BendroCorp we need you to verify your email.</p><br /><p><a href=\'http://localhost:4200/verify/#{@user.verification_string}\'>Click Here to Verify</a></p><br />")
+      # send_email(@user.email, "BendroCorp Email Verification", "<h1>Welcome!</h1><p>Hey there #{@user.username}! Before we can let you apply to BendroCorp we need you to verify your email.</p><br /><p><a href=\'http://localhost:4200/verify/#{@user.verification_string}\'>Click Here to Verify</a></p><br />")
+      send_email(@user.email, "Welcome! - BendroCorp", "<h1>Welcome!</h1><p>Hey there #{@user.username}! Thank you for signing up for BendroCorp. Remember that you need to complete the character application to become a part of BendroCorp. We look forward to hearing more from you soon!")
       render status: 200, json: { message: 'Your account was successfully created. Please check your email for an account verification email.' }
     else
       render status: 500, json: { message: "Your account could not be created because: #{@user.errors.full_messages.to_sentence}" }
