@@ -2,6 +2,7 @@ require 'httparty'
 
 class KaidenEventAnnouncerWorker
   include Sidekiq::Worker
+  include Error::ErrorHandler
 
   def perform(*args)
     Event.where(published: true, published_discord: false).each do |event|

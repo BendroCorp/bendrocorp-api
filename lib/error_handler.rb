@@ -17,7 +17,7 @@ module Error
 
               # the actual email itself
               from = Email.new(email: 'no-reply@bendrocorp.com')
-              to = Email.new(email: ENV['ADMIN_EMAIL']) # NOTE: Just me for now. Might better to send this out to everyone
+              to = Email.new(email: ENV['ADMIN_EMAIL'])
               subject = "BendroCorp - Error Message - #{e.message.to_s}"
               content = Content.new(type: 'text/html', value: message_in + outro)
               mail = SendGrid::Mail.new(from, subject, to, content) # https://github.com/sendgrid/sendgrid-ruby/issues/67
@@ -38,6 +38,9 @@ module Error
                 end
               end
 
+              # Log the error
+              SiteLog.create(module: 'Error Handler', submodule: 'Error', message: "#{e.message} \n #{e.backtrace.join("\n")}", site_log_type_id: 3)
+
             end
           rescue SocketError => e
             puts e.message
@@ -49,11 +52,5 @@ module Error
 
       end
     end
-
-    # def respond(_error, _status, _message)
-    #   json = Helpers::Render.json(_error, _status, _message)
-    #   render json: json
-    # end
-
   end
 end
