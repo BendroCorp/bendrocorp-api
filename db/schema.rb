@@ -136,6 +136,7 @@ ActiveRecord::Schema.define(version: 20181119162754) do
     t.integer "job_id"
     t.integer "character_id"
     t.integer "applicant_approval_request_id"
+    t.text "rejection_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["applicant_approval_request_id"], name: "index_applications_on_applicant_approval_request_id"

@@ -31,8 +31,8 @@ Rails.application.routes.draw do
   get 'api/apply' => 'applications#fetch'
   patch 'api/apply' => 'applications#update_interview'
   delete 'api/apply' => 'applications#withdraw_application'
+  post 'api/apply/reject' => 'applications#reject_application'
   get 'api/apply/:character_id/advance' => 'applications#advance_application_status'
-  get 'api/apply/:character_id/reject' => 'applications#reject_application'
 
   # approval Kinds
   get 'api/approval-kinds' => 'approval_kind#list'

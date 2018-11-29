@@ -11,6 +11,7 @@ class CreateApplications < ActiveRecord::Migration[5.1]
       t.references :job
       t.references :character
       t.belongs_to :applicant_approval_request
+      t.text :rejection_reason
       t.timestamps
     end
   end

@@ -169,6 +169,7 @@ class ApplicationsController < ApplicationController
           if @character.application.application_status_id == 6
             @character.jobs << @character.application.job
             @character.user.is_member = true
+            @character.user.roles << Role.find_by_id(0)
           end
 
           @character.application.last_status_change = Time.now
@@ -226,21 +227,21 @@ class ApplicationsController < ApplicationController
   end
   #end personnel section
 
-  # GET /api/apply/:character_id/reject
+  # POST /api/apply/reject
   def reject_application
-    @character = Character.find_by_id(params[:character_id])
+    @character = Character.find_by_id(params[:character][:id])
     if @character != nil
       @character.application.application_status_id = 7
-      # now what?? Give the character to system?
-      #find the job
+      # find the job
       job = Job.find_by_id(23) # TODO: Add a Declined role - discharged will work for now
       @character.jobs << job
+      @character.application.rejection_reason = params[:character][:application][:rejection_reason]
       if @character.save
         send_email(@character.user.email, "Application Status Update",
-        "<p>Hello #{@character.user.username}!</p><p>Your application status has been changed to: <strong>#{@character.application.application_status.title}</strong></p><p>#{@character.application.application_status.description}</p>"
+        "<p>Hello #{@character.user.username}!</p><p>Your application status has been changed to: <strong>#{@character.application.application_status.title}</strong></p><p>#{@character.application.application_status.description}</p><p>Your application was rejected for the following reason:</p><p>#{params[:character][:application][:rejection_reason]}</p>"
         )
         # redirect_to action: "index"
-        render status: 200, json: { message: 'Application successfully rejected' }
+        render status: 200, json: { message: 'Application successfully rejected!' }
       else
         # redirect_to action: "personnel_view", id: @character.id
         render status: 500, json: { message: "Application status could not be updated because: #{@character.errors.full_messages.to_sentence}" }
@@ -254,7 +255,7 @@ class ApplicationsController < ApplicationController
 
   private
   def application_params
-    params.require(:character).permit(:first_name, :last_name, :description, :background, user_attributes: [:rsi_handle], owned_ships_attributes: [:ship_id, :title], application_attributes: [:tell_us_about_the_real_you, :why_do_want_to_join, :how_did_you_hear_about_us, :job_id])
+    params.require(:character).permit(:first_name, :last_name, :description, :background, user_attributes: [:rsi_handle], owned_ships_attributes: [:ship_id, :title], application_attributes: [:tell_us_about_the_real_you, :why_do_want_to_join, :how_did_you_hear_about_us, :job_id, :rejection_reason])
   end
 
   private
