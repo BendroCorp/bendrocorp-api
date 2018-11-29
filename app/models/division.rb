@@ -14,7 +14,7 @@ class Division < ActiveRecord::Base
     end
 
     #sort them
-    division_member_arr.sort_by { |member| member[:current_job_level] }
+    division_member_arr.sort_by! { |member| member[:current_job_level] }
 
     # puts division_member_arr.inspect
     division_member_arr.uniq!
