@@ -17,7 +17,8 @@ class ApplicationsController < ApplicationController
       @character.application.application_status_id = 1
       @character.application.interview = ApplicationInterview.new #create the interview packet
       applicantjob = Job.find_by id: 21 # applicant job id - cause everyone starts as an applicant
-      @character.jobs << applicantjob
+      # @character.jobs << applicantjob
+      @character.job_trackings << JobTracking.new(job: applicantjob)
 
       @character.application.last_status_change = Time.now
       @character.application.last_status_changed_by = current_user
