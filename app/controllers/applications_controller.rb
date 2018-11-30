@@ -202,7 +202,7 @@ class ApplicationsController < ApplicationController
 
             # Kaden announce started 360 review
             if @character.application.application_status_id == 2
-              KaidenAnnounceWorker.perform_async("A '360' Review has started for #{@character.full_name}. Please head over to https://my.bendrocorp.com/#{@character.first_name.downcase}-#{@character.last_name.downcase}-#{@character.id} and click on the Application tab to leave your feedback on the applicant!")
+              KaidenAnnounceWorker.perform_async("A '360' Review has started for #{@character.full_name}. Please head over to https://my.bendrocorp.com/profiles/#{@character.first_name.downcase}-#{@character.last_name.downcase}-#{@character.id} and click on the Application tab to leave your feedback on the applicant!")
             end
 
             # Kaden announce ended 360 review

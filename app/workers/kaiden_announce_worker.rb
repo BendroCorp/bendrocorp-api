@@ -8,7 +8,7 @@ class KaidenAnnounceWorker
       discordUri = ENV["WEBHOOK_LINK"]
       content = "@everyone #{message}"
       HTTParty.post(discordUri,
-        :body => { :content => content}.to_json, :headers => { 'Content-Type' => 'application/json' } )
-    end  
+        :body => { :content => content }.to_json, :headers => { 'Content-Type' => 'application/json' } )
+    end
   end
 end
