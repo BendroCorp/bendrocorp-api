@@ -176,6 +176,7 @@ class ApplicationsController < ApplicationController
           @character.application.last_status_changed_by = current_user
           #err
           if @character.save
+
             # email the user
             send_email(@character.user.email, "Application Status Update",
             "<p>Hello #{@character.user.username}!</p><p>Your application status has been changed to: <strong>#{@character.application.application_status.title}</strong></p><p>#{@character.application.application_status.description}</p>"
@@ -199,13 +200,16 @@ class ApplicationsController < ApplicationController
               end
             end
 
-            # if (params[:redirect_to] != nil)
-            #   redirect_to "#{params[:redirect_to]}"
-            # else
-            #   #err
-            #   flash[:success] = "Successfully updated application status..."
-            #   redirect_to action: "personnel_view", id: @character.id
-            # end
+            # Kaden announce started 360 review
+            if @character.application.application_status_id == 2
+              KaidenAnnounceWorker.perform_async("A '360' Review has started for #{@character.full_name}. Please head over to https://my.bendrocorp.com/#{@character.first_name.downcase}-#{@character.last_name.downcase}-#{@character.id} and click on the Application tab to leave your feedback on the applicant!")
+            end
+
+            # Kaden announce ended 360 review
+            if @character.application.application_status_id == 3
+              KaidenAnnounceWorker.perform_async("The '360' Review for #{@character.full_name} has been closed. Thank you to everyone who participated!")
+            end
+
             render status: 200, json: { message: 'Successfully updated application status!' }
           else
             #err
