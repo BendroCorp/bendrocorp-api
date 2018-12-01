@@ -4,7 +4,7 @@ class CreateSiteLogs < ActiveRecord::Migration[5.1]
       t.text :module
       t.text :submodule
       t.text :message
-      t.references :site_log_type
+      t.belongs_to :site_log_type
       t.timestamps
     end
   end

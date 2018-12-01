@@ -47,7 +47,8 @@ module Error
           end
 
           # now that we have reported it just raise the original exception
-          raise e
+          # raise e
+          render status: 500, json: { message: "The following error occured: #{e.message}" }
         end
 
       end
