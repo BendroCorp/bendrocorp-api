@@ -47,8 +47,16 @@ module Error
           end
 
           # now that we have reported it just raise the original exception
+          #
+          puts
+          puts
+          STDERR.puts "Error Occured:"
+          STDERR.puts e.message
+          STDERR.puts e.backtrace.join("\n")
+          puts
+          puts
           # raise e
-          render status: 500, json: { message: "The following error occured: #{e.message}" }
+          render status: 500, json: { message: "An API error occured. We are aware of the issue and will get it resolved ASAP.", debug: "#{e.message}" }
         end
 
       end
