@@ -59,6 +59,16 @@ Rails.application.routes.draw do
   # divisions
   get 'api/divisions' => 'divisions#list'
 
+  # donations
+  get 'api/donation' => 'donation#list'
+  get 'api/donation/mine' => 'donations#my_donations'
+  get 'api/donation/:donation_item_id' => 'donation#fetch'
+  post 'api/donation/' => 'donation#create'
+  patch 'api/donation/' => 'donation#update'
+  put 'api/donation/' => 'donation#update'
+  delete 'api/donation/:donation_item_id' => 'donation#archive'
+  post 'api/donation/make' => 'donation#donate'
+
   # events
   get 'api/events' => 'events#list'
   get 'api/events/expired' => 'events#list_expired'
