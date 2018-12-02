@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181119162754) do
+ActiveRecord::Schema.define(version: 20181201232657) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -375,6 +375,31 @@ ActiveRecord::Schema.define(version: 20181119162754) do
     t.integer "ordinal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "donation_items", force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.integer "goal"
+    t.integer "created_by_id"
+    t.boolean "archived", default: false
+    t.integer "ordinal"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_donation_items_on_created_by_id"
+  end
+
+  create_table "donations", force: :cascade do |t|
+    t.integer "donation_item_id"
+    t.integer "user_id"
+    t.integer "amount"
+    t.text "stripe_transaction_id"
+    t.boolean "charge_succeeded", default: false
+    t.boolean "charge_failed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["donation_item_id"], name: "index_donations_on_donation_item_id"
+    t.index ["user_id"], name: "index_donations_on_user_id"
   end
 
   create_table "event_awards", force: :cascade do |t|
