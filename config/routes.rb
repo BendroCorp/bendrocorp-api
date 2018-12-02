@@ -61,7 +61,7 @@ Rails.application.routes.draw do
 
   # donations
   get 'api/donation' => 'donation#list'
-  get 'api/donation/mine' => 'donations#my_donations'
+  get 'api/donation/mine' => 'donation#my_donations'
   get 'api/donation/:donation_item_id' => 'donation#fetch'
   post 'api/donation/' => 'donation#create'
   patch 'api/donation/' => 'donation#update'
