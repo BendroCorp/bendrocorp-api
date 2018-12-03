@@ -71,7 +71,7 @@ class DonationController < ApplicationController
   # Must contain donation_params and [:stripe_token][:id]
   def donate
     @new_donation = Donation.new(donation_params)
-    
+
     # Add the current_user as the doner
     @new_donation.user = current_user
 
@@ -108,6 +108,16 @@ class DonationController < ApplicationController
             @new_donation.stripe_transaction_id = charge.id
             @new_donation.charge_succeeded = true
             if @new_donation.save
+              # Email user
+              send_email(@new_donation.user.email, "Thank you!", "<p>#{@new_donation.user.main_character.full_name},</p><p>We just wanted to say thank you for donation of <strong>$#{@new_donation.amount}</strong> for the <strong>#{@new_donation.donation_item.title}</strong>. It helps out and means a lot to everyone in leadership - again thank you!</p><p>(This also serves as your receipt.)</p>")
+
+              # Email Admins/Executives
+              email_groups([2], "New Donation Recieved", "#{@new_donation.user.main_character.full_name} just donated <strong>$#{@new_donation.amount}</strong> for the <strong>#{@new_donation.donation_item.title}</strong> pledge item.")
+
+              # DonationItem is_completed?
+              email_groups([2], "Donation Item Funded", "Donation item <strong>#{@new_donation.donation_item.title}</strong> has been completely funded! Woot! Woot!") if @new_donation.donation_item.is_completed == true
+
+              # return
               render status: 200, json: { message: 'Donation created and charged successfully!' }
             else
               # refund the user's card
