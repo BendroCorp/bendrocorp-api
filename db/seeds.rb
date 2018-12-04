@@ -24,6 +24,12 @@ MenuItemRole.create([{id: 1, menu_item_id: 13, role_id: 32}])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
+Badge.create([{ id: 1, title: 'Member', image_link: '/assets/imgs/badges/member.png', ordinal: 1 },
+              { id: 2, title: 'Founder', image_link: '/assets/imgs/badges/member.png', ordinal: 2 },
+              { id: 3, title: 'Executive Board', image_link: '/assets/imgs/badges/eb.png', ordinal: 3 },
+              { id: 4, title: 'Pilot Certification', image_link: '/assets/imgs/badges/pilot.png', ordinal: 4 },
+              { id: 5, title: 'Donor', image_link: '/assets/imgs/badges/donor.png', ordinal: 5 }])
+
 SystemMapAtmoGase.create([{ id: 1, title: "Oxygen (o2)" },
                           { id: 2, title: "Nitrogen (n2)" },
                           { id: 3, title: "Hydrogen (h2)" },

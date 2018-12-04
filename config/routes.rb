@@ -47,6 +47,13 @@ Rails.application.routes.draw do
   patch 'api/award/:award_id' => 'awards#update'
   delete 'api/award/:award_id' => 'awards#archive'
 
+  # badges 
+  get 'api/badge' => 'badge#list'
+  post 'api/badge' => 'badge#create'
+  patch 'api/badge/:badge_id' => 'badge#update'
+  put 'api/badge/:badge_id' => 'badge#update'
+  delete 'api/badge/:badge_id' => 'badge#archive'
+
   # commodities
   get 'api/tools/commodities/' => 'commodities#list'
   post 'api/tools/commodities/' => 'commodities#create'

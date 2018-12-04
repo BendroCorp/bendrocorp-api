@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181201232657) do
+ActiveRecord::Schema.define(version: 20181204002413) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -255,6 +255,17 @@ ActiveRecord::Schema.define(version: 20181201232657) do
     t.datetime "updated_at", null: false
     t.index ["award_id"], name: "index_awards_awardeds_on_award_id"
     t.index ["character_id"], name: "index_awards_awardeds_on_character_id"
+  end
+
+  create_table "badges", force: :cascade do |t|
+    t.text "title"
+    t.text "image_link"
+    t.integer "ordinal"
+    t.integer "created_by_id"
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_badges_on_created_by_id"
   end
 
   create_table "character_genders", force: :cascade do |t|
@@ -739,6 +750,15 @@ ActiveRecord::Schema.define(version: 20181201232657) do
   create_table "mail_queues", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "member_badges", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "badge_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_member_badges_on_badge_id"
+    t.index ["user_id"], name: "index_member_badges_on_user_id"
   end
 
   create_table "menu_item_roles", force: :cascade do |t|
