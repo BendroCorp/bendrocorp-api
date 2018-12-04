@@ -40,7 +40,12 @@ class User < ActiveRecord::Base
 
   has_many :carts, :class_name => 'StoreCart', :foreign_key => 'user_id'
 
+  # Make sure everyone has an auth secret
   before_validation :assign_auth_secret, :on => :create
+
+  #
+  has_many :member_badges
+  has_many :badges, through: :member_badges
 
   accepts_nested_attributes_for :characters
   accepts_nested_attributes_for :point_transactions

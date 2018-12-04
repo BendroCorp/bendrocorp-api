@@ -29,12 +29,12 @@ class ProfilesController < ApplicationController
       if current_user.isinrole(7) || @character.application.application_status_id < 6
         # applicant_approval_request.approval.approval_approvers
         if current_user.isinrole(7)
-          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { applicant_approval_request: { include: { approval: { include: { approval_approvers: { methods: [:approver_response, :character_name] } } } } }, comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
+          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { applicant_approval_request: { include: { approval: { include: { approval_approvers: { methods: [:approver_response, :character_name] } } } } }, comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
         else
-          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
+          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
         end
       else
-        render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } } })
+        render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } } })
       end
     else
       render status: 404, json: { message: 'Profile not found!' }
