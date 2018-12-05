@@ -6,6 +6,8 @@ UserDeviceType.create([{ id: 1, title: 'ios_app' } ])
 
 SiteLogType.create([{id: 1, title: 'Authentication'}, {id: 2, title: 'General'}, {id: 3, title: 'Error'}])
 
+TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { id: 3, title: 'Video' }])
+
 MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
                  { id: 3, title: 'Events', icon: 'fa-calendar', link: '/events', ordinal: 3 },
@@ -20,12 +22,12 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 12, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 },
                  { id: 13, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 13 }])
 
-MenuItemRole.create([{id: 1, menu_item_id: 13, role_id: 32}])
+MenuItemRole.create([{ id: 1, menu_item_id: 13, role_id: 32 }])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
 Badge.create([{ id: 1, title: 'Member', image_link: '/assets/imgs/badges/member.png', ordinal: 1 },
-              { id: 2, title: 'Founder', image_link: '/assets/imgs/badges/member.png', ordinal: 2 },
+              { id: 2, title: 'Founder', image_link: '/assets/imgs/badges/founder.png', ordinal: 2 },
               { id: 3, title: 'Executive Board', image_link: '/assets/imgs/badges/eb.png', ordinal: 3 },
               { id: 4, title: 'Pilot Certification', image_link: '/assets/imgs/badges/pilot.png', ordinal: 4 },
               { id: 5, title: 'Donor', image_link: '/assets/imgs/badges/donor.png', ordinal: 5 }])
@@ -340,7 +342,8 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id:32, name: 'Impersonater', description: ''},
                      { id:33, name: 'Approval Kind Admin', description: ''},
                      { id:34, name: 'Menu Editor', description: 'Has the ability to edit the application menu.'},
-                     { id:0, name: 'Member', description: 'Is a member of BendroCorp'}])
+                     { id:0, name: 'Member', description: 'Is a member of BendroCorp'},
+                     { id: 35, name: 'Training Editor', description: '' }])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
@@ -440,6 +443,7 @@ nested_roles = NestedRole.create([{role_id: 9, role_nested_id:2}, #CEO roles
                                   {role_id: 9, role_nested_id:30},
                                   {role_id: 9, role_nested_id:31},
                                   {role_id: 9, role_nested_id:32},
+                                  {role_id: 9, role_nested_id:35},
                                   {role_id: 10, role_nested_id:2},#COO Roles
                                   {role_id: 10, role_nested_id:3},
                                   {role_id: 10, role_nested_id:4},

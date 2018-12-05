@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181204002413) do
+ActiveRecord::Schema.define(version: 20181204035713) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -2064,6 +2064,60 @@ ActiveRecord::Schema.define(version: 20181204002413) do
     t.index ["trade_item_type_id"], name: "index_trade_items_on_trade_item_type_id"
     t.index ["worst_buy_value_id"], name: "index_trade_items_on_worst_buy_value_id"
     t.index ["worst_sell_value_id"], name: "index_trade_items_on_worst_sell_value_id"
+  end
+
+  create_table "training_course_completions", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "training_course_id"
+    t.integer "version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["training_course_id"], name: "index_training_course_completions_on_training_course_id"
+    t.index ["user_id"], name: "index_training_course_completions_on_user_id"
+  end
+
+  create_table "training_courses", force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.integer "badge_id"
+    t.integer "created_by_id"
+    t.integer "version"
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["badge_id"], name: "index_training_courses_on_badge_id"
+    t.index ["created_by_id"], name: "index_training_courses_on_created_by_id"
+  end
+
+  create_table "training_item_completions", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "training_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["training_item_id"], name: "index_training_item_completions_on_training_item_id"
+    t.index ["user_id"], name: "index_training_item_completions_on_user_id"
+  end
+
+  create_table "training_item_types", force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "training_items", force: :cascade do |t|
+    t.integer "training_course_id"
+    t.integer "training_item_type_id"
+    t.integer "created_by_id"
+    t.text "title"
+    t.text "link"
+    t.text "video_link"
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_training_items_on_created_by_id"
+    t.index ["training_course_id"], name: "index_training_items_on_training_course_id"
+    t.index ["training_item_type_id"], name: "index_training_items_on_training_item_type_id"
   end
 
   create_table "user_account_types", force: :cascade do |t|
