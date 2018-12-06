@@ -40,11 +40,10 @@ class DormantApprovalWorker
     to = Email.new(email: email_to)
     content = Content.new(type: 'text/html', value: "#{message}#{outro}")
     mail = SendGrid::Mail.new(from, subject, to, content)
-    mail.to_json!
 
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) if ENV['SENDGRID_API_KEY'] != nil
     # send the email through SendGrid if the API key is set
-    response = sg.client.mail._("send").post(request_body: mail)  if ENV['SENDGRID_API_KEY'] != nil
+    response = sg.client.mail._("send").post(request_body: mail.to_json)  if ENV['SENDGRID_API_KEY'] != nil
 
     if ENV['SENDGRID_API_KEY'] == nil
       puts
