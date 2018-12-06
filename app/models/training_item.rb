@@ -4,10 +4,13 @@ class TrainingItem < ApplicationRecord
   has_many :training_item_completions
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
 
+  accepts_nested_attributes_for :training_course
+
   def user_did_complete user
-    self.training_item_completions.each do |completion|
-      true if completion.user.id == user.id 
+    if self.training_item_completions.where(user: user, item_version: self.training_course.version).count > 0
+      true
+    else
+      false
     end
-    false
   end
 end

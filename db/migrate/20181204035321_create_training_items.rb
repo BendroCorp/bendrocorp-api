@@ -9,6 +9,8 @@ class CreateTrainingItems < ActiveRecord::Migration[5.1]
       t.text :link
       t.text :video_link
       t.boolean :archived, default: false
+      t.integer :version
+      t.integer :ordinal
       t.timestamps
     end
   end

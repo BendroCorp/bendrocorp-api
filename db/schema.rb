@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181204035713) do
+ActiveRecord::Schema.define(version: 20181206011858) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 20181204035713) do
   create_table "approvals", force: :cascade do |t|
     t.integer "approval_kind_id"
     t.boolean "full_consent", default: false
+    t.boolean "single_consent", default: false
     t.boolean "denied", default: false
     t.boolean "approved", default: false
     t.datetime "created_at", null: false
@@ -259,6 +260,7 @@ ActiveRecord::Schema.define(version: 20181204035713) do
 
   create_table "badges", force: :cascade do |t|
     t.text "title"
+    t.text "description"
     t.text "image_link"
     t.integer "ordinal"
     t.integer "created_by_id"
@@ -2066,6 +2068,19 @@ ActiveRecord::Schema.define(version: 20181204035713) do
     t.index ["worst_sell_value_id"], name: "index_trade_items_on_worst_sell_value_id"
   end
 
+  create_table "training_course_assigneds", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "training_course_id"
+    t.integer "assigned_by_id"
+    t.datetime "due_date"
+    t.boolean "completed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assigned_by_id"], name: "index_training_course_assigneds_on_assigned_by_id"
+    t.index ["training_course_id"], name: "index_training_course_assigneds_on_training_course_id"
+    t.index ["user_id"], name: "index_training_course_assigneds_on_user_id"
+  end
+
   create_table "training_course_completions", force: :cascade do |t|
     t.integer "user_id"
     t.integer "training_course_id"
@@ -2082,6 +2097,9 @@ ActiveRecord::Schema.define(version: 20181204035713) do
     t.integer "badge_id"
     t.integer "created_by_id"
     t.integer "version"
+    t.boolean "draft", default: true
+    t.boolean "approval_required", default: false
+    t.boolean "instructor_required", default: false
     t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -2089,11 +2107,25 @@ ActiveRecord::Schema.define(version: 20181204035713) do
     t.index ["created_by_id"], name: "index_training_courses_on_created_by_id"
   end
 
+  create_table "training_item_completion_requests", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "approval_id"
+    t.integer "training_item_completion_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["approval_id"], name: "index_training_item_completion_requests_on_approval_id"
+    t.index ["training_item_completion_id"], name: "request_to_completion_training_item"
+    t.index ["user_id"], name: "index_training_item_completion_requests_on_user_id"
+  end
+
   create_table "training_item_completions", force: :cascade do |t|
     t.integer "user_id"
     t.integer "training_item_id"
+    t.integer "item_version"
+    t.boolean "completed", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["training_item_id"], name: "completion_to_training_item"
     t.index ["training_item_id"], name: "index_training_item_completions_on_training_item_id"
     t.index ["user_id"], name: "index_training_item_completions_on_user_id"
   end
@@ -2110,9 +2142,12 @@ ActiveRecord::Schema.define(version: 20181204035713) do
     t.integer "training_item_type_id"
     t.integer "created_by_id"
     t.text "title"
+    t.text "text"
     t.text "link"
     t.text "video_link"
     t.boolean "archived", default: false
+    t.integer "version"
+    t.integer "ordinal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_training_items_on_created_by_id"

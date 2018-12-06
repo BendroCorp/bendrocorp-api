@@ -255,11 +255,13 @@ Rails.application.routes.draw do
 
   # training
   get 'api/training' => 'training#list_courses'
+  get 'api/training/types' => 'training#fetch_types'
+  get 'api/training/badges' => 'training#fetch_badges'
   get 'api/training/:course_id' => 'training#fetch_course'
   post 'api/training' => 'training#create_course'
   patch 'api/training' => 'training#update_course'
   put 'api/training' => 'training#update_course'
-  get 'api/training/item' => 'training#create_training_item'
+  post 'api/training/item' => 'training#create_training_item'
   patch 'api/training/item' => 'training#update_training_item'
   put 'api/training/item' => 'training#update_training_item'
   post 'api/training/item/complete' => 'training#complete_training_item'

@@ -6,7 +6,7 @@ UserDeviceType.create([{ id: 1, title: 'ios_app' } ])
 
 SiteLogType.create([{id: 1, title: 'Authentication'}, {id: 2, title: 'General'}, {id: 3, title: 'Error'}])
 
-TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { id: 3, title: 'Video' }])
+TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { id: 3, title: 'Video' }, { id: 4, title: 'Instructor Approval' }])
 
 MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
@@ -343,7 +343,8 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id:33, name: 'Approval Kind Admin', description: ''},
                      { id:34, name: 'Menu Editor', description: 'Has the ability to edit the application menu.'},
                      { id:0, name: 'Member', description: 'Is a member of BendroCorp'},
-                     { id: 35, name: 'Training Editor', description: '' }])
+                     { id: 35, name: 'Training Admin', description: '' },
+                     { id: 36, name: 'Training Instructor', description: '' }])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
@@ -444,6 +445,7 @@ nested_roles = NestedRole.create([{role_id: 9, role_nested_id:2}, #CEO roles
                                   {role_id: 9, role_nested_id:31},
                                   {role_id: 9, role_nested_id:32},
                                   {role_id: 9, role_nested_id:35},
+                                  {role_id: 9, role_nested_id:36},
                                   {role_id: 10, role_nested_id:2},#COO Roles
                                   {role_id: 10, role_nested_id:3},
                                   {role_id: 10, role_nested_id:4},
@@ -489,6 +491,7 @@ nested_roles = NestedRole.create([{role_id: 9, role_nested_id:2}, #CEO roles
                                   {role_id: 15, role_nested_id:20},
                                   {role_id: 15, role_nested_id:23},
                                   {role_id: 6, role_nested_id:22}, #research division
+                                  {role_id: 35, role_nested_id:36}, #research division
                                   ])
 
 approval_kinds = ApprovalKind.create([{id: 1, title: 'Role Request'},
@@ -513,7 +516,8 @@ approval_kinds = ApprovalKind.create([{id: 1, title: 'Role Request'},
                                      {id: 20, title: 'Add System Map Item Request'},
                                      {id: 21, title: 'Report Approval Request'},
                                      {id: 22, title: 'Position Change Request'},
-                                     {id: 23, title: 'Applicant Approval Request'}])
+                                     {id: 23, title: 'Applicant Approval Request'},
+                                     {id: 24, title: 'Training Item Completion Request'}])
 
 ResearchProjectStatus.create([{id: 1, title: 'Created/Approval Pending'},
                               {id: 2, title: 'Project Not Approved/Request Denied'},
@@ -589,6 +593,9 @@ approval_kinds[19].roles << roles[14] #Research Director
 
 #add execs to position change approval
 approval_kinds[21].roles << roles[1] #execs
+
+# lesson approval
+approval_kinds[23].roles << roles[35]
 
 divisions = Division.create([{ id: 1,
                                name: 'Executive Division',
@@ -690,6 +697,9 @@ user1 = User.create(id: 1, username: 'Rindzer', email: 'dale.myszewski@gmail.com
 user1.roles << roles[8]
 user1.roles << Role.find_by_id(0)
 user2.roles << Role.find_by_id(0)
+
+user1.badges << Badge.find_by_id(1)
+user2.badges << Badge.find_by_id(1)
 
 character1 = Character.create(id: 1, first_name: 'Rindzer', last_name: 'Aayhan', description: 'Tall blonde and handsome.', background: 'One seriously awesome dude who helps people...', user_id: 1, is_main_character: true, gender_id: 1, species_id: 1)
 character2 = Character.create(id: 2, first_name: 'Steve', last_name: 'Awesome', description: 'Tall blonde and handsome.', background: 'One seriously awesome dude who helps people...', user_id: 2, is_main_character: true, gender_id: 1, species_id: 1)
