@@ -10,7 +10,7 @@ class DormantApprovalWorker
     dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ?', Time.now - 2.days)
 
     if dormant_approvals.count > 0
-      puts "Found #{approvals.count} dormant approval(s)!"
+      puts "Found #{dormant_approvals.count} dormant approval(s)!"
       # Email each approver with a dormant approval
       dormant_approvals.each do |approver|
         emailMessage = "<p>#{approver.user.main_character.first_name},</p><p>You have a dormant approval that you need to approve or deny:</p><p><a href=\"https://my.bendrocorp.com/requests/approvals/#{approver.approval_id}\">Approval #{approval.approval_id}</a></p><p>Please correct this issue in a timely manner.</p>"
