@@ -5,6 +5,9 @@
   kaiden_worker:
     every: 1m   # Runs once per minute
     class: KaidenEventAnnouncerWorker
+  token_cleanup_worker:
+    every: 1m   # Runs once per minute
+    class: TokenCleanupWorker
   dormant_approval_worker:
     cron: '0 21 * * *'   # Run at 9pm UTC every day
     class: DormantApprovalWorker
