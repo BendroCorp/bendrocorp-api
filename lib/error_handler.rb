@@ -99,8 +99,12 @@ module Error
             end
           end
 
-          # Log the error
-          SiteLog.create(module: 'Error Handler', submodule: 'Error', message: "#{e.message} \n #{e.backtrace.join("\n")}", site_log_type_id: 3)
+          begin
+            # Log the error
+            SiteLog.create(module: 'Error Handler', submodule: 'Error', message: "#{exception}", site_log_type_id: 3)
+          rescue StandardError => e
+            puts "Could not create log entry for error"
+          end
 
         end
       rescue SocketError => e
