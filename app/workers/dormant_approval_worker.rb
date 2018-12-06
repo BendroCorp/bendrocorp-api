@@ -1,4 +1,5 @@
 require 'httparty'
+require 'sidekiq-scheduler'
 
 class DormantApprovalWorker
   include Sidekiq::Worker
