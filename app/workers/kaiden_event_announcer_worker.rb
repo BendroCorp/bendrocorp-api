@@ -1,4 +1,5 @@
 require 'httparty'
+require 'sidekiq-scheduler'
 
 class KaidenEventAnnouncerWorker
   include Sidekiq::Worker
