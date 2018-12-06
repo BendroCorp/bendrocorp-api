@@ -66,7 +66,7 @@ module Error
   module WorkerErrorHandler
     def handle exception, hash
       begin
-        puts error
+        puts exception
         puts hash
         # if on prod send me an email if not then do nothing but raising the exception
         if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'

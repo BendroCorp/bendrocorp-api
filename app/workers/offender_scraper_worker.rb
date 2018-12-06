@@ -141,7 +141,7 @@ class OffenderScraperWorker
       org_info_raw = []
       org_info_raw = parse_page.css('.main-org').css('.inner').css('.info').css('.entry').css('.value').map.to_a
 
-      if org_info_raw.count > 0
+      if org_info_raw.count > 0 && /^[a-zA-Z0-9_.-]*$/.match(org_info_raw[1].text)
         #org Rank
         org_rank = parse_page.css('.main-org').css('.inner').css('.info').css('.ranking').css('.active').map.count
 
