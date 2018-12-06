@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   patch 'api/award/:award_id' => 'awards#update'
   delete 'api/award/:award_id' => 'awards#archive'
 
-  # badges 
+  # badges
   get 'api/badge' => 'badge#list'
   post 'api/badge' => 'badge#create'
   patch 'api/badge/:badge_id' => 'badge#update'
@@ -252,6 +252,22 @@ Rails.application.routes.draw do
   patch 'api/system-map/image' => 'system_map#update_system_image'
   put 'api/system-map/image' => 'system_map#update_system_image'
   delete 'api/system-map/image/:image_id' => 'system_map#delete_system_image'
+
+  # training
+  get 'api/training' => 'training#list_courses'
+  get 'api/training/types' => 'training#fetch_types'
+  get 'api/training/badges' => 'training#fetch_badges'
+  get 'api/training/:course_id' => 'training#fetch_course'
+  post 'api/training' => 'training#create_course'
+  patch 'api/training' => 'training#update_course'
+  put 'api/training' => 'training#update_course'
+  post 'api/training/item' => 'training#create_training_item'
+  patch 'api/training/item' => 'training#update_training_item'
+  put 'api/training/item' => 'training#update_training_item'
+  post 'api/training/item/complete' => 'training#complete_training_item'
+  delete 'api/training/item/:training_item_id' => 'training#archive_training_item'
+  delete 'api/training/:course_id' => 'training#archive_course'
+
 
   # users
   get 'api/user' => 'users#list'

@@ -50,6 +50,8 @@ class Approval < ApplicationRecord
       PositionChangeRequest.find_by approval_id: self.id
     elsif self.approval_kind_id == 23
       ApplicantApprovalRequest.find_by approval_id: self.id
+    elsif self.approval_kind_id == 24
+      TrainingItemCompletionRequest.find_by approval_id: self.id
     end
   end
 
@@ -93,6 +95,8 @@ class Approval < ApplicationRecord
       1
     elsif self.approval_kind_id == 23
       2
+    elsif self.approval_kind_id == 24
+      1
     end
   end
 
@@ -140,6 +144,9 @@ class Approval < ApplicationRecord
     elsif self.approval_kind_id == 23
       e = ApplicantApprovalRequest.find_by approval_id: self.id
       "Application for #{e.application.character.full_name} (Applicant Approval Request)"
+    elsif self.approval_kind_id == 24
+      e = TrainingItemCompletionRequest.find_by approval_id: self.id
+      "Completion request for #{e.training_item_completion.training_item.title} for #{e.user.main_character.full_name} (Applicant Approval Request)"
     end
   end
 

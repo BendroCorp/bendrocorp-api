@@ -1,0 +1,2 @@
+class TrainingItemType < ApplicationRecord
+end
