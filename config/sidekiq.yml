@@ -9,5 +9,5 @@
     every: 1m   # Runs once per minute
     class: TokenCleanupWorker
   dormant_approval_worker:
-    cron: 12h   # Run every 12 hours
+    every: 12h   # Run every 12 hours
     class: DormantApprovalWorker
