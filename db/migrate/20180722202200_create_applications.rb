@@ -10,7 +10,7 @@ class CreateApplications < ActiveRecord::Migration[5.1]
       t.references :last_status_changed_by
       t.references :job
       t.references :character
-      t.belongs_to :applicant_approval_request
+      # t.belongs_to :applicant_approval_request
       t.text :rejection_reason
       t.timestamps
     end
