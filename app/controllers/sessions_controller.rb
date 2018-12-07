@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
            # puts "Creating token"
            token_text = make_token
            # token is not perpetual
-           new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 12.hours) if !params[:session][:perpetual]
+           new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 24.hours) if !params[:session][:perpetual]
            # token is perpetual
            new_token = UserToken.new(token: token_text, device: params[:session][:device]) if params[:session][:perpetual]
            @user.user_tokens << new_token
