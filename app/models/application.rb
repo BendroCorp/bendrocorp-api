@@ -15,7 +15,7 @@ class Application < ActiveRecord::Base
   has_one :interview, :class_name => 'ApplicationInterview', :foreign_key => 'application_id'
 
   #has_many :application_approvers
-  belongs_to :applicant_approval_request, optional: true
+  has_one :applicant_approval_request
 
   accepts_nested_attributes_for :interview
   accepts_nested_attributes_for :applicant_approval_request

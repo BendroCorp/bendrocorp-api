@@ -135,11 +135,9 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.integer "last_status_changed_by_id"
     t.integer "job_id"
     t.integer "character_id"
-    t.integer "applicant_approval_request_id"
     t.text "rejection_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["applicant_approval_request_id"], name: "index_applications_on_applicant_approval_request_id"
     t.index ["application_interview_id"], name: "index_applications_on_application_interview_id"
     t.index ["application_status_id"], name: "index_applications_on_application_status_id"
     t.index ["character_id"], name: "index_applications_on_character_id"
