@@ -18,4 +18,12 @@ class Role < ActiveRecord::Base
     end
     users
   end
+
+  def role_full_users
+    users = []
+    User.all.each do |user|
+      users << user if user.isinrole(self.id)
+    end
+    users
+  end
 end

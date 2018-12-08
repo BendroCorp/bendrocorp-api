@@ -2143,6 +2143,7 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.text "text"
     t.text "link"
     t.text "video_link"
+    t.text "syllabus_link"
     t.boolean "archived", default: false
     t.integer "version"
     t.integer "ordinal"
