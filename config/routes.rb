@@ -257,6 +257,7 @@ Rails.application.routes.draw do
   get 'api/training' => 'training#list_courses'
   get 'api/training/types' => 'training#fetch_types'
   get 'api/training/badges' => 'training#fetch_badges'
+  get 'api/training/instructors' => 'training#fetch_instructors'
   get 'api/training/:course_id' => 'training#fetch_course'
   post 'api/training' => 'training#create_course'
   patch 'api/training' => 'training#update_course'
