@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   post 'api/account/enable-tfa' => 'account#enable_two_factor_auth'
   post 'api/account/forgot-password' => 'account#forgot_password'
   post 'api/account/reset-password' => 'account#forgot_password_complete'
+  post 'api/account/update-email' => 'account#update_email'
   delete 'api/account/token/:token' => 'account#remove_user_token'
 
   # admin

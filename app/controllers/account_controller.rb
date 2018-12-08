@@ -126,6 +126,44 @@ class AccountController < ApplicationController
     render status: 200, json: { user_countries: UserCountry.all.order('title') }
   end
 
+  # POST api/account/update-email
+  def update_email
+    if params[:password]
+      if current_user.authenticate(params[:password])
+        original_email = current_user.email
+        current_user.email = params[:email]
+        if current_user.save
+          emailBody = "<div><p><h3>Email Change Notification</h3></p><p>Hey there #{current_user.main_character.full_name},</p><p>It looks like you just updated your email from <strong>#{original_email}</strong> to <strong>#{current_user.email}</strong> and this is a courtesy notification to let you know that that went through. This message has been sent to both your old and new email.</p><p>If you did not make this change please contact an administrator ASAP.</p></div>"
+          send_email original_email, "Email Change Notification", emailBody
+          send_email current_user.email, "Email Change Notification", emailBody
+          render status: 200, json: { message: 'Email updated!' }
+        else
+          render status: 500, json: { message: "Email could not be updated because: #{current_user.errors.full_messages.to_sentence}." }
+        end
+      else
+        current_user.login_attempts += 1
+        # if threshold exceeded then lock the account
+        if current_user.login_attempts >= 5
+          current_user.locked = true
+        end
+        if current_user.save
+          # if we locked the account then notify the user
+          if current_user.locked
+            render status: 401, json: { message: "Account locked"}
+            # TODO: email the user
+            send_email current_user.email, "Account Lockout", "<div><p><h3>Account Lockout</h3></p><p>It looks like there is a security issue with your account. Please contact an admin on Discord to start the unlock process.</p></div>"
+          else
+            render status: 400, json: { message: "Incorrect password provided!" }
+          end
+        else
+          render status: 500, json: { message: "Error occured while trying to access user data."}
+        end
+      end
+    else
+      render status: 400, json: { message: "Password not provided." }
+    end
+  end
+
   private
   def reset_params
     params.require(:user).permit(:password, :password_confirmation)
