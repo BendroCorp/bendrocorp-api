@@ -9,7 +9,7 @@ class TrainingController < ApplicationController
   # GET api/training
   def list_courses
     if !current_user.isinrole(35)
-      render status: 200, json: TrainingCourse.where(archived: false, draft: false).as_json(include: { badge: { }, training_course_completions: { }, training_items: { include: { training_item_completions: { }, training_item_type: { },  created_by: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } })
+      render status: 200, json: TrainingCourse.where(archived: false, draft: false).as_json(include: { badge: { }, training_course_completions: { }, training_items: { except: [:syllabus_link], include: { training_item_completions: { }, training_item_type: { },  created_by: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } })
     else
       render status: 200, json: TrainingCourse.where(archived: false).as_json(include: { badge: { }, training_course_completions: { }, training_items: { include: { training_item_completions: { }, training_item_type: { },  created_by: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } })
     end
@@ -23,6 +23,12 @@ class TrainingController < ApplicationController
   # GET api/training/badges
   def fetch_badges
     render status: 200, json: Badge.all
+  end
+
+  # GET api/training/instructors
+  def fetch_instructors
+    @users = Role.find_by_id(35).role_full_users
+    render status: 200, json: @users.as_json(only: [], methods: [:main_character])
   end
 
   # GET api/training/:course_id
@@ -192,7 +198,7 @@ class TrainingController < ApplicationController
 
   private
   def training_item_params
-    params.require(:training_item).permit(:title, :text, :link, :video_link, :training_course_id, :training_item_type_id, :ordinal)
+    params.require(:training_item).permit(:title, :text, :link, :syllabus_link, :video_link, :training_course_id, :training_item_type_id, :ordinal)
   end
 
   private

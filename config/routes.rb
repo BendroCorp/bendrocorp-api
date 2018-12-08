@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   post 'api/account/enable-tfa' => 'account#enable_two_factor_auth'
   post 'api/account/forgot-password' => 'account#forgot_password'
   post 'api/account/reset-password' => 'account#forgot_password_complete'
+  post 'api/account/update-email' => 'account#update_email'
   delete 'api/account/token/:token' => 'account#remove_user_token'
 
   # admin
@@ -257,6 +258,7 @@ Rails.application.routes.draw do
   get 'api/training' => 'training#list_courses'
   get 'api/training/types' => 'training#fetch_types'
   get 'api/training/badges' => 'training#fetch_badges'
+  get 'api/training/instructors' => 'training#fetch_instructors'
   get 'api/training/:course_id' => 'training#fetch_course'
   post 'api/training' => 'training#create_course'
   patch 'api/training' => 'training#update_course'

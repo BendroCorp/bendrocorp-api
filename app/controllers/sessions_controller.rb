@@ -40,8 +40,8 @@ class SessionsController < ApplicationController
              if @user.save
                # if we locked the account then notify the user
                if @user.locked
-                 # TODO: email the user
-                 # send_email @user.email, "Account Lockout", "<div><p><h3>Account Lockout</h3></p><p>It looks like there is a security issue with your account. Please reply to this email to start the unlock process.</p></div>"
+                 # email the user
+                 send_email @user.email, "Account Lockout", "<div><p><h3>Account Lockout</h3></p><p>It looks like there is a security issue with your account. Please contact an admin on Discord to start the unlock process.</p></div>"
                end
              else
                render status: 500, json: { message: "Error occured while trying to access user data."}
