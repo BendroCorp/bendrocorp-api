@@ -27,7 +27,7 @@ class TrainingController < ApplicationController
 
   # GET api/training/instructors
   def fetch_instructors
-    @users = Role.find_by_id(35).role_full_users
+    @users = Role.find_by_id(36).role_full_users
     render status: 200, json: @users.as_json(only: [], methods: [:main_character])
   end
 
