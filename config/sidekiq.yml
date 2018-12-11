@@ -11,3 +11,6 @@
   dormant_approval_worker:
     every: 12h   # Run every 12 hours
     class: DormantApprovalWorker
+  required_course_worker:
+    every: 48h   # Run every 2 days
+    class: RequiredCourseWorker

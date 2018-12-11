@@ -212,54 +212,58 @@ class ApplicationController < ActionController::API
   end
 
   def send_email(to_in, subject_in, message_in)
-    begin
-      puts ''
-      puts 'Sending email to ' + to_in
-      # used for debugging purposes. All emails should be sent with
-      message_trimmed = message_in
-      message_trimmed = message_in.gsub('localhost:4200', 'my.bendrocorp.com') if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
-      # the piece that goes on the end of all of the emails
-      outro = "<p><b><strong>Please do not reply to this email.</strong></b><p/><p>Sincerely,</p><p>Kaden Aayhan<br />Assistant to the CEO<br />BendroCorp, Inc.</p><p>Corp Plaza 11, Platform R3Q<br />Crusader, Stanton</p>"
-      outro = outro + "<p><small>#{ ENV['RAILS_ENV']}</small></p>"
-      outro = outro + "<p>#{Digest::SHA256.hexdigest message_in}</p>" if ENV['RAILS_ENV'] == 'development'
-
-      # the actual email itself
-      from = Email.new(email: 'no-reply@bendrocorp.com')
-      to = Email.new(email: to_in)
-      subject = subject_in
-      content = Content.new(type: 'text/html', value: "#{message_trimmed}#{outro}")
-      mail = SendGrid::Mail.new(from, subject, to, content) # https://github.com/sendgrid/sendgrid-ruby/issues/67
-
-      queue_email mail.to_json
-
-    rescue SocketError => e
-      puts e.message_in
-    end
+    puts
+    puts message_in if ENV['SENDGRID_API_KEY'] == nil
+    puts
+    EmailWorker.perform_async to_in, subject_in, message_in
+    # begin
+    #   puts ''
+    #   puts 'Sending email to ' + to_in
+    #   # used for debugging purposes. All emails should be sent with
+    #   message_trimmed = message_in
+    #   message_trimmed = message_in.gsub('localhost:4200', 'my.bendrocorp.com') if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
+    #   # the piece that goes on the end of all of the emails
+    #   outro = "<p><b><strong>Please do not reply to this email.</strong></b><p/><p>Sincerely,</p><p>Kaden Aayhan<br />Assistant to the CEO<br />BendroCorp, Inc.</p><p>Corp Plaza 11, Platform R3Q<br />Crusader, Stanton</p>"
+    #   outro = outro + "<p><small>#{ ENV['RAILS_ENV']}</small></p>"
+    #   outro = outro + "<p>#{Digest::SHA256.hexdigest message_in}</p>" if ENV['RAILS_ENV'] == 'development'
+    #
+    #   # the actual email itself
+    #   from = Email.new(email: 'no-reply@bendrocorp.com')
+    #   to = Email.new(email: to_in)
+    #   subject = subject_in
+    #   content = Content.new(type: 'text/html', value: "#{message_trimmed}#{outro}")
+    #   mail = SendGrid::Mail.new(from, subject, to, content) # https://github.com/sendgrid/sendgrid-ruby/issues/67
+    #
+    #   queue_email mail.to_json
+    #
+    # rescue SocketError => e
+    #   puts e.message_in
+    # end
   end
 
-  def queue_email sg_email_json
-    # actually send the email or just log the contents
-    sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) if ENV['SENDGRID_API_KEY'] != nil
-    # send the email through SendGrid if the API key is set
-    response = sg.client.mail._("send").post(request_body: sg_email_json)  if ENV['SENDGRID_API_KEY'] != nil
-
-    if ENV['SENDGRID_API_KEY'] == nil
-      puts
-      puts "The email that would have been sent to..."
-      puts sg_email_json
-      puts
-    else
-      puts "SendGrid response code:"
-      puts response.status_code
-      puts
-      if response.status_code == 200 || response.status_code == 201 || response.status_code == 202
-        return true
-      else
-        puts response.body
-        return false
-      end
-    end
-  end
+  # def queue_email sg_email_json
+  #   # actually send the email or just log the contents
+  #   sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) if ENV['SENDGRID_API_KEY'] != nil
+  #   # send the email through SendGrid if the API key is set
+  #   response = sg.client.mail._("send").post(request_body: sg_email_json)  if ENV['SENDGRID_API_KEY'] != nil
+  #
+  #   if ENV['SENDGRID_API_KEY'] == nil
+  #     puts
+  #     puts "The email that would have been sent to..."
+  #     puts sg_email_json
+  #     puts
+  #   else
+  #     puts "SendGrid response code:"
+  #     puts response.status_code
+  #     puts
+  #     if response.status_code == 200 || response.status_code == 201 || response.status_code == 202
+  #       return true
+  #     else
+  #       puts response.body
+  #       return false
+  #     end
+  #   end
+  # end
 
   def send_push_notification_to_members message
     User.all.each do |user|
@@ -268,21 +272,22 @@ class ApplicationController < ActionController::API
   end
 
   def send_push_notification user_id, message
-    user = User.find_by_id(user_id.to_i)
-    if user
-      user.user_push_tokens.each do |push_token|
-        # iOS
-        if push_token.user_device_type_id == 1
-          n = Rpush::Apns::Notification.new
-          n.app = Rpush::Apnsp8::App.find_by_name(push_token.user_device_type.title)
-          n.device_token = push_token.token # 64-character hex string
-          n.alert = message
-          puts n
-          # n.data = { foo: :bar }
-          n.save!
-        end
-      end
-    end
+    PushWorker.perform_async user_id, message
+    # user = User.find_by_id(user_id.to_i)
+    # if user
+    #   user.user_push_tokens.each do |push_token|
+    #     # iOS
+    #     if push_token.user_device_type_id == 1
+    #       n = Rpush::Apns::Notification.new
+    #       n.app = Rpush::Apnsp8::App.find_by_name(push_token.user_device_type.title)
+    #       n.device_token = push_token.token # 64-character hex string
+    #       n.alert = message
+    #       puts n
+    #       # n.data = { foo: :bar }
+    #       n.save!
+    #     end
+    #   end
+    # end
   end
 
   private

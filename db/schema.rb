@@ -2096,6 +2096,8 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.integer "created_by_id"
     t.integer "version"
     t.boolean "draft", default: true
+    t.boolean "required", default: false
+    t.integer "required_for_division"
     t.boolean "approval_required", default: false
     t.boolean "instructor_required", default: false
     t.boolean "archived", default: false

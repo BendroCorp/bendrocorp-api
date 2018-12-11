@@ -119,7 +119,8 @@ class User < ActiveRecord::Base
   end
 
   def member?
-    self.is_member
+    # self.is_member
+    self.isinrole(0)
   end
 
   def main_character
