@@ -193,7 +193,7 @@ class TrainingController < ApplicationController
 
   private
   def training_course_params
-    params.require(:training_course).permit(:title, :description, :badge_id, :draft)
+    params.require(:training_course).permit(:title, :description, :badge_id, :draft, :required)
   end
 
   private
