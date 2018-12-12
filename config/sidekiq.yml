@@ -14,3 +14,6 @@
   required_course_worker:
     every: 48h   # Run every 2 days
     class: RequiredCourseWorker
+  dormant_application_worker:
+    every: 12h   # Run every 12 hours
+    class: DormantApplicationWorker
