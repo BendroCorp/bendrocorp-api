@@ -17,3 +17,6 @@
   dormant_application_worker:
     every: 12h   # Run every 12 hours
     class: DormantApplicationWorker
+  kaiden_event_warning:
+    every: 5m   # Run every 5 minutes
+    class: KaidenEventStartWarningWorker
