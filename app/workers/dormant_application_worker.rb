@@ -21,7 +21,7 @@ class DormantApplicationWorker
         # loop through the users
         users_to_notify.each do |user|
           # body
-          email_body = "<p>Hey #{user.character.first_name},</p><p>The following membership application(s) are stagnate and need to be addressed:</p><p>#{dormation_applications_text}</p><p>It is important that BendroCorp takes applicants seriously and does not let applications stagnate. If we are waiting on the applicant to accept the interview then please disregard this notice.</p>"
+          email_body = "<p>Hey #{user.main_character.first_name},</p><p>The following membership application(s) are stagnate and need to be addressed:</p><p>#{dormation_applications_text}</p><p>It is important that BendroCorp takes applicants seriously and does not let applications stagnate. If we are waiting on the applicant to accept the interview then please disregard this notice.</p>"
 
           # queue the email
           EmailWorker.perform_async user.email, "Dormant Application", email_body
