@@ -497,7 +497,8 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.boolean "show_on_dashboard", default: true
     t.boolean "published", default: false
     t.datetime "published_date"
-    t.boolean "published_discord"
+    t.boolean "published_discord", default: false
+    t.boolean "published_final_discord", default: false
     t.integer "briefing_id"
     t.integer "debriefing_id"
     t.integer "classification_level_id"
@@ -2246,6 +2247,7 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.text "subscriber_account_id"
     t.text "subscriber_subscription_id"
     t.boolean "is_online", default: false
+    t.boolean "removal_warned", default: false
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

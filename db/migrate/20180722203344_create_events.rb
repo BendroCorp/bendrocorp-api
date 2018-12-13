@@ -16,7 +16,8 @@ class CreateEvents < ActiveRecord::Migration[5.1]
       t.boolean :show_on_dashboard, default: true
       t.boolean :published, default: false
       t.datetime :published_date
-      t.boolean :published_discord
+      t.boolean :published_discord, default: false
+      t.boolean :published_final_discord, default: false
 
       t.belongs_to :briefing
       t.belongs_to :debriefing

@@ -1,16 +1,25 @@
 :schedule:
   offender_worker:
-    every: 10m   # Runs once per minute
+    every: 10m # Runs once per minute
     class: OffenderScraperWorker
   kaiden_worker:
-    every: 1m   # Runs once per minute
+    every: 1m # Runs once per minute
     class: KaidenEventAnnouncerWorker
   token_cleanup_worker:
-    every: 1m   # Runs once per minute
+    every: 1m # Runs once per minute
     class: TokenCleanupWorker
   dormant_approval_worker:
-    every: 12h   # Run every 12 hours
+    every: 12h # Run every 12 hours
     class: DormantApprovalWorker
   required_course_worker:
-    every: 48h   # Run every 2 days
+    every: 48h # Run every 2 days
     class: RequiredCourseWorker
+  dormant_application_worker:
+    every: 12h # Run every 12 hours
+    class: DormantApplicationWorker
+  kaiden_event_warning:
+    every: 5m # Run every 5 minutes
+    class: KaidenEventStartWarningWorker
+  dormant_event_worker:
+    every: 5m # Run every 5 minutes
+    class: DormantEventWorker
