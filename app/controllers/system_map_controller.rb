@@ -277,7 +277,7 @@ class SystemMapController < ApplicationController
       if @moon.update_attributes(moon_params)
         render status: 200, json: @moon.as_json(include: { flora: {}, fauna: {}, settlements: { include: { locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, moon_types: {}, system_objects: { include: { flora: {}, fauna: {}, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
       else
-        render status: 500, json: { message: "Moon could not be created because: #{@so.errors.full_messages.to_sentence}"}
+        render status: 500, json: { message: "Moon could not be created because: #{@moon.errors.full_messages.to_sentence}"}
       end
     else
       #
@@ -294,7 +294,7 @@ class SystemMapController < ApplicationController
           if @moon.save
             render status: 200, json: { message: "Moon archived." }
           else
-            render status: 500, json: { message: "Moon could not be archived because: #{@so.errors.full_messages.to_sentence}"}
+            render status: 500, json: { message: "Moon could not be archived because: #{@moon.errors.full_messages.to_sentence}"}
           end
         else
           render status: 404, json: { message: "Moon not found." }
