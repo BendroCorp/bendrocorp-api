@@ -26,6 +26,7 @@ class CreateUsers < ActiveRecord::Migration[5.1]
       t.text :subscriber_account_id
       t.text :subscriber_subscription_id
       t.boolean :is_online, default: false
+      t.boolean :removal_warned, default: false
       t.boolean :active, default: true
       t.timestamps
     end
