@@ -21,5 +21,5 @@
     every: 5m # Run every 5 minutes
     class: KaidenEventStartWarningWorker
   dormant_event_worker:
-    every: 5m # Run every 5 minutes
+    every: 24h # Run every 24 hours
     class: DormantEventWorker
