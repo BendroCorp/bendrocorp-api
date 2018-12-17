@@ -3,7 +3,7 @@ class DormantEventWorker
 
   def perform(*args)
     # find all of the eligible events
-    dormant_events = Event.where('end_date > ? AND submitted_for_certification = ?', Time.now + 2.days, false)
+    dormant_events = Event.where('end_date > ? AND start_date < ? AND submitted_for_certification = ?', Time.now + 2.days, Time.now, false)
 
     # check to see if there actually are any
     if dormant_events.count > 0
