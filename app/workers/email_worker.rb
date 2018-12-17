@@ -7,10 +7,13 @@ class EmailWorker
     outro = outro + "<p><small>#{ENV['RAILS_ENV']}</small></p>"
     outro = outro + "<p>#{Digest::SHA256.hexdigest message}</p>" if ENV['RAILS_ENV'] == 'development'
 
+    #
+    message_trimmed = message.gsub('localhost:4200', 'my.bendrocorp.com') if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
+
     # the actual email itself
     from = Email.new(email: 'no-reply@bendrocorp.com')
     to = Email.new(email: email_to)
-    content = Content.new(type: 'text/html', value: "#{message}#{outro}")
+    content = Content.new(type: 'text/html', value: "#{message_trimmed}#{outro}")
     mail = SendGrid::Mail.new(from, subject, to, content)
 
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) if ENV['SENDGRID_API_KEY'] != nil
