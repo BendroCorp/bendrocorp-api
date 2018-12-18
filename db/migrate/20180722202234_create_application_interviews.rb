@@ -11,6 +11,7 @@ class CreateApplicationInterviews < ActiveRecord::Migration[5.1]
       t.text :why_selected_division
       t.text :why_join_bendrocorp
       t.text :applicant_questions
+      t.text :other_questions
       t.text :interview_consensous
       t.boolean :locked_for_review, default:false
       t.belongs_to :application
