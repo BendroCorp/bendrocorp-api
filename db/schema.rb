@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.text "why_selected_division"
     t.text "why_join_bendrocorp"
     t.text "applicant_questions"
+    t.text "other_questions"
     t.text "interview_consensous"
     t.boolean "locked_for_review", default: false
     t.integer "application_id"
