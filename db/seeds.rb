@@ -294,7 +294,8 @@ approval_types = ApprovalType.create([{id: 1, title: 'Pending', description: 'No
                                       {id: 2, title: 'Pending (Unseen)', description: 'Not yet approved or declined request and not viewed.'},
                                       {id: 3, title: 'Pending (Seen)', description: 'Not yet approved or declined request and viewed.'},
                                       {id: 4, title: 'Approved', description: 'Approved request'},
-                                      {id: 5, title: 'Declined', description: 'Declined request'}])
+                                      {id: 5, title: 'Declined', description: 'Declined request'},
+                                      {id: 6, title: 'Feedback not needed', description: 'Feedback not needed.'}])
 
 ApprovalWorkflow.create([{ id: 1, title: 'Standard', description: 'Standard all or nothing approval workflow'},
                          { id: 2, title: 'Standard - Applicant', description: 'This approval is similiar to standard except that it is meant to exclusively handle applicant approvals' },

@@ -22,7 +22,7 @@ class TrainingItemCompletionRequest < ApplicationRecord
         @c_completion = TrainingCourseCompletion.new(user: self.user, training_course: @course, version: @course.version)
         if @c_completion.save
           # Then finally award the badge, if one exists
-          if @course.badge && current_user.badges.where(id: @course.badge_id).count == 0
+          if @course.badge && self.user.badges.where(id: @course.badge_id).count == 0
             self.user.badges << @course.badge
             self.user.save!
             # render status: 200, json: @c_completion

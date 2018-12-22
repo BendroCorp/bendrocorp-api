@@ -78,6 +78,12 @@ class ApprovalsController < ApplicationController
               # it only takes one person to approve this approval
               if @approval.approval_approvers.where("approval_type_id = 4").count >= 1
                 @approval.approved = true
+                # Change the status of unsubmitted approvals to not needed
+                @approval.approval_approvers.where("approval_type_id < 4").to_a.each do |approver|
+                  approver.approval_type_id = 6
+                  approver.save!
+                end
+
               elsif @approval.approval_approvers.where("approval_type_id = 5").count == @approval.approval_approvers.count
                 @approval.denied = true
               else
