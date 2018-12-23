@@ -275,6 +275,7 @@ Rails.application.routes.draw do
   get 'api/user' => 'users#list'
   get 'api/user/me' => 'users#me'
   get 'api/user/approvals' => 'users#approvals'
+  get 'api/user/approvals/:count' => 'users#approvals'
   get 'api/user/approvals-count' => 'users#approvals_count'
   get 'api/user/oauth-tokens' => 'users#oauth_tokens'
   get 'api/user/auth-tokens' => 'users#auth_tokens'

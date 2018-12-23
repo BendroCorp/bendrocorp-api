@@ -7,6 +7,8 @@ class ApprovalApprover < ApplicationRecord
       "Approved"
     elsif self.approval_type_id == 5
       "Denied"
+    elsif self.approval_type_id == 6
+      "Response Not Required"
     else
       "Pending"
     end
