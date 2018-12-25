@@ -31,48 +31,52 @@ class ApplicationsController < ApplicationController
 
       # Check to make sure the handle check passed
       if page.code == 200
-        # err
-        #try to save
-        if @character.save
-          SiteLog.create(module: 'Application', submodule: 'Application Success', message: "Application successfully created for #{@character.id}", site_log_type_id: 1)
-          approverIds = []
-          User.where('is_member = ?', true).each do |user|
-            approverIds << user.id if user.isinrole(2) # executive role
-            approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
-            approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
-            approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
-          end
-
-          # make sure there are no duplicates
-          approverIds.uniq!
-
-          #Create the new approval request
-          approvalRequest = ApplicantApprovalRequest.new
-
-          approvalRequest.user = current_user
-
-          # put the approval instance in the request
-          approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
-
-          # lastly add the request to the current_user
-          # approvalRequest.user = current_user # may not need to actually use this
-          approvalRequest.application = @character.application
-
-          @character.application.applicant_approval_request = approvalRequest
+        @offender = OffenderReportOffender.find_by offender_handle: @character.user.rsi_handle.downcase
+        if !(@offender && @offender.offender_reports.count > 0)
+          # try to save
           if @character.save
-            SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
-            # mail Exec, Directors and HR
-            email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
-            render status: 200, json: @character.application.as_json(include: { application_status: { } })
+            SiteLog.create(module: 'Application', submodule: 'Application Success', message: "Application successfully created for #{@character.id}", site_log_type_id: 1)
+            approverIds = []
+            User.where('is_member = ?', true).each do |user|
+              approverIds << user.id if user.isinrole(2) # executive role
+              approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
+              approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
+              approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
+            end
+
+            # make sure there are no duplicates
+            approverIds.uniq!
+
+            #Create the new approval request
+            approvalRequest = ApplicantApprovalRequest.new
+
+            approvalRequest.user = current_user
+
+            # put the approval instance in the request
+            approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
+
+            # lastly add the request to the current_user
+            # approvalRequest.user = current_user # may not need to actually use this
+            approvalRequest.application = @character.application
+
+            @character.application.applicant_approval_request = approvalRequest
+            if @character.save
+              SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
+              # mail Exec, Directors and HR
+              email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
+              render status: 200, json: @character.application.as_json(include: { application_status: { } })
+            else
+              puts @character.errors.full_messages.inspect
+              SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
+              render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
+            end
           else
             puts @character.errors.full_messages.inspect
             SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
             render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
           end
         else
-          puts @character.errors.full_messages.inspect
-          SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
-          render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
+          render status: 400, json: { message: 'You are not eligible to apply to BendroCorp. There are currently outstanding offender reports against the provided player handle.' }
         end
       else
         render status: 400, json: { message: "RSI handle could not be verified. Please double check your entry." }
