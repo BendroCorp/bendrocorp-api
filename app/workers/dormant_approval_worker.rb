@@ -17,11 +17,11 @@ class DormantApprovalWorker
       end
 
       # Send the admins a message
-      adminMessage = "<p>Dormant approval check performed with #{dormant_approvals.count} results.</p><p>#{dormant_approvals.join('<br />')}</p><p>Please harass the above individuals if they do not finish their approvals in a timely manner.</p>"
+      adminMessage = "<p>Dormant approval check performed with #{dormant_approvals.count} results.</p><p>#{dormant_approvals.map { |approver| approver.user.main_character.first_name }.join('<br />')}</p><p>Please harass the above individuals if they do not finish their approvals in a timely manner.</p>"
       EmailWorker.perform_async ENV["ADMIN_EMAIL"], "Dormant Approvals", adminMessage
 
       # Post to the discord channel
-      discordAdminMessage = "Dormant approval check performed with #{dormant_approvals.count} results: #{dormant_approvals.join(', ')}. Please harass the above individuals if they do not finish their approvals in a timely manner.</p>"
+      discordAdminMessage = "Dormant approval check performed with #{dormant_approvals.count} results: #{dormant_approvals.map { |approver| approver.user.main_character.first_name }.join(', ')}. Please harass the above individuals if they do not finish their approvals in a timely manner.</p>"
       HTTParty.post(ENV["DISCORD_MESSAGES"],
         :body => { :content => discordAdminMessage}.to_json, :headers => { 'Content-Type' => 'application/json' } )
     end
