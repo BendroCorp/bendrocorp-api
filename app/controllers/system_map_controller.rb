@@ -977,7 +977,7 @@ class SystemMapController < ApplicationController
 
   private
   def system_image_params
-    params.require(:image).permit(:title, :description, :of_system_id, :of_planet_id, :of_moon_id, :of_system_object_id, :of_location_id, :of_gravity_well_id)
+    params.require(:image).permit(:title, :description, :of_system_id, :of_planet_id, :of_moon_id, :of_system_object_id, :of_location_id, :of_settlement_id, :of_gravity_well_id)
   end
 
   private
