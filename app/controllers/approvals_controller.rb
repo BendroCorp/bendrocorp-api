@@ -13,23 +13,37 @@ class ApprovalsController < ApplicationController
           @your_approval.approval_type_id = params[:approval_type].to_i
 
           if @your_approval.save
-            #check and see if we should update the parental approver status
-            #first check to see if all of the approver have weighed in
-            if @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= @approval.approval_approvers.count && !@approval.single_consent
+            # check and see if we should update the parental approver status
+            # first check to see if all of the approver have weighed in
+            # full consent meta workflow
+            if @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= 1 && !@approval.single_consent
               # if we have all of the results in
               @approval = @your_approval.approval
               approversCount = @approval.approval_approvers.count
               approved = @approval.approval_approvers.where("approval_type_id = 4").count
-              #denied = @approval.approval_approvers.where("approval_type_id == 5").count
+              denied = @approval.approval_approvers.where("approval_type_id = 5").count
 
-              if (approversCount != approved) && @approval.full_consent
+              # if (approversCount != approved) && @approval.full_consent
+              #   @approval.denied = true
+              # elsif (approversCount == approved) && @approval.full_consent
+              #   @approval.approved = true
+              # elsif ((approved * 100) / approversCount) >= 66 && !@approval.full_consent
+              #   @approval.approved = true
+              # elsif ((approved * 100) / approversCount) < 66 && !@approval.full_consent
+              #   @approval.denied = true
+              # else
+              #   raise 'Approval consent out of range!'
+              # end
+
+              if denied > 0 # for full consent if any one denies then the approval has failed. So no need to keep going. ;)
                 @approval.denied = true
-              elsif (approversCount == approved) && @approval.full_consent
+                # Change the status of unsubmitted approvals to not needed
+                @approval.approval_approvers.where("approval_type_id < 4").to_a.each do |approver|
+                  approver.approval_type_id = 6
+                  approver.save!
+                end
+              elsif approved >= approversCount #
                 @approval.approved = true
-              elsif ((approved * 100) / approversCount) >= 66 && !@approval.full_consent
-                @approval.approved = true
-              elsif ((approved * 100) / approversCount) < 66 && !@approval.full_consent
-                @approval.denied = true
               else
                 raise 'Approval consent out of range!'
               end
@@ -46,6 +60,8 @@ class ApprovalsController < ApplicationController
                     send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Approved",
                     "<p>Hello #{@approval.approval_source.user.username}!</p><p>Your #{@approval.approval_kind.title} for #{@approval.approval_source_requested_item} has been approved.</p>"
                     ) #to, subject, message
+
+                    # Run the completion handler
                     @approval.approval_source.approval_completion
                   elsif @approval.approval_workflow == 2 # applicant workflow
                     # email exec group
@@ -55,22 +71,28 @@ class ApprovalsController < ApplicationController
                   elsif @approval.approval_workflow == 3 # do nothing workflow
                     # do nothing
                   end
-                else
-                  # push notification
-                  send_push_notification @approval.approval_source.user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Denied"
+                elsif @approval.denied
+                  # denied only applies to the basic workflow
+                  if @approval.approval_workflow == 1
+                    # push notification
+                    send_push_notification @approval.approval_source.user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Denied"
 
-                  # email the user that the request was denied
-                  send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Denied",
-                  "<p>Hello #{@approval.approval_source.user.username}!</p><p>Your #{@approval.approval_kind.title} for #{@approval.approval_source_requested_item} has been denied. You can view your request from the relevant request page to get more information.</p>"
-                  ) #to, subject, message
-                  @approval.approval_source.approval_denied
+                    # email the user that the request was denied
+                    send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Denied",
+                    "<p>Hello #{@approval.approval_source.user.username}!</p><p>Your #{@approval.approval_kind.title} for #{@approval.approval_source_requested_item} has been denied. You can view your request from the relevant request page to get more information.</p>"
+                    ) #to, subject, message
+
+                    # run the approval denial handler
+                    @approval.approval_source.approval_denied
+                  end
                 end
 
-                render status: 200, json: { message: "success" }
+                render status: 200, json: { message: "Approval status changed." }
               else
                 render status: 500, :json => { message: "The approval could not be completed." }
               end
 
+            # single content meta workflow
             elsif @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= 1 && @approval.single_consent
               # re-fetch the approval
               @approval = @your_approval.approval
