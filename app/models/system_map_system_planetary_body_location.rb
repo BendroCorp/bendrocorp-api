@@ -9,8 +9,7 @@ class SystemMapSystemPlanetaryBodyLocation < ApplicationRecord
 
   belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
 
-  # This is wrong
-  # has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_location_id'
+  has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_location_id'
   # has_many :observations, :class_name => 'SystemMapObservation', :foreign_key => 'of_location_id'
   belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id', optional: true
 
