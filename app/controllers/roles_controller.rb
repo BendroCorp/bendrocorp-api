@@ -2,17 +2,20 @@ class RolesController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  # index, list availabe to all members
-
   before_action except: [:list] do |a|
-   a.require_one_role([9]) # CEO only
+   a.require_one_role([37]) # role admin
   end
 
   # GET api/role
   def list
-    render status: 200, json: Role.all
+    if current_user.isinrole(37)
+      render status: 200, json: Role.all.as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
+    else
+      render status: 200, json: Role.all
+    end
   end
 
+  # DEPRECATED
   # GET api/role/admin
   def admin_fetch_roles
     render status: 200, json: Role.all.as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )

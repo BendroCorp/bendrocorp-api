@@ -117,6 +117,13 @@ Rails.application.routes.draw do
   # 'jobs' (as in employment ops)
   get 'api/job' => 'jobs#list'
   get 'api/job/hiring' => 'jobs#list_hiring'
+  get 'api/job/types' => 'jobs#job_types'
+  post 'api/job/' => 'jobs#create'
+  patch 'api/job/' => 'jobs#update'
+  put 'api/job/' => 'jobs#update'
+
+  # liability
+  get 'api/liability' => 'liability#list'
 
   # menu items
   get 'api/menu' => 'menu_items#list'

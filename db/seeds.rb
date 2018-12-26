@@ -19,10 +19,12 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
                  { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
-                 { id: 12, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 },
-                 { id: 13, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 13 }])
+                 { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 12 },
+                 { id: 13, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 1, nested_under_id: 12 },
+                 { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 2, nested_under_id: 12 },
+                 ])
 
-MenuItemRole.create([{ id: 1, menu_item_id: 13, role_id: 32 }])
+# MenuItemRole.create([{ id: 1, menu_item_id: 13, role_id: 32 }])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
@@ -345,7 +347,12 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id:34, name: 'Menu Editor', description: 'Has the ability to edit the application menu.'},
                      { id:0, name: 'Member', description: 'Is a member of BendroCorp'},
                      { id: 35, name: 'Training Admin', description: '' },
-                     { id: 36, name: 'Training Instructor', description: '' }])
+                     { id: 36, name: 'Training Instructor', description: '' },
+                     { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
+                     { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
+                     { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
+                     { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' },
+                     { id: 41, name: 'CEO Assistant', description: 'Assistant to the CEO' }])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
@@ -447,6 +454,10 @@ nested_roles = NestedRole.create([{role_id: 9, role_nested_id:2}, #CEO roles
                                   {role_id: 9, role_nested_id:32},
                                   {role_id: 9, role_nested_id:35},
                                   {role_id: 9, role_nested_id:36},
+                                  {role_id: 9, role_nested_id:37},
+                                  {role_id: 9, role_nested_id:38},
+                                  {role_id: 9, role_nested_id:39},
+                                  {role_id: 9, role_nested_id:40},
                                   {role_id: 10, role_nested_id:2},#COO Roles
                                   {role_id: 10, role_nested_id:3},
                                   {role_id: 10, role_nested_id:4},
@@ -597,6 +608,8 @@ approval_kinds[21].roles << roles[1] #execs
 
 # lesson approval
 approval_kinds[23].roles << roles[35]
+
+# add CEO
 
 divisions = Division.create([{ id: 1,
                                name: 'Executive Division',

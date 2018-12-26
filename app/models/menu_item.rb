@@ -1,7 +1,7 @@
 class MenuItem < ApplicationRecord
   validates :title, presence: true
-  validates :icon, presence: true
-  validates :link, presence: true
+  # validates :icon, presence: true
+  # validates :link, presence: true
   validates :ordinal, presence: true
 
   has_many :menu_item_roles

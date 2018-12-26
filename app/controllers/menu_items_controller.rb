@@ -12,7 +12,7 @@ class MenuItemsController < ApplicationController
     #
     @menu_items = []
     # Loop through
-    MenuItem.where('nested_under_id is NULL').order('ordinal').each do |item|
+    MenuItem.all.order('ordinal').each do |item| # where('nested_under_id is NULL')
       # are protected by role
       if item.roles.count > 0
         item.roles.each do |role|
@@ -24,7 +24,7 @@ class MenuItemsController < ApplicationController
       end
     end
     # Hand out the member items
-    render status: 200, json: @menu_items.as_json(include: { nested_items: { } })
+    render status: 200, json: @menu_items #.as_json(include: { nested_items: { } })
   end
 
   # POST api/menu
