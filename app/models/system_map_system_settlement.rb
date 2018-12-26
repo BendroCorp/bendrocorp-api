@@ -10,6 +10,7 @@ class SystemMapSystemSettlement < ApplicationRecord
   belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
 
   belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id', optional: true
+  has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_settlement_id'
 
   def primary_image_url
     if self.primary_image != nil
