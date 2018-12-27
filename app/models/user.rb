@@ -92,21 +92,48 @@ class User < ActiveRecord::Base
     end
   end
 
+  # TODO: Current this only goes a few layers deep. This needs to walk the entire depth
   def get_all_roles
-    all_roles = []
-    non_nested_roles = []
-    nested_roles = []
+    # orig - one layer deep
+    # all_roles = []
+    # non_nested_roles = []
+    # nested_roles = []
+    # self.roles.each do |role|
+    #   non_nested_roles << { :id => role.id, :name => role.name }
+    #   role.nested_roles.each do |nested|
+    #     nested_roles << { :id => nested.role_nested.id, :name => nested.role_nested.name + " (Nested in #{role.name})"} #role_nested
+    #   end
+    # end
+    #
+    # all_roles.push(*non_nested_roles)
+    # all_roles.push(*nested_roles)
+    #
+    # all_roles
+
+    #fetch the base roll and nested roles four deep
+    roles = []
     self.roles.each do |role|
-      non_nested_roles << { :id => role.id, :name => role.name }
-      role.nested_roles.each do |nested|
-        nested_roles << { :id => nested.role_nested.id, :name => nested.role_nested.name + " (Nested in #{role.name})"} #role_nested
+      roles << { :id => role.id, :name => role.name }
+      role.nested_roles.each do |n_one|
+        roles << { :id => n_one.role_nested.id, :name => "#{n_one.role_nested.name} (Nested in #{role.name})" }
+        n_one.role_nested.nested_roles.each do |n_two|
+          roles << { :id => n_two.role_nested.id, :name => "#{n_two.role_nested.name} (Nested in #{n_one.role_nested.name})" }
+          n_two.role_nested.nested_roles.each do |n_three|
+            roles << { :id => n_three.role_nested.id, :name => "#{n_three.role_nested.name} (Nested in #{n_two.role_nested.name})" }
+            n_three.role_nested.nested_roles.each do |n_four|
+              roles << { :id => n_four.role_nested.id, :name => "#{n_four.role_nested.name} (Nested in #{n_three.role_nested.name})" }
+            end
+          end
+        end
       end
     end
 
-    all_roles.push(*non_nested_roles)
-    all_roles.push(*nested_roles)
+    # make sure all roles are unique
+    roles.uniq! { |r| r[:id] }
 
-    all_roles
+    # return roles list
+    roles
+
   end
 
   # Alternate method to get all roles
