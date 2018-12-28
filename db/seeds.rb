@@ -30,7 +30,7 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
 # { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
 # { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' }
-# MenuItemRole.create([{ id: 1, menu_item_id: 13, role_id: 32 }])
+MenuItemRole.create([{ id: 1, menu_item_id: 12, role_id: 42 }])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
@@ -358,7 +358,8 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
                      { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
                      { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' },
-                     { id: 41, name: 'CEO Assistant', description: 'Assistant to the CEO' }])
+                     { id: 41, name: 'CEO Assistant', description: 'Assistant to the CEO' },
+                     { id: 42, name: 'Admin Menu', description: 'Allows access to the admin menu' }])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
