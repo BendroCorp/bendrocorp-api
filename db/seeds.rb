@@ -14,7 +14,6 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 4, title: 'Job Board', icon: 'fa-briefcase', link: '/job-board', ordinal: 4 },
                  { id: 5, title: 'Flight Logs', icon: 'fa-book', link: '/flight-logs', ordinal: 5 },
                  { id: 6, title: 'Reports', icon: 'fa-file-alt', link: '/reports', ordinal: 6 },
-                 # { id: 7, title: 'Pages', icon: 'fa-file', link: '/pages', ordinal: 7 },
                  { id: 8, title: 'Alerts', icon: 'fa-bell', link: '/alerts', ordinal: 8 },
                  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
@@ -27,10 +26,16 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
                  { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
                  ])
+# { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
 # { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
-# { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' }
-MenuItemRole.create([{ id: 1, menu_item_id: 12, role_id: 42 }])
+# { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' },
+MenuItemRole.create([{ id: 1, menu_item_id: 12, role_id: 42 },
+                     { id: 2, menu_item_id: 14, role_id: 32 },
+                     { id: 3, menu_item_id: 15, role_id: 39 },
+                     { id: 4, menu_item_id: 16, role_id: 37 },
+                     { id: 5, menu_item_id: 17, role_id: 40 },
+                     { id: 6, menu_item_id: 18, role_id: 38 },])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
