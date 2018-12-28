@@ -46,10 +46,11 @@ class RolesController < ApplicationController
 
   # POST api/role/nest
   def create_nested_role
-    if NestedRole.create(nested_role_params)
-      render status: 200, json: { message: 'Nested role created.' }
+    @nested_role = NestedRole.create(nested_role_params)
+    if @nested_role.save
+      render status: 200, json: @nested_role.as_json(include: { role_nested: { } })
     else
-      render status: 500, json: { message: 'Error Occured. Nested role could not be created.' }
+      render status: 500, json: { message: "Nested role could not be created because: #{@nested_role.errors.full_messages.to_sentence}" }
     end
   end
 

@@ -19,11 +19,16 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
                  { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
-                 { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 12 },
-                 { id: 13, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 1, nested_under_id: 12 },
-                 { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 2, nested_under_id: 12 },
+                 { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 13 },
+                 { id: 13, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 },
+                 { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 1, nested_under_id: 12 },
+                 { id: 15, title: 'Site Logs', icon: 'fas fa-user', link: '/site-logs', ordinal: 2, nested_under_id: 12 },
+                 { id: 16, title: 'Roles', icon: 'fas fa-user', link: '/roles', ordinal: 3, nested_under_id: 12 },
+                 { id: 17, title: 'Liabilities', icon: 'fas fa-user', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
                  ])
-
+# { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
+# { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
+# { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' }
 # MenuItemRole.create([{ id: 1, menu_item_id: 13, role_id: 32 }])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])

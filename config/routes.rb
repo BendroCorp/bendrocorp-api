@@ -188,9 +188,9 @@ Rails.application.routes.draw do
   # roles
   get 'api/role' => 'roles#list'
   get 'api/role/admin' => 'roles#admin_fetch_roles'
-  post 'api/role' => 'roles#create'
-  patch 'api/role' => 'roles#update'
-  put 'api/role' => 'roles#update'
+  post 'api/role' => 'roles#create_role'
+  patch 'api/role' => 'roles#update_role'
+  put 'api/role' => 'roles#update_role'
   post 'api/role/nest' => 'roles#create_nested_role'
   delete 'api/role/nest/:nested_role_id' => 'roles#delete_nested_role'
 
