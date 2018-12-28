@@ -2,17 +2,20 @@ class RolesController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  # index, list availabe to all members
-
   before_action except: [:list] do |a|
-   a.require_one_role([9]) # CEO only
+   a.require_one_role([37]) # role admin
   end
 
   # GET api/role
   def list
-    render status: 200, json: Role.all
+    if current_user.isinrole(37)
+      render status: 200, json: Role.all.as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
+    else
+      render status: 200, json: Role.all
+    end
   end
 
+  # DEPRECATED
   # GET api/role/admin
   def admin_fetch_roles
     render status: 200, json: Role.all.as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
@@ -43,10 +46,11 @@ class RolesController < ApplicationController
 
   # POST api/role/nest
   def create_nested_role
-    if NestedRole.create(nested_role_params)
-      render status: 200, json: { message: 'Nested role created.' }
+    @nested_role = NestedRole.create(nested_role_params)
+    if @nested_role.save
+      render status: 200, json: @nested_role.as_json(include: { role_nested: { } })
     else
-      render status: 500, json: { message: 'Error Occured. Nested role could not be created.' }
+      render status: 500, json: { message: "Nested role could not be created because: #{@nested_role.errors.full_messages.to_sentence}" }
     end
   end
 

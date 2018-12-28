@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   get 'api/tools/commodities/:ti_id/value/:trade_value_id' => 'commodities#destroy_value'
 
   # divisions
-  get 'api/divisions' => 'divisions#list'
+  get 'api/division' => 'divisions#list'
 
   # donations
   get 'api/donation' => 'donation#list'
@@ -117,6 +117,13 @@ Rails.application.routes.draw do
   # 'jobs' (as in employment ops)
   get 'api/job' => 'jobs#list'
   get 'api/job/hiring' => 'jobs#list_hiring'
+  get 'api/job/types' => 'jobs#job_types'
+  post 'api/job/' => 'jobs#create'
+  patch 'api/job/' => 'jobs#update'
+  put 'api/job/' => 'jobs#update'
+
+  # liability
+  get 'api/liability' => 'liability#list'
 
   # menu items
   get 'api/menu' => 'menu_items#list'
@@ -181,8 +188,9 @@ Rails.application.routes.draw do
   # roles
   get 'api/role' => 'roles#list'
   get 'api/role/admin' => 'roles#admin_fetch_roles'
-  post 'api/role' => 'roles#create'
-  patch 'api/role' => 'roles#update'
+  post 'api/role' => 'roles#create_role'
+  patch 'api/role' => 'roles#update_role'
+  put 'api/role' => 'roles#update_role'
   post 'api/role/nest' => 'roles#create_nested_role'
   delete 'api/role/nest/:nested_role_id' => 'roles#delete_nested_role'
 
