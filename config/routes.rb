@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   get 'api/tools/commodities/:ti_id/value/:trade_value_id' => 'commodities#destroy_value'
 
   # divisions
-  get 'api/divisions' => 'divisions#list'
+  get 'api/division' => 'divisions#list'
 
   # donations
   get 'api/donation' => 'donation#list'
