@@ -23,8 +23,9 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 13, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 },
                  { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 1, nested_under_id: 12 },
                  { id: 15, title: 'Site Logs', icon: 'fas fa-user', link: '/site-logs', ordinal: 2, nested_under_id: 12 },
-                 { id: 16, title: 'Roles', icon: 'fas fa-user', link: '/roles', ordinal: 3, nested_under_id: 12 },
-                 { id: 17, title: 'Liabilities', icon: 'fas fa-user', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
+                 { id: 16, title: 'Roles', icon: 'fas fa-key', link: '/roles', ordinal: 3, nested_under_id: 12 },
+                 { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
+                 { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
                  ])
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
 # { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
