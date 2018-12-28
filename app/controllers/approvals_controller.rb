@@ -12,28 +12,17 @@ class ApprovalsController < ApplicationController
         if @your_approval.approval_type_id < 4 && (params[:approval_type].to_i == 4 || params[:approval_type].to_i == 5)
           @your_approval.approval_type_id = params[:approval_type].to_i
 
-          if @your_approval.save
+          if @your_approval.save!
             # check and see if we should update the parental approver status
             # first check to see if all of the approver have weighed in
             # full consent meta workflow
             if @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= 1 && !@approval.single_consent
               # if we have all of the results in
               @approval = @your_approval.approval
+
               approversCount = @approval.approval_approvers.count
               approved = @approval.approval_approvers.where("approval_type_id = 4").count
               denied = @approval.approval_approvers.where("approval_type_id = 5").count
-
-              # if (approversCount != approved) && @approval.full_consent
-              #   @approval.denied = true
-              # elsif (approversCount == approved) && @approval.full_consent
-              #   @approval.approved = true
-              # elsif ((approved * 100) / approversCount) >= 66 && !@approval.full_consent
-              #   @approval.approved = true
-              # elsif ((approved * 100) / approversCount) < 66 && !@approval.full_consent
-              #   @approval.denied = true
-              # else
-              #   raise 'Approval consent out of range!'
-              # end
 
               if denied > 0 # for full consent if any one denies then the approval has failed. So no need to keep going. ;)
                 @approval.denied = true
@@ -44,6 +33,8 @@ class ApprovalsController < ApplicationController
                 end
               elsif approved >= approversCount #
                 @approval.approved = true
+              elsif approved < approversCount
+                # then do nothing becuase we dont have full consent yet
               else
                 raise 'Approval consent out of range!'
               end
