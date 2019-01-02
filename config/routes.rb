@@ -79,6 +79,7 @@ Rails.application.routes.draw do
 
   # events
   get 'api/events' => 'events#list'
+  get 'api/events/next' => 'events#list_next'
   get 'api/events/expired' => 'events#list_expired'
   get 'api/events/expired/:count' => 'events#list_expired'
   post 'api/events' => 'events#create'

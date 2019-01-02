@@ -14,6 +14,12 @@ class EventsController < ApplicationController
     json: Event.where('end_date >= ?', Time.now).order('start_date asc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
   end
 
+  # GET api/events/next
+  def list_next
+    render status: 200,
+    json: Event.where('end_date >= ?', Time.now).order('start_date asc').first.as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+  end
+
   # GET api/events/expired
   # GET api/events/expired/:count
   def list_expired
