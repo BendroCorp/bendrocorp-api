@@ -271,6 +271,7 @@ class ApplicationController < ActionController::API
     end
   end
 
+  # DEPRECATED - directly call the worker instead
   def send_push_notification user_id, message
     PushWorker.perform_async user_id, message
     # user = User.find_by_id(user_id.to_i)
