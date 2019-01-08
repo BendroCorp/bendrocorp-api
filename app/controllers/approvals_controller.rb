@@ -108,8 +108,17 @@ class ApprovalsController < ApplicationController
                   if @approval.approved && !@approval.denied
                     # TODO: Data drive this more!!
                     if @approval.approval_workflow == 1 # standard workflow
-                      # push notification
+                      # push notification to the approval creator
                       send_push_notification @approval.approval_source.user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Approved"
+
+                      # notify the approvers of the status of the approval
+                      @approval.approval_approvers.to_a.each do |approver|
+                        approverPushText = "Approval ##{@approval.id} #{@approval.approval_kind.title} has been approved!"
+                        approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been approved.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
+
+                        send_push_notification approver.user.id, approverPushText
+                        send_email approver.user.email, "Approval Approved", approverEmailText
+                      end
 
                       # email the user here
                       send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Approved",
@@ -125,8 +134,18 @@ class ApprovalsController < ApplicationController
                       # do nothing
                     end
                   else
-                    # push notification
+                    # push notification to the approval creator
                     send_push_notification @approval.approval_source.user.id, "Approval ##{@approval.id} #{@approval.approval_kind.title} Denied"
+
+                    # notify the approvers of the denial
+                    # notify the approvers of the status of the approval
+                    @approval.approval_approvers.to_a.each do |approver|
+                      approverPushText = "Approval ##{@approval.id} #{@approval.approval_kind.title} has been denied!"
+                      approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been denied.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
+
+                      send_push_notification approver.user.id, approverPushText
+                      send_email approver.user.email, "Approval Approved", approverEmailText
+                    end
 
                     # email the user that the request was denied
                     send_email(@approval.approval_source.user.email, "#{@approval.approval_kind.title} Denied",
