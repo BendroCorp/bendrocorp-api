@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   #  First route is the root route
   root 'pages#hello'
+  mount ActionCable.server, at: '/cable'
 
   # Authenticate a user
   post 'auth' => 'sessions#auth'
