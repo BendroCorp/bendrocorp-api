@@ -129,10 +129,10 @@ class OffenderScraperWorker
 
       toon_pic = parse_page.css('.profile').css('.inner').css('.thumb img').attr('src') #a.text
 
-      final_hash[:toon_name] = toon_raw[0].text
-      final_hash[:toon_handle] = toon_raw[1].text
-      final_hash[:toon_forum_title] = toon_raw[2].text
-      final_hash[:toon_pic] = toon_pic
+      final_hash[:toon_name] = toon_raw[0].text if toon_raw[0]
+      final_hash[:toon_handle] = toon_raw[1].text if toon_raw[1]
+      final_hash[:toon_forum_title] = toon_raw[2].text if toon_raw[2]
+      final_hash[:toon_pic] = toon_pic if toon_pic
 
       #org info
       # 0 - Org Title
@@ -147,9 +147,9 @@ class OffenderScraperWorker
 
 
         final_hash[:org_rank] = org_rank
-        final_hash[:org_title] = org_info_raw[0].text
-        final_hash[:org_spectrum_id] = org_info_raw[1].text
-        final_hash[:org_member_rank] = org_info_raw[2].text
+        final_hash[:org_title] = org_info_raw[0].text if org_info_raw[0]
+        final_hash[:org_spectrum_id] = org_info_raw[1].text if org_info_raw[1]
+        final_hash[:org_member_rank] = org_info_raw[2].text if org_info_raw[2]
 
         # get the org info
         #
