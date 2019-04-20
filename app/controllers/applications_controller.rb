@@ -249,8 +249,25 @@ class ApplicationsController < ApplicationController
           send_email(@character.user.email, 'Application Status Update',
           "<p>Hello #{@character.user.username}!</p><p>Your application status has been changed to: <strong>#{@character.application.application_status.title}</strong></p><p>#{@character.application.application_status.description}</p><p>Your application was rejected for the following reason:</p><p>#{params[:character][:application][:rejection_reason]}</p>"
           )
-          # redirect_to action: "index"
-          render status: 200, json: { message: 'Application successfully rejected!' }
+
+          # Close the approval
+          @approval = application.applicant_approval_request.approval
+
+          # Change the approval type to not needed
+          @approval.approval_approvers.where("approval_type_id < 4").to_a.each do |approver|
+            approver.approval_type_id = 6
+            approver.save!
+          end
+
+          # auto deny the approval
+          @approval.denied = true
+          
+          if @approval.save
+            render status: 200, json: { message: 'Application successfully rejected!' }
+          else
+            render status: 500, json: { message: "Application could not be rejected because: #{@approval.errors.full_messages.to_sentence}" }
+          end
+          
         else
           # redirect_to action: "personnel_view", id: @character.id
           render status: 500, json: { message: "Application status could not be updated because: #{@character.errors.full_messages.to_sentence}" }
