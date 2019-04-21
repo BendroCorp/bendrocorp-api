@@ -251,7 +251,7 @@ class ApplicationsController < ApplicationController
           )
 
           # Close the approval
-          @approval = application.applicant_approval_request.approval
+          @approval = @character.application.applicant_approval_request.approval
 
           # Change the approval type to not needed
           @approval.approval_approvers.where("approval_type_id < 4").to_a.each do |approver|
