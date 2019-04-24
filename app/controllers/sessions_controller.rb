@@ -31,12 +31,11 @@ class SessionsController < ApplicationController
          # if the auth fails
          else
            # if the account is not already locked
-           if !@user.locked
+           unless @user.locked
              @user.login_attempts += 1
              # if threshold exceeded then lock the account
-             if @user.login_attempts >= 5
-               @user.locked = true
-             end
+             @user.locked = true if @user.login_attempts >= 5
+
              if @user.save
                # if we locked the account then notify the user
                if @user.locked

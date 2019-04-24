@@ -139,8 +139,7 @@ class ApplicationController < ActionController::API
         end
       end
 
-
-      usersArray.uniq!{|x| x} # get uniq users
+      usersArray.uniq! { |x| x } # get uniq users
 
       if usersArray.count > 0
         # add all of the approvers to the approval and email them
