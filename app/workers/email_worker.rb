@@ -17,8 +17,12 @@ class EmailWorker
     mail = SendGrid::Mail.new(from, subject, to, content)
 
     sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY']) if ENV['SENDGRID_API_KEY'] != nil
+
+    # log the email sending
+    SiteLog.create(module: 'Session', submodule: 'Success', message: "Attempting to send an email to ##{email_to} with the subject: #{subject}", site_log_type_id: 4)
+
     # send the email through SendGrid if the API key is set
-    response = sg.client.mail._("send").post(request_body: mail.to_json)  if ENV['SENDGRID_API_KEY'] != nil
+    response = sg.client.mail._("send").post(request_body: mail.to_json) if ENV['SENDGRID_API_KEY'] != nil
 
     if ENV['SENDGRID_API_KEY'] == nil
       puts
