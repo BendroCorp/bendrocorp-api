@@ -100,6 +100,16 @@ class ApprovalsController < ApplicationController
     end
   end
 
+  # get
+  def pending_approval_count
+    if current_user.isinrole(9)
+      @pending_approval_count = (Approval.where denied: false, approved: false).count
+      render status: 200, json: { count: @pending_approval_count }
+    else
+      render status: 403, json: { message: 'You are not authorized to use this endpoint!' }
+    end
+  end
+
   # post api/approvals/override/
   # This override endpoint is meant for broad use to clear the queue. Should be used with great care!
   def approval_override
