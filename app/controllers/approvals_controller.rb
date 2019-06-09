@@ -158,7 +158,7 @@ class ApprovalsController < ApplicationController
       if current_user.two_factor_valid params[:code].to_i # must use two factor to use this method
         @approval = Approval.where(denied: false, approved: false, id: params[:approval_id].to_i).first
         if @approval
-          @approvers = approval.approval_approvers.where('approval_type_id < 4')
+          @approvers = @approval.approval_approvers.where('approval_type_id < 4')
           @approvers.each do |approver|
             approver.approval_type_id = 6 # feedback not needed
             approver.save!
