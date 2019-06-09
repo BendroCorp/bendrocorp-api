@@ -100,7 +100,7 @@ class ApprovalsController < ApplicationController
     end
   end
 
-  # get
+  # get api/approvals/pending/
   def pending_approval_count
     if current_user.isinrole(9)
       @pending_approval_count = (Approval.where denied: false, approved: false).count
