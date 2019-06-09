@@ -41,6 +41,8 @@ Rails.application.routes.draw do
   # approvals controller
   get 'api/approval/types' => 'approvals#approval_types'
   get 'api/approvals/:approval_id/:approval_type' => 'approvals#approval_request'
+  post 'api/approvals/override/' => 'approvals#approval_override'
+  post 'api/approvals/override/:approval_id' => 'approvals#approval_override_specific'
 
   # awards
   get 'api/award' => 'awards#list'
