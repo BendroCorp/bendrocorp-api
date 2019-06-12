@@ -80,7 +80,14 @@ module Error
           from = Email.new(email: 'no-reply@bendrocorp.com')
           to = Email.new(email: ENV['ADMIN_EMAIL'])
           subject = "BendroCorp - Error Message - Worker Error"
-          content = Content.new(type: 'text/html', value: message_in + "<p>Hash: #{hash}</p>" + outro)
+          worker_error_message = message_in + "<p>Hash: #{hash}</p>"
+
+          if exception.backtrace
+              worker_error_message = worker_error_message + "<p>Trace:</p><p>#{exception.backtrace}</p>"
+          end
+
+          worker_error_message = worker_error_message + outro
+          content = Content.new(type: 'text/html', value: worker_error_message)
           mail = SendGrid::Mail.new(from, subject, to, content) # https://github.com/sendgrid/sendgrid-ruby/issues/67
           mail_json = mail.to_json
           puts 'Send email:'
