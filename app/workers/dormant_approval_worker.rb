@@ -21,13 +21,13 @@ class DormantApprovalWorker
       adminMessage = "<p>Dormant approval check performed with #{dormant_approvals.count} results:</p><p>#{dormant_approvals.map { |approver| "#{approver.user.main_character.full_name}: Approval ##{approver.approval.id} #{approver.approval.approval_kind.title}" }.join('<br />')}</p><p>Please harass the above individuals if they do not finish their approvals in a timely manner.</p>"
 
       # Notify the CEO
-      Role.find_by_id(9).role_users.each do |user|
+      Role.find_by_id(9).role_full_users.each do |user|
         PushWorker.perform_async user.id, "Approval worker found #{dormant_approvals.count} dormant approval(s)."
         EmailWorker.perform_async user.email, "Dormant Approvals", adminMessage
       end
 
       # Notify the COO
-      Role.find_by_id(10).role_users.each do |user|
+      Role.find_by_id(10).role_full_users.each do |user|
         PushWorker.perform_async user.id, "Approval worker found #{dormant_approvals.count} dormant approval(s)."
         EmailWorker.perform_async user.email, "Dormant Approvals", adminMessage
       end
