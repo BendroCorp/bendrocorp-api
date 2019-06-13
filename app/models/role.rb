@@ -22,7 +22,7 @@ class Role < ActiveRecord::Base
   def role_full_users
     users = []
     User.all.each do |user|
-      users << { id: user.id, email: user.email, } if user.isinrole(self.id)
+      users << user if user.isinrole(self.id)
     end
     users
   end
