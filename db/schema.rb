@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181206011858) do
+ActiveRecord::Schema.define(version: 20190626212925) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -304,6 +304,23 @@ ActiveRecord::Schema.define(version: 20181206011858) do
     t.index ["job_id"], name: "index_characters_on_job_id"
     t.index ["species_id"], name: "index_characters_on_species_id"
     t.index ["user_id"], name: "index_characters_on_user_id"
+  end
+
+  create_table "chat_rooms", force: :cascade do |t|
+    t.text "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "chats", force: :cascade do |t|
+    t.text "text"
+    t.boolean "edited"
+    t.integer "chat_room_id"
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chat_room_id"], name: "index_chats_on_chat_room_id"
+    t.index ["user_id"], name: "index_chats_on_user_id"
   end
 
   create_table "classification_level_roles", force: :cascade do |t|

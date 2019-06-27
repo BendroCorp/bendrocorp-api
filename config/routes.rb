@@ -1,6 +1,9 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  # Mount action cable
+  mount ActionCable.server => '/cable'
+
   #  First route is the root route
   root 'pages#hello'
 
@@ -57,6 +60,12 @@ Rails.application.routes.draw do
   patch 'api/badge/:badge_id' => 'badge#update'
   put 'api/badge/:badge_id' => 'badge#update'
   delete 'api/badge/:badge_id' => 'badge#archive'
+
+  # chat
+  get 'api/chat' => 'chat#list'
+  post 'api/chat' => 'chat#create'
+  put 'api/chat' => 'chat#update'
+  delete 'api/chat/:chat_id' => 'chat#delete'
 
   # commodities
   get 'api/tools/commodities/' => 'commodities#list'
