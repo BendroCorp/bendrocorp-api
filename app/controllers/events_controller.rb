@@ -267,8 +267,8 @@ class EventsController < ApplicationController
   def certify_event_attendence_post
     #create approval if create approval selected
     @event = Event.find_by_id(params[:event_id])
-    if @event != nil && !@event.submitted_for_certification && @event.event_certification_request == nil
-      #check to make sure debriefing is submitted
+    if @event != nil && !@event.submitted_for_certification && !@event.certified && @event.event_certification_request == nil
+      # check to make sure debriefing is submitted
       # TODO: ^^ This
       # update the event first
       if @event.update_attributes(event_certify_params)

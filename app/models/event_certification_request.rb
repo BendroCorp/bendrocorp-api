@@ -29,14 +29,17 @@ class EventCertificationRequest < ApplicationRecord
       end
       self.save
     end
+
+    # Check to make sure all of attendences are marked certified
     if self.event.attendences.where("certified = ?", false).count == 0
       self.event.certified = true
+      self.submitted_for_certification = true
       self.save
     else
       raise 'Error occurred during event approval completion. All attendences could not be certified.'
     end
 
-    #check to see if this is suppose to recur
+    # check to see if this event is suppose to recur
     if self.event.weekly_recurrence || self.event.monthly_recurrence
       @event = Event.new
       @event.name = self.event.name
