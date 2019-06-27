@@ -2,10 +2,6 @@ class ChatController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  before_action only: [:delete] do |a|
-    a.require_one_role([2,3])
-  end
-
   # GET api/chat
   # GET api/chat/:count
   def list
@@ -28,10 +24,15 @@ class ChatController < ApplicationController
   def update
     @chat = Chat.find_by_id params[:chat][:id].to_i
     if @chat
-      if @chat.update_attributes(chat_params)
-        render status: 200, json: { mode: "UPDATE", chat: @chat.as_json(include: { user: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] }}) }
+      # security check
+      if current_user == @chat.user || current_user.is_in_one_role([2,3]) # execs, director
+        if @chat.update_attributes(chat_params)
+          render status: 200, json: { mode: "UPDATE", chat: @chat.as_json(include: { user: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] }}) }
+        else
+          render status: 500, json: { message: "Chat could not be updated because: #{@chat.errors.full_messages.to_sentence}" }
+        end
       else
-        render status: 500, json: { message: "Chat could not be updated because: #{@chat.errors.full_messages.to_sentence}" }
+        render status: 403, json: { message: 'You are not authorized to use this endpoint.' }
       end
     else
       render status: 404, json: { message: 'Chat message not found or it has been removed.' }
@@ -42,10 +43,15 @@ class ChatController < ApplicationController
   def delete
     @chat = Chat.find_by_id params[:chat_id].to_i
     if @chat
-      if @chat.destroy
-        render status: 200, json: { mode: 'DELETE', chat: { id: params[:chat_id] } }
+      # security check
+      if current_user == @chat.user || current_user.is_in_one_role([2,3]) # execs, director
+        if @chat.destroy
+          render status: 200, json: { mode: 'DELETE', chat: { id: params[:chat_id] } }
+        else
+          render status: 500, json: { message: "Chat could not be updated because: #{@chat.errors.full_messages.to_sentence}" }
+        end
       else
-        render status: 500, json: { message: "Chat could not be updated because: #{@chat.errors.full_messages.to_sentence}" }
+        render status: 403, json: { message: 'You are not authorized to use this endpoint.' }
       end
     else
       render status: 404, json: { message: 'Chat message not found or it has been removed.' }
