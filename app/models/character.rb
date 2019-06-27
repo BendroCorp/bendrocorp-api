@@ -93,4 +93,8 @@ class Character < ActiveRecord::Base
   def current_job_level
     self.current_job.job_level_id
   end
+
+  def current_job_title
+    self.current_job.title
+  end
 end

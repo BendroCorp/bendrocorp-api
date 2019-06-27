@@ -3,6 +3,7 @@ puts "Seeding things..."
 puts ""
 
 UserDeviceType.create([{ id: 1, title: 'ios_app' } ])
+ChatRoom.create([{id: 1, title: 'General'}])
 
 SiteLogType.create([{id: 1, title: 'Authentication'}, {id: 2, title: 'General'}, {id: 3, title: 'Error'}])
 

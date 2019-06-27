@@ -51,6 +51,16 @@ class User < ActiveRecord::Base
   accepts_nested_attributes_for :point_transactions
   accepts_nested_attributes_for :carts
 
+  def appear
+    self.is_online = true
+    self.save!
+  end
+
+  def disappear
+    self.is_online = false
+    self.save!
+  end
+
   def get_token
     if self.auth_token != nil
       return self.auth_token
@@ -92,24 +102,7 @@ class User < ActiveRecord::Base
     end
   end
 
-  # TODO: Current this only goes a few layers deep. This needs to walk the entire depth
   def get_all_roles
-    # orig - one layer deep
-    # all_roles = []
-    # non_nested_roles = []
-    # nested_roles = []
-    # self.roles.each do |role|
-    #   non_nested_roles << { :id => role.id, :name => role.name }
-    #   role.nested_roles.each do |nested|
-    #     nested_roles << { :id => nested.role_nested.id, :name => nested.role_nested.name + " (Nested in #{role.name})"} #role_nested
-    #   end
-    # end
-    #
-    # all_roles.push(*non_nested_roles)
-    # all_roles.push(*nested_roles)
-    #
-    # all_roles
-
     #fetch the base roll and nested roles four deep
     roles = []
     self.roles.each do |role|
@@ -165,6 +158,12 @@ class User < ActiveRecord::Base
   def main_character_avatar_url
     if self.main_character != nil
       self.main_character.avatar.url(:original)
+    end
+  end
+
+  def main_character_job_title
+    if self.main_character != nil
+      self.main_character.current_job_title
     end
   end
 
