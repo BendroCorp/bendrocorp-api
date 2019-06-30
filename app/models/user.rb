@@ -5,7 +5,9 @@ class User < ActiveRecord::Base
   before_create { self.user_information = UserInformation.new }
   #validates :username, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
-  validates :username, presence: true, length: { minimum:5, maximum: 30 }
+  VALID_USERNAME_REGEX = /\A[a-zA-Z0-9_.-]*\z/i
+  validates :username, presence: true, length: { minimum:5, maximum: 30 }, 
+                    format: { with: VALID_USERNAME_REGEX }
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }

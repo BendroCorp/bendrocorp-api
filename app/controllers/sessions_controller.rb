@@ -8,10 +8,8 @@ class SessionsController < ApplicationController
      # Does the user exist?
      if @user != nil
        if !@user.locked && @user.login_allowed && @user.active
-         if @user.authenticate(params[:session][:password]) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code])))
-           # || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code]))) && (!@user.locked && @user.login_allowed)
-           # puts "User is authorized: #{@user && !@user.active && @user.authenticate(params[:session][:password]) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code]))) && (!@user.locked && @user.login_allowed)}"
-           # puts "Creating token"
+         if @user.authenticate(params[:session][:password]) && (!@user.locked && @user.login_allowed) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code])))
+           # create the token text
            token_text = make_token
            # token is not perpetual
            new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 24.hours) if !params[:session][:perpetual]
