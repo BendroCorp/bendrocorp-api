@@ -577,6 +577,8 @@ GEM
       raabro (~> 1.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    have-i-been-pwned (0.1.4)
+      httparty
     http-2 (0.9.0)
     httparty (0.15.6)
       multi_xml (>= 0.5.2)
@@ -719,6 +721,7 @@ DEPENDENCIES
   aws-sdk
   bcrypt (~> 3.1.7)
   byebug
+  have-i-been-pwned
   httparty
   listen (>= 3.0.5, < 3.2)
   mail
@@ -741,4 +744,4 @@ DEPENDENCIES
   tzinfo-data
 
 BUNDLED WITH
-   1.16.1
+   2.0.2

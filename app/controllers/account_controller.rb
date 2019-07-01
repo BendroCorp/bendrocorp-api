@@ -3,26 +3,35 @@ class AccountController < ApplicationController
   before_action :require_member, except: [:forgot_password, :forgot_password_complete]
 
   # POST /api/account/change-password
-  # :password[original_password, password_confirmation]
+  # :password[original_password, password, password_confirmation]
   def change_password
     puts "Starting password change..."
-    puts params.inspect
-    if current_user.authenticate(params[:password][:original_password])
-      if params[:password][:password] === params[:password][:password_confirmation]
-        @user = User.find_by_id(current_user.id)
-        @user.password = params[:password][:password]
-        @user.password_confirmation = params[:password][:password_confirmation]
-        if @user.save
-          render status: 200, json: { message: 'Password successfully updated.' }
-        else
-          render status: 500, json: { message: 'ERROR: New password could not be saved.' }
-        end
+    if params[:password] && params[:password][:password] && params[:password][:original_password] && params[:password][:password_confirmation]
+      # all required params are present
+      if current_user.authenticate(params[:password][:original_password])
+        if !HaveIBeenPwned::pwned params[:password][:password]
+          if params[:password][:password] === params[:password][:password_confirmation]
+            @user = User.find_by_id(current_user.id)
+            @user.password = params[:password][:password]
+            @user.password_confirmation = params[:password][:password_confirmation]
+            if @user.save
+              render status: 200, json: { message: 'Password successfully updated.' }
+            else
+              render status: 500, json: { message: 'ERROR: New password could not be saved.' }
+            end
+          else
+            render status: 400, json: { message: 'Password and confirmation passwords do not match.' }
+          end
+       else
+          render status: 400, json: { message: 'This password is a common password and/or it was a part of a security breach and cannot be used on our service!' }
+       end
       else
-        render status: 403, json: { message: 'Password and confirmation passwords do not match.' }
+        render status: 400, json: { message: 'Your original password seems to be incorrect. Please try again.' }
       end
     else
-      render status: 403, json: { message: 'Your original password seems to be incorrect. Please try again.' }
+      render status: 400, json: { message: 'Request not properly formed. Request must include, original_password, password and password_confirmation contained within password object.'}
     end
+    
   end
 
   # POST /api/account/forgot-password

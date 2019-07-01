@@ -44,6 +44,9 @@ gem 'sendgrid-ruby'
 # payment processor
 gem 'stripe'
 
+# for checking to make sure good passwords are used
+gem 'have-i-been-pwned'
+
 # redis
 # gem 'redis', '~> 3.0'
 
