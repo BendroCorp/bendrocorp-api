@@ -46,7 +46,7 @@ class ApprovalsController < ApplicationController
 
                 render status: 200, json: { message: "Approval status changed." }
               else
-                render status: 500, :json => { message: "The approval could not be completed." }
+                render status: 500, json: { message: "The approval could not be completed." }
               end
 
             # single consent meta workflow
@@ -229,6 +229,8 @@ class ApprovalsController < ApplicationController
         send_email(approval.approval_source.user.email, "#{approval.approval_kind.title} Approved",
         "<p>Hello #{approval.approval_source.user.username}!</p><p>Your #{approval.approval_kind.title} for #{approval.approval_source_requested_item} has been approved.</p>"
         ) #to, subject, message
+
+        # run the completion function on the request
         approval.approval_source.approval_completion
       elsif approval.approval_workflow == 2 # applicant workflow
         # email exec group
@@ -238,7 +240,7 @@ class ApprovalsController < ApplicationController
       elsif approval.approval_workflow == 3 # do nothing workflow
         # do nothing
       end
-    else # if the approval was denied
+    elsif !approval.approved && approval.denied # if the approval is denied and not approved
       # push notification to the approval creator
       send_push_notification approval.approval_source.user.id, "Approval ##{approval.id} #{approval.approval_kind.title} Denied"
 
@@ -256,7 +258,11 @@ class ApprovalsController < ApplicationController
       send_email(approval.approval_source.user.email, "#{approval.approval_kind.title} Denied",
       "<p>Hello #{approval.approval_source.user.username}!</p><p>Your #{approval.approval_kind.title} for #{approval.approval_source_requested_item} has been denied. You can view your request from the relevant request page to get more information.</p>"
       ) #to, subject, message
+
+      # run the denial function on the request
       approval.approval_source.approval_denied
+    else
+      puts "Approval workflow not run. No action required."
     end
   end
 end
