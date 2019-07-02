@@ -81,6 +81,7 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.integer "application_id"
     t.integer "user_id"
     t.integer "approval_type_id"
+    t.datetime "last_notified"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["application_id"], name: "index_application_approvers_on_application_id"

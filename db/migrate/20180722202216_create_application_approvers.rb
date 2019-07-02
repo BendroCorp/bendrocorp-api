@@ -4,6 +4,7 @@ class CreateApplicationApprovers < ActiveRecord::Migration[5.1]
       t.references :application
       t.references :user
       t.references :approval_type
+      t.datetime :last_notified
       t.timestamps
     end
   end
