@@ -6,7 +6,7 @@ class DormantApprovalWorker
 
   def perform(*args)
     puts "Cheching for dormant approvals"
-    dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ?', Time.now - 2.days)
+    dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ? AND last_notified >= ?', Time.now - 2.days, Time.now + 12.hours)
 
     if dormant_approvals.count > 0
       puts "Found #{dormant_approvals.count} dormant approval(s)!"
@@ -15,6 +15,10 @@ class DormantApprovalWorker
         emailMessage = "<p>#{approver.user.main_character.first_name},</p><p>You have a dormant approval that you need to approve or deny:</p><p><a href=\"https://my.bendrocorp.com/requests/approvals/#{approver.approval_id}\">Approval #{approver.approval_id}</a></p><p>Please correct this issue in a timely manner.</p>"
         EmailWorker.perform_async approver.user.email, "Dormant Approval", emailMessage
         PushWorker.perform_async approver.user.id, "Your approval for approval ##{approver.approval.id} is dormant and requires your attention."
+
+        # update notification date
+        approver.last_notified = Time.now
+        approver.save!
       end
 
       # Compose the admin email message
