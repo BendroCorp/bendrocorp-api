@@ -6,14 +6,14 @@ class ApprovalsController < ApplicationController
   def approval_request
     #@your_approval = ApprovalApprover.find_by id: params[:approval_id].to_i
     @your_approval = ApprovalApprover.where("approval_id = ? AND user_id = ?", params[:approval_id].to_i, current_user.id).first #find_by id: params[:approval_id].to_i
-    if @your_approval != nil
+    if !@your_approval.nil?
       @approval = @your_approval.approval
       if @your_approval.user.id == current_user.id #approvals can only be made by the from whom they are requested
         if @your_approval.approval_type_id < 4 && (params[:approval_type].to_i == 4 || params[:approval_type].to_i == 5)
           @your_approval.approval_type_id = params[:approval_type].to_i
 
           if @your_approval.save!
-            # check and see if we should update the parental approver status
+            # check and see if we should update the approval status
             # first check to see if all of the approver have weighed in
             # full consent meta workflow
             if @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= 1 && !@approval.single_consent
@@ -31,17 +31,24 @@ class ApprovalsController < ApplicationController
                   approver.approval_type_id = 6
                   approver.save!
                 end
-              elsif approved >= approversCount #
+              elsif approved >= approversCount
                 @approval.approved = true
               elsif approved < approversCount
+                # helpful note :)
                 # then do nothing becuase we dont have full consent yet
               else
                 raise 'Approval consent out of range!'
               end
 
               if @approval.save
+                # #
+                if @approval.approved && !@approval.denied
+                  SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{@approval.id} has been approved!", site_log_type_id: 2)
+                elsif !@approval.approved && @approval.denied
+                  SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{@approval.id} has been denied!", site_log_type_id: 2)
+                end
 
-                # run final workflows
+                # run final workflow
                 run_approval_workflow @approval
 
                 render status: 200, json: { message: "Approval status changed." }
@@ -68,35 +75,42 @@ class ApprovalsController < ApplicationController
               else
                 raise 'Approval out of range (2)'
               end
+              # NOTE: This if statement does not totally make sense
               if @approval.approved == true || @approval.denied == true
                 if @approval.save
                   # if the approval saves then run the completion function
+                  if @approval.approved && !@approval.denied
+                    SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{@approval.id} has been approved!", site_log_type_id: 2)
+                  elsif !@approval.approved && @approval.denied
+                    SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{@approval.id} has been denied!", site_log_type_id: 2)
+                  end
 
                   # run final workflows
                   run_approval_workflow @approval
 
                   render status: 200, json: { message: "success" }
                 else
-                  render status: 500, :json => { message: "The approval could not be completed." }
+                  render status: 500, json: { message: "The approval could not be completed." }
                 end
               else
-                render status: 200, :json => { message: "Approval updated." }
+                render status: 200, json: { message: "Approval updated." }
               end
             else
-              render status: 200, :json => { message: "Approval updated." }
+              render status: 200, json: { message: "Approval updated." }
             end
           else
-            render status: 500, :json => { message: "Approval could not be saved." }
+            # failure from the initial approver approval status change
+            render status: 500, json: { message: "Approval could not be saved." }
           end
         else
           puts "Approval type not valid - Current Type Id: #{@your_approval.approval_type_id} - Incoming Type Id #{params[:approval_type]}"
-          render status: 500, :json => { message: "Selected approval type not valid" }
+          render status: 500, json: { message: "Selected approval type not valid" }
         end
       else
-        render status: 403, :json => { message: "You are not authorized to change the status of this approval." }
+        render status: 403, json: { message: "You are not authorized to change the status of this approval." }
       end
     else
-      render status: 404, :json => { message: "Approval does not exist..." }
+      render status: 404, json: { message: "Approval does not exist..." }
     end
   end
 
@@ -210,7 +224,20 @@ class ApprovalsController < ApplicationController
   private
   def run_approval_workflow approval
     # run the normal approval workflow
-    if approval.approved && !approval.denied
+    puts
+    puts
+    puts
+    puts
+    puts
+    puts
+    puts "Approved: #{approval.approved}, Denied: #{approval.denied}" # debug
+    puts
+    puts
+    puts
+    puts
+    puts
+    puts
+    if approval.approved == true && !approval.denied == true
       # TODO: Data drive this more!!
       if approval.approval_workflow == 1 # standard workflow
         # push notification to the approval creator
@@ -240,7 +267,7 @@ class ApprovalsController < ApplicationController
       elsif approval.approval_workflow == 3 # do nothing workflow
         # do nothing
       end
-    elsif !approval.approved && approval.denied # if the approval is denied and not approved
+    elsif !approval.approved == true && approval.denied == true # if the approval is denied and not approved
       # push notification to the approval creator
       send_push_notification approval.approval_source.user.id, "Approval ##{approval.id} #{approval.approval_kind.title} Denied"
 
@@ -262,7 +289,7 @@ class ApprovalsController < ApplicationController
       # run the denial function on the request
       approval.approval_source.approval_denied
     else
-      puts "Approval workflow not run. No action required."
+      puts 'Approval workflow not run. No action required.'
     end
   end
 end
