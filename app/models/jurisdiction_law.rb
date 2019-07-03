@@ -1,0 +1,11 @@
+class JurisdictionLaw < ApplicationRecord
+    belongs_to :jurisdiction, class_name: 'Jurisdiction', foreign_key: 'jurisdiction_id'
+    belongs_to :law_category, class_name: 'JurisdictionLawCategory', foreign_key: 'law_category_id'
+    enum law_class: { felony: 1, misdemeanor: 2 }
+    belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
+
+    validates :title, presence: true, length: { minimum:3, maximum: 200 }
+    validates :law_class, presence: true
+    validates :law_category_id, presence: true
+    validates :jurisdiction_id, presence: true
+end

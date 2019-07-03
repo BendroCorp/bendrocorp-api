@@ -42,9 +42,12 @@ class CreateSystemMapSystemPlanetaryBodyMoons < ActiveRecord::Migration[5.1]
       t.text :escape_velocity
       t.text :mass
 
+      t.belongs_to :jurisdiction, index: false
+
       t.belongs_to :primary_image, index: false
       t.timestamps
     end
+    add_index :system_map_system_planetary_body_moons, :jurisdiction_id, name: "moon_juristiction_id"
     add_index :system_map_system_planetary_body_moons, :orbits_planet_id, name: "orbits_planet_id"
     add_index :system_map_system_planetary_body_moons, :discovered_by_id, name: "moon_discovered_by_id"
     add_index :system_map_system_planetary_body_moons, :primary_image_id, name: "moon_primary_image"

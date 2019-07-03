@@ -135,6 +135,21 @@ Rails.application.routes.draw do
   patch 'api/job/' => 'jobs#update'
   put 'api/job/' => 'jobs#update'
 
+  # laws
+  get 'api/law/organized' => 'law#fetch_laws_organized'
+  get 'api/law' => 'law#fetch_laws'
+  post 'api/law' => 'law#create_law'
+  put 'api/law' => 'law#update_law'
+  delete 'api/law/:law_id' => 'law#archive_law'
+  get 'api/law/jurisdiction' => 'law#fetch_jurisdictions'
+  post 'api/law/jurisdiction' => 'law#create_jurisdiction'
+  put 'api/law/jurisdiction' => 'law#update_jurisdiction'
+  delete 'api/law/jurisdiction/:jurisdiction_id' => 'law#archive_jurisdiction'
+  get 'api/law/category' => 'law#fetch_categories'
+  post 'api/law/category' => 'law#create_category'
+  put 'api/law/category' => 'law#update_category'
+  delete 'api/law/category/:category_id' => 'law#archive_category'
+
   # liability
   get 'api/liability' => 'liability#list'
 

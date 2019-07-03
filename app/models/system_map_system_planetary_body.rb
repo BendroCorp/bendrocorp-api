@@ -29,6 +29,8 @@ class SystemMapSystemPlanetaryBody < ApplicationRecord
   has_many :atmo_compositions, :class_name => 'SystemMapAtmoComposition', :foreign_key => 'for_planet_id'
   has_many :atmo_gases, through: :atmo_compositions, :class_name => 'SystemMapAtmoGase', :foreign_key => 'atmo_gas_id'
 
+  belongs_to :jurisdiction
+
   belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id', optional: true
 
   def primary_image_url

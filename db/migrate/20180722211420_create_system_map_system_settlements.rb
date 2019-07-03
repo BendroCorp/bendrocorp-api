@@ -13,6 +13,8 @@ class CreateSystemMapSystemSettlements < ActiveRecord::Migration[5.1]
       t.belongs_to :primary_image
       t.belongs_to :discovered_by
       t.integer :minimum_criminality_rating
+
+      t.belongs_to :jurisdiction
       t.timestamps
     end
   end

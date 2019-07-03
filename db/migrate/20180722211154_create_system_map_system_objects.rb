@@ -38,6 +38,8 @@ class CreateSystemMapSystemObjects < ActiveRecord::Migration[5.1]
       t.text :synodic_orbital_period
       t.text :orbital_velocity
 
+      t.belongs_to :jurisdiction
+
       t.belongs_to :primary_image
       t.timestamps
     end

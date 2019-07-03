@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190626212925) do
+ActiveRecord::Schema.define(version: 20190703000049) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -761,6 +761,42 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.datetime "updated_at", null: false
     t.index ["division_id"], name: "index_jobs_on_division_id"
     t.index ["job_level_id"], name: "index_jobs_on_job_level_id"
+  end
+
+  create_table "jurisdiction_law_categories", force: :cascade do |t|
+    t.text "title"
+    t.integer "ordinal"
+    t.boolean "archived", default: false
+    t.integer "jurisdiction_id"
+    t.integer "created_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_jurisdiction_law_categories_on_created_by_id"
+    t.index ["jurisdiction_id"], name: "index_jurisdiction_law_categories_on_jurisdiction_id"
+  end
+
+  create_table "jurisdiction_laws", force: :cascade do |t|
+    t.text "title"
+    t.integer "law_class"
+    t.float "fine_amount"
+    t.boolean "archived", default: false
+    t.integer "jurisdiction_id"
+    t.integer "law_category_id"
+    t.integer "created_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_jurisdiction_laws_on_created_by_id"
+    t.index ["jurisdiction_id"], name: "index_jurisdiction_laws_on_jurisdiction_id"
+    t.index ["law_category_id"], name: "index_jurisdiction_laws_on_law_category_id"
+  end
+
+  create_table "jurisdictions", force: :cascade do |t|
+    t.text "title"
+    t.boolean "archived", default: false
+    t.integer "created_by_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_jurisdictions_on_created_by_id"
   end
 
   create_table "mail_queue_templates", force: :cascade do |t|
@@ -1750,10 +1786,12 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.text "sidereal_orbital_period"
     t.text "synodic_orbital_period"
     t.text "orbital_velocity"
+    t.integer "jurisdiction_id"
     t.integer "primary_image_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discovered_by_id"], name: "index_system_map_system_objects_on_discovered_by_id"
+    t.index ["jurisdiction_id"], name: "index_system_map_system_objects_on_jurisdiction_id"
     t.index ["object_type_id"], name: "index_system_map_system_objects_on_object_type_id"
     t.index ["orbits_moon_id"], name: "index_system_map_system_objects_on_orbits_moon_id"
     t.index ["orbits_planet_id"], name: "index_system_map_system_objects_on_orbits_planet_id"
@@ -1797,11 +1835,13 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.text "surface_gravity"
     t.text "escape_velocity"
     t.text "mass"
+    t.integer "jurisdiction_id"
     t.integer "primary_image_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discovered_by_id"], name: "index_system_map_system_planetary_bodies_on_discovered_by_id"
     t.index ["faction_affiliation_id"], name: "planet_faction_id"
+    t.index ["jurisdiction_id"], name: "planet_juristiction_id"
     t.index ["orbits_system_id"], name: "orbits_system_id"
     t.index ["primary_image_id"], name: "planet_primary_image"
     t.index ["safety_rating_id"], name: "index_system_map_system_planetary_bodies_on_safety_rating_id"
@@ -1896,10 +1936,12 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.text "surface_gravity"
     t.text "escape_velocity"
     t.text "mass"
+    t.integer "jurisdiction_id"
     t.integer "primary_image_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discovered_by_id"], name: "moon_discovered_by_id"
+    t.index ["jurisdiction_id"], name: "moon_juristiction_id"
     t.index ["orbits_planet_id"], name: "orbits_planet_id"
     t.index ["primary_image_id"], name: "moon_primary_image"
   end
@@ -1938,10 +1980,12 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.integer "primary_image_id"
     t.integer "discovered_by_id"
     t.integer "minimum_criminality_rating"
+    t.integer "jurisdiction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discovered_by_id"], name: "index_system_map_system_settlements_on_discovered_by_id"
     t.index ["faction_affiliation_id"], name: "index_system_map_system_settlements_on_faction_affiliation_id"
+    t.index ["jurisdiction_id"], name: "index_system_map_system_settlements_on_jurisdiction_id"
     t.index ["on_moon_id"], name: "index_system_map_system_settlements_on_on_moon_id"
     t.index ["on_planet_id"], name: "index_system_map_system_settlements_on_on_planet_id"
     t.index ["primary_image_id"], name: "index_system_map_system_settlements_on_primary_image_id"
@@ -1956,10 +2000,12 @@ ActiveRecord::Schema.define(version: 20190626212925) do
     t.integer "faction_affiliation_id"
     t.boolean "discovered"
     t.boolean "archived"
+    t.integer "jurisdiction_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discovered_by_id"], name: "index_system_map_systems_on_discovered_by_id"
     t.index ["faction_affiliation_id"], name: "index_system_map_systems_on_faction_affiliation_id"
+    t.index ["jurisdiction_id"], name: "index_system_map_systems_on_jurisdiction_id"
   end
 
   create_table "task_logs", force: :cascade do |t|

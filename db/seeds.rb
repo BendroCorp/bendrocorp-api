@@ -26,6 +26,7 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 16, title: 'Roles', icon: 'fas fa-key', link: '/roles', ordinal: 3, nested_under_id: 12 },
                  { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
                  { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
+                 { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
                  ])
 # { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
@@ -36,7 +37,8 @@ MenuItemRole.create([{ id: 1, menu_item_id: 12, role_id: 42 },
                      { id: 3, menu_item_id: 15, role_id: 39 },
                      { id: 4, menu_item_id: 16, role_id: 37 },
                      { id: 5, menu_item_id: 17, role_id: 40 },
-                     { id: 6, menu_item_id: 18, role_id: 38 },])
+                     { id: 6, menu_item_id: 18, role_id: 38 },
+                     { id: 7, menu_item_id: 19, role_id: 43 }])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
@@ -365,7 +367,8 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
                      { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' },
                      { id: 41, name: 'CEO Assistant', description: 'Assistant to the CEO' },
-                     { id: 42, name: 'Admin Menu', description: 'Allows access to the admin menu' }])
+                     { id: 42, name: 'Admin Menu', description: 'Allows access to the admin menu' },
+                     { id: 43, name: 'Legal Administrator', description: 'Allow admin access to the law system.'}])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
