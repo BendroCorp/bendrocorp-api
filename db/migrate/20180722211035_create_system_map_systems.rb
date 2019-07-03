@@ -9,6 +9,7 @@ class CreateSystemMapSystems < ActiveRecord::Migration[5.1]
       t.belongs_to :faction_affiliation
       t.boolean :discovered
       t.boolean :archived
+      t.belongs_to :jurisdiction
       t.timestamps
     end
   end

@@ -43,9 +43,12 @@ class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
       t.text :escape_velocity
       t.text :mass
 
+      t.belongs_to :jurisdiction, index: false
+
       t.belongs_to :primary_image, index: false
       t.timestamps
     end
+    add_index :system_map_system_planetary_bodies, :jurisdiction_id, name: "planet_juristiction_id"
     add_index :system_map_system_planetary_bodies, :orbits_system_id, name: "orbits_system_id"
     add_index :system_map_system_planetary_bodies, :faction_affiliation_id, name: "planet_faction_id"
     add_index :system_map_system_planetary_bodies, :primary_image_id, name: "planet_primary_image"

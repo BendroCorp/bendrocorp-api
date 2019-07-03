@@ -10,6 +10,8 @@ class SystemMapSystem < ApplicationRecord
 
   has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_system_id'
 
+  belongs_to :jurisdiction
+
   def jump_points
     syss= SystemMapSystemConnection.where("system_one_id = ? OR system_two_id = ? ", self.id, self.id)
     ret = []
