@@ -262,6 +262,9 @@ Rails.application.routes.draw do
   # system map routes
   get 'api/system-map/types' => 'system_map#list_types'
   get 'api/system-map' => 'system_map#list'
+  post 'api/system-map' => 'system_map#create'
+  put 'api/system-map' => 'system_map#update'
+
   post 'api/system-map/planet' => 'system_map#add_planet'
   patch 'api/system-map/planet' => 'system_map#update_planet'
   put 'api/system-map/planet' => 'system_map#update_planet'

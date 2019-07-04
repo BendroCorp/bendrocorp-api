@@ -69,7 +69,7 @@ class SystemMapController < ApplicationController
                     }
   end
 
-  # POST api/tools/system-map
+  # POST api/system-map
   # Body should contain system_object
   def create
     begin
@@ -85,7 +85,7 @@ class SystemMapController < ApplicationController
     end
   end
 
-
+  # PUT api/system-map
   def update
     begin
       puts 'Universal system update for...'
