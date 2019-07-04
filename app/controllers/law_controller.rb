@@ -9,7 +9,7 @@ class LawController < ApplicationController
     # GET /api/law/organized
     def fetch_laws_organized
         render status: 200, json: Jurisdiction.where(archived: false)
-        .as_json(include: { categories: { include: { laws: { } } } })
+        .as_json(include: { categories: { include: { laws: {} } } })
     end
 
     # GET /api/law
@@ -62,6 +62,16 @@ class LawController < ApplicationController
         render status: 200, json: Jurisdiction.where(archived: false).order('title')
     end
 
+    # GET /api/law/jurisdiction/:jurisdiction_id
+    def fetch_jurisdiction
+        @jurisdiction = Jurisdiction.find_by_id(params[:jurisdiction_id])
+        if @jurisdiction
+            render status: 200, json: @jurisdiction.as_json(include: { categories: { include: { laws: {} } } })
+        else
+           render status: 404, json: { message: 'Jurisdiction not found!' }
+        end
+    end
+
     # POST /api/law/jurisdiction
     def create_jurisdiction
         @jurisdiction = Jurisdiction.new(jurisdiction_params)
@@ -103,15 +113,16 @@ class LawController < ApplicationController
     end
 
     # GET /api/law/category
+    # GET /api/law/category/:jurisdiction_id
     def fetch_categories
-        render status: 200, json: Jurisdiction.where(archived: false).order('title')
+        render status: 200, json: Jurisdiction.where(archived: false).order('ordinal').as_json(include: { laws: {} })
     end
 
     # POST /api/law/category
     def create_category
         @law_category = JurisdictionLawCategory.new(law_category_params)
         @law_category.created_by = current_user
-        @law_category.ordinal = @law_category.maximum("ordinal") + 1
+        @law_category.ordinal = JurisdictionLawCategory.all.count + 1
         if @law_category.save
             render status: 200, json: @law_category
         else
