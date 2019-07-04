@@ -25,7 +25,7 @@ class SystemMapSystemPlanetaryBodyMoon < ApplicationRecord
   has_many :atmo_compositions, :class_name => 'SystemMapAtmoComposition', :foreign_key => 'for_moon_id'
   has_many :atmo_gases, through: :atmo_compositions, :class_name => 'SystemMapAtmoGase', :foreign_key => 'atmo_gas_id'
 
-  belongs_to :jurisdiction
+  belongs_to :jurisdiction, optional: true
 
   def primary_image_url
     if self.primary_image != nil
