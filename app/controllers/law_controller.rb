@@ -171,6 +171,6 @@ class LawController < ApplicationController
 
     private
     def law_category_params
-        params.require(:category).permit(:title, :jurisdiction_id)
+        params.require(:category).permit(:title, :jurisdiction_id, :ordinal)
     end
 end
