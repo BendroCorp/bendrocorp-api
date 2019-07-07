@@ -19,12 +19,10 @@ class SessionsController < ApplicationController
            @user.login_attempts = 0
            if @user.save
              SiteLog.create(module: 'Session', submodule: 'Success', message: "User ##{@user.id} successfully authenticated!", site_log_type_id: 1)
-             puts
-             puts "User authenticated and token created!"
-             puts
              render status: 200, json: { id: @user.id, character: @user.main_character.as_json(only: [:id, :first_name, :last_name], methods: [:full_name, :avatar_url, :current_job]), tfa_enabled: @user.use_two_factor, token: token_text, token_expires: new_token.expires_ms, claims: @user.claims }
            else
-             render status: 500, json: { message: "Login was not successful because: #{@user.errors.full_messages.to_sentence}" }
+            SiteLog.create(module: 'Session', submodule: 'User Save on Success Fail', message: "User could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
+            render status: 500, json: { message: "Login was not successful because: #{@user.errors.full_messages.to_sentence}" }
            end
          # if the auth fails
          else
@@ -38,10 +36,12 @@ class SessionsController < ApplicationController
                # if we locked the account then notify the user
                if @user.locked
                  # email the user
+                 SiteLog.create(module: 'Session', submodule: 'Account Lockout', message: "#{@user.email} has been locked out because of too many password attempts.", site_log_type_id: 1)
                  send_email @user.email, "Account Lockout", "<div><p><h3>Account Lockout</h3></p><p>It looks like there is a security issue with your account. Please contact an admin on Discord to start the unlock process.</p></div>"
                end
              else
-               render status: 500, json: { message: "Error occured while trying to access user data."}
+              SiteLog.create(module: 'Session', submodule: 'Lockout Save Failure', message: "Lockout or attempt incrementation could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
+              render status: 500, json: { message: "Error occured while trying to access user data."}
              end
            end
            SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed.", site_log_type_id: 1)
@@ -56,6 +56,7 @@ class SessionsController < ApplicationController
        render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
      end
    else
+      SiteLog.create(module: 'Session', 'Bad Object', message: "Session object badly formed or not provided. #{params.inspect}", site_log_type_id: 1)
      render status: 400, json: { message: 'Session object not provided or not properly created.' }
    end
   end
