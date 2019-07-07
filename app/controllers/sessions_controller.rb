@@ -56,7 +56,7 @@ class SessionsController < ApplicationController
        render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
      end
    else
-      SiteLog.create(module: 'Session', 'Bad Object', message: "Session object badly formed or not provided. #{params.inspect}", site_log_type_id: 1)
+      SiteLog.create(module: 'Session', submodule: 'Bad Object', message: "Session object badly formed or not provided. #{params.inspect}", site_log_type_id: 1)
      render status: 400, json: { message: 'Session object not provided or not properly created.' }
    end
   end
