@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
                end
              else
               SiteLog.create(module: 'Session', submodule: 'Lockout Save Failure', message: "Lockout or attempt incrementation could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
-              render status: 500, json: { message: "Error occured while trying to access user data."}
+              # render status: 500, json: { message: "Error occured while trying to access user data."}
              end
            end
            SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed.", site_log_type_id: 1)
