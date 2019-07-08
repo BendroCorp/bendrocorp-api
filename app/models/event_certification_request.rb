@@ -33,7 +33,7 @@ class EventCertificationRequest < ApplicationRecord
     # Check to make sure all of attendences are marked certified
     if self.event.attendences.where("certified = ?", false).count == 0
       self.event.certified = true
-      self.submitted_for_certification = true
+      self.event.submitted_for_certification = true
       self.save
     else
       raise 'Error occurred during event approval completion. All attendences could not be certified.'
