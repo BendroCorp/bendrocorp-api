@@ -12,7 +12,7 @@ class ChatController < ApplicationController
   # POST api/chat
   def create
     @chat = Chat.new(chat_params)
-    @chat.user = current_user
+    @chat.user_id = current_user.id
     if @chat.save
       render status: 200, json: { mode: "CREATE", chat: @chat.as_json(include: { user: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] }}) }
     else
@@ -25,7 +25,7 @@ class ChatController < ApplicationController
     @chat = Chat.find_by_id params[:chat][:id].to_i
     if @chat
       # security check
-      if current_user == @chat.user || current_user.is_in_one_role([2,3]) # execs, director
+      if current_user.id == @chat.user_id || current_user.is_in_one_role([2,3]) # execs, director
         if @chat.update_attributes(chat_params)
           render status: 200, json: { mode: "UPDATE", chat: @chat.as_json(include: { user: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] }}) }
         else
@@ -44,7 +44,7 @@ class ChatController < ApplicationController
     @chat = Chat.find_by_id params[:chat_id].to_i
     if @chat
       # security check
-      if current_user == @chat.user || current_user.is_in_one_role([2,3]) # execs, director
+      if current_user.id == @chat.user_id || current_user.is_in_one_role([2,3]) # execs, director
         if @chat.destroy
           render status: 200, json: { mode: 'DELETE', chat: { id: params[:chat_id] } }
         else

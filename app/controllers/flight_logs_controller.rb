@@ -75,7 +75,7 @@ class FlightLogsController < ApplicationController
         puts "New log id: #{@log.id} "
         if params["new_image_uploads"].to_a.count > 0
           params["new_image_uploads"].to_a.each do |image|
-            img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
+            img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)
             @log.image_uploads << img
             @log.save
           end
@@ -98,7 +98,7 @@ class FlightLogsController < ApplicationController
         if @log.update_attributes(flight_log_params)
           if params["new_image_uploads"].to_a.count > 0
             params["new_image_uploads"].to_a.each do |image|
-              img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
+              img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)
               @log.image_uploads << img
               @log.save
             end
@@ -144,9 +144,12 @@ class FlightLogsController < ApplicationController
     # we need all ships where the current user owns them or is in the crew
     all_owned_ships.each do |ship|
       #@owned_ships << ship if ship.character ==
-      if ship.character.id == current_user.main_character.id
+      # get the main character id
+      main_character_id = current_user.main_character.id
+      # check it
+      if ship.character.id == main_character_id
         @owned_ships << ship
-      elsif ship.user_in_crew current_user && ship.character.id != current_user.main_character.id
+      elsif ship.user_in_crew current_user && ship.character.id != main_character_id
         ship.title = "#{ship.title} (Crew)"
         @owned_ships << ship
       end

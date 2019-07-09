@@ -1,5 +1,6 @@
 class Report < ApplicationRecord
-  belongs_to :submitter, :class_name => 'User', :foreign_key => 'submitter_id'
+  validates :submitter_id, presence: true
+  belongs_to :submitter, :class_name => 'User', :foreign_key => 'submitter_id', optional: true
   belongs_to :specified_submit_to_role, :class_name => 'Role', :foreign_key => 'specified_submit_to_role_id'
   belongs_to :report_type
   belongs_to :flight_log

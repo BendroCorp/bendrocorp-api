@@ -2,7 +2,8 @@ class StoreItem < ApplicationRecord
   belongs_to :currency_type, :class_name => 'StoreCurrencyType', :foreign_key => 'currency_type_id'
   belongs_to :category, :class_name => 'StoreItemCategory', :foreign_key => 'category_id'
 
-  belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
+  validates :creator_id, presence: true
+  belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id', optional: true
   belongs_to :last_updated_by, :class_name => 'User', :foreign_key => 'last_updated_by_id'
 
   has_attached_file :image, :styles => { :small => "50x50#", :thumbnail => "150x150#", :big => "300x300#", :original => "500x500#" },

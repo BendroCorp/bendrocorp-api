@@ -48,7 +48,7 @@ class OffenderReportsController < ApplicationController
 
   # GET api/offender-report/mine
   def list_mine
-    render status: 200, json: OffenderReport.where(:created_by => current_user).order('occured_when desc').as_json(include: { infractions: {}, force_level_applied: {}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
+    render status: 200, json: OffenderReport.where(created_by_id: current_user.id).order('occured_when desc').as_json(include: { infractions: {}, force_level_applied: {}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
   end
 
   # GET api/offender-report/admin
@@ -60,7 +60,7 @@ class OffenderReportsController < ApplicationController
   def fetch
     @offender_report = OffenderReport.find_by_id(params[:report_id])
     # Exists & Security Check
-    if @offender_report && (@offender_report.report_approved || (@offender_report.created_by == current_user || current_user.isinrole(16)))
+    if @offender_report && (@offender_report.report_approved || (@offender_report.created_by_id == current_user.id || current_user.isinrole(16)))
       render status: 200, json: @offender_report.as_json(include: { offender: {}, infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location])
     else
       render status: 404, json: { message: "Offender report not found!" }
@@ -81,7 +81,7 @@ class OffenderReportsController < ApplicationController
 
     @offender_report.occured_when = Time.at(params[:offender_report][:occured_when_ms].to_f / 1000)
     @offender_report.submitted_for_approval = false
-    @offender_report.created_by = current_user
+    @offender_report.created_by_id = current_user.id
 
     # Handle adding the intial infractions from params[:offender_report][:new_infractions]
     puts params[:offender_report][:new_infractions]
@@ -109,7 +109,7 @@ class OffenderReportsController < ApplicationController
     @offender_report = OffenderReport.find_by_id(params[:offender_report][:id].to_i)
     if @offender_report != nil && @offender_report.submitted_for_approval == false
       # security check
-      if @offender_report.created_by == current_user || current_user.isinrole(16) # offender report admin
+      if @offender_report.created_by_id == current_user.id || current_user.isinrole(16) # offender report admin
         @offender_report.occured_when = Time.at(params[:offender_report][:occured_when_ms].to_f / 1000)
 
         # Handle removing the infractions from params[:offender_report][:remove_infractions]
@@ -166,7 +166,7 @@ class OffenderReportsController < ApplicationController
         approvalRequest.approval_id = new_approval(7) # offender report approval
 
         # lastly add the request to the current_user
-        approvalRequest.user = current_user
+        approvalRequest.user_id = current_user.id
         approvalRequest.offender_report = @offender_report
         approvalRequest.save #save the approvalRequest
         @offender_report.offender_report_approval_request = approvalRequest

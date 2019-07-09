@@ -8,7 +8,7 @@ class AccountController < ApplicationController
     puts "Starting password change..."
     if params[:password] && params[:password][:password] && params[:password][:original_password] && params[:password][:password_confirmation]
       # all required params are present
-      if current_user.authenticate(params[:password][:original_password])
+      if current_user.db_user.authenticate(params[:password][:original_password])
         if !HaveIBeenPwned::pwned params[:password][:password]
           if params[:password][:password] === params[:password][:password_confirmation]
             @user = User.find_by_id(current_user.id)
@@ -22,16 +22,16 @@ class AccountController < ApplicationController
           else
             render status: 400, json: { message: 'Password and confirmation passwords do not match.' }
           end
-       else
+        else
           render status: 400, json: { message: 'This password is a common password and/or it was a part of a security breach and cannot be used on our service!' }
-       end
+        end
       else
         render status: 400, json: { message: 'Your original password seems to be incorrect. Please try again.' }
       end
     else
       render status: 400, json: { message: 'Request not properly formed. Request must include, original_password, password and password_confirmation contained within password object.'}
     end
-    
+
   end
 
   # POST /api/account/forgot-password
@@ -78,10 +78,11 @@ class AccountController < ApplicationController
 
   # GET api/account/fetch-tfa
   def fetch_two_factor_auth
-    if !current_user.use_two_factor
-      current_user.assign_auth_secret
-      if current_user.save
-        render status: 200, json: { qr_data_string: "otpauth://totp/bendrocorp?secret=#{current_user.auth_secret}", seed_value: current_user.auth_secret }
+    db_user = current_user.db_user
+    if !db_user.use_two_factor
+      db_user.assign_auth_secret
+      if db_user.save
+        render status: 200, json: { qr_data_string: "otpauth://totp/bendrocorp?secret=#{db_user.auth_secret}", seed_value: db_user.auth_secret }
       else
         render status: 500, json: { message: 'Error Occured. Could not create auth secret'}
       end
@@ -92,14 +93,15 @@ class AccountController < ApplicationController
 
   # POST api/account/enable-tfa
   def enable_two_factor_auth
-    if current_user.authenticate(params[:two_factor_auth][:password])
-      if current_user.two_factor_valid(params[:two_factor_auth][:code])
-        @user = User.find_by_id(current_user.id)
+    db_user = current_user.db_user
+    if db_user.authenticate(params[:two_factor_auth][:password])
+      if db_user.two_factor_valid(params[:two_factor_auth][:code])
+        @user = User.find_by_id(db_user.id)
         @user.use_two_factor = true
         if @user.save
           render status: 200, json: { message: 'Two factor authentication enabled!.' }
         else
-          render status: 500, json: { message: "Two factor could not be enabled on this account because: #{current_user.errors.full_messages.to_sentence}" }
+          render status: 500, json: { message: "Two factor could not be enabled on this account because: #{db_user.errors.full_messages.to_sentence}" }
         end
       else
         render status: 403, json: { message: 'Incorrect code try again! Make sure to not include any spaces or dashes.'}
@@ -110,7 +112,8 @@ class AccountController < ApplicationController
   end
 
   def update_user_info
-    if current_user.user_information.update_attributes(user_info_params)
+    db_user = current_user.db_user
+    if db_user.user_information.update_attributes(user_info_params)
       render status: 200, json: { message: 'Personal information updated.' }
     else
       render status: 500, json: { message: 'Error Occured: Personal information could not be updated.' }
@@ -119,16 +122,17 @@ class AccountController < ApplicationController
 
   # DELETE api/account/token/:token
   def remove_user_token
-    @token = UserToken.find_by(user: current_user, token: params[:token])
-    if @token
-      if @token.destroy
-        render status: 200, json: { message: 'Token removed!' }
-      else
-        render status: 500, json: { message: "The token could not be removed because: #{@token.errors.full_messages.to_sentence}" }
-      end
-    else
-      render status: 404, json: { message: 'Token not found. It may have already been removed.' }
-    end
+    # @token = UserToken.find_by(user: current_user, token: params[:token])
+    # if @token
+    #   if @token.destroy
+    #     render status: 200, json: { message: 'Token removed!' }
+    #   else
+    #     render status: 500, json: { message: "The token could not be removed because: #{@token.errors.full_messages.to_sentence}" }
+    #   end
+    # else
+    #   render status: 404, json: { message: 'Token not found. It may have already been removed.' }
+    # end
+    render status: 400, json: { message: 'Method deprecated.' }
   end
 
   def fetch_user_countries

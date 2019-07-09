@@ -6,6 +6,7 @@ class SystemMapSystemObject < ApplicationRecord
   belongs_to :orbits_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'orbits_planet_id', optional: true
   belongs_to :orbits_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'orbits_moon_id', optional: true
 
+  validates :discovered_by_id, presence: true
   belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_system_object_id'

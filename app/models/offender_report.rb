@@ -1,7 +1,8 @@
 class OffenderReport < ApplicationRecord
   validates :infractions_committed, presence: true#, :length => { :minimum => 1 }
 
-  belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id'
+  validates :created_by_id, presence: true
+  belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true
 
   belongs_to :offender, :class_name => 'OffenderReportOffender', :foreign_key => 'offender_id'
 

@@ -7,7 +7,8 @@ class SystemMapSystemSettlement < ApplicationRecord
   belongs_to :on_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'on_moon_id', optional: true
   belongs_to :safety_rating, :class_name  => 'SystemMapSystemSafetyRating', :foreign_key => 'safety_rating_id', optional: true
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  validates :discovered_by_id, presence: true
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   belongs_to :jurisdiction, optional: true
 

@@ -14,7 +14,7 @@ class ApplicationsController < ApplicationController
     puts params[:character].inspect
     if Character.where('first_name = ? AND last_name = ?', @character.first_name, @character.last_name).count == 0
       @character.is_main_character = true
-      @character.user = current_user
+      @character.user_id = current_user.id
       @character.application.application_status_id = 1
       @character.application.interview = ApplicationInterview.new #create the interview packet
       applicantjob = Job.find_by id: 21 # applicant job id - cause everyone starts as an applicant
@@ -22,7 +22,7 @@ class ApplicationsController < ApplicationController
       @character.job_trackings << JobTracking.new(job: applicantjob)
 
       @character.application.last_status_change = Time.now
-      @character.application.last_status_changed_by = current_user
+      @character.application.last_status_changed_by_id = current_user.id
 
       # update rsi_handle
       @character.user.rsi_handle = params[:character][:user_attributes][:rsi_handle].downcase
@@ -50,7 +50,7 @@ class ApplicationsController < ApplicationController
             #Create the new approval request
             approvalRequest = ApplicantApprovalRequest.new
 
-            approvalRequest.user = current_user
+            approvalRequest.user_id = current_user.id
 
             # put the approval instance in the request
             approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
@@ -105,7 +105,6 @@ class ApplicationsController < ApplicationController
 
   # GET api/apply
   def fetch
-    puts current_user.inspect
     if current_user.main_character
       render status: 200, json: current_user.main_character.application.as_json(include: { application_status: { } })
     else
@@ -123,13 +122,14 @@ class ApplicationsController < ApplicationController
 
   # DELETE api/apply
   def withdraw_application
-    if !current_user.member? # members should not be able to do this
-      current_user.characters.each do |char|
+    db_user = current_user.db_user
+    if !db_user.member? # members should not be able to do this
+      db_user.characters.each do |char|
         job = Job.find_by_id(24) #withdrawn job
         char.jobs << job
         char.application.application_status_id = 8 # withdrawn status
       end
-      if current_user.save
+      if db_user.save
         email_groups([2,3,7], "Application Withdrawn", "#{@character.main_character.full_name} has withdrawn their application to be a member of BendroCorp.")
         # flash[:success] = "Application withdrawn successfully."
         # redirect_to '/'
@@ -177,7 +177,7 @@ class ApplicationsController < ApplicationController
           end
 
           @character.application.last_status_change = Time.now
-          @character.application.last_status_changed_by = current_user
+          @character.application.last_status_changed_by_id = current_user.id
           #err
           if @character.save
 
@@ -261,18 +261,18 @@ class ApplicationsController < ApplicationController
 
           # auto deny the approval
           @approval.denied = true
-          
+
           if @approval.save
             render status: 200, json: { message: 'Application successfully rejected!' }
           else
             render status: 500, json: { message: "Application could not be rejected because: #{@approval.errors.full_messages.to_sentence}" }
           end
-          
+
         else
           # redirect_to action: "personnel_view", id: @character.id
           render status: 500, json: { message: "Application status could not be updated because: #{@character.errors.full_messages.to_sentence}" }
         end
-      else 
+      else
         render status: 400, json: { message: 'Application rejection reason not supplied! You must include a rejection reason!' }
       end
     else

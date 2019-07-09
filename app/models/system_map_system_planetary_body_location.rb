@@ -7,7 +7,8 @@ class SystemMapSystemPlanetaryBodyLocation < ApplicationRecord
   belongs_to :on_system_object, :class_name => 'SystemMapSystemObject', :foreign_key => 'on_system_object_id', optional: true
   belongs_to :on_settlement, :class_name => 'SystemMapSystemSettlement', :foreign_key => 'on_settlement_id', optional: true
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  validates :discovered_by_id, presence: true
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_location_id'
   # has_many :observations, :class_name => 'SystemMapObservation', :foreign_key => 'of_location_id'

@@ -128,7 +128,7 @@ class ApprovalsController < ApplicationController
   # This override endpoint is meant for broad use to clear the queue. Should be used with great care!
   def approval_override
     if current_user.isinrole(9) # only the CEO may use this endpoint
-      if current_user.two_factor_valid params[:code].to_i # must use two factor to use this method
+      if current_user.db_user.two_factor_valid params[:code].to_i # must use two factor to use this method
         @approvals = Approval.where denied: false, approved: false
         @approvals.each do |approval|
           @approvers = approval.approval_approvers.where('approval_type_id < 4')
@@ -169,7 +169,7 @@ class ApprovalsController < ApplicationController
   # Body contains :code, approval_type_id
   def approval_override_specific
     if current_user.isinrole(9) # only the CEO may use this endpoint
-      if current_user.two_factor_valid params[:code].to_i # must use two factor to use this method
+      if current_user.db_user.two_factor_valid params[:code].to_i # must use two factor to use this method
         @approval = Approval.where(denied: false, approved: false, id: params[:approval_id].to_i).first
         if @approval
           @approvers = @approval.approval_approvers.where('approval_type_id < 4')
@@ -224,19 +224,6 @@ class ApprovalsController < ApplicationController
   private
   def run_approval_workflow approval
     # run the normal approval workflow
-    puts
-    puts
-    puts
-    puts
-    puts
-    puts
-    puts "Approved: #{approval.approved}, Denied: #{approval.denied}" # debug
-    puts
-    puts
-    puts
-    puts
-    puts
-    puts
     if approval.approved == true && !approval.denied == true
       # TODO: Data drive this more!!
       if approval.approval_workflow == 1 # standard workflow

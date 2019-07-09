@@ -16,11 +16,11 @@ class LawController < ApplicationController
     def fetch_laws
         render status: 200, json: JurisdictionLaw.where(archived: false).order('title')
     end
-    
+
     # POST /api/law
     def create_law
         @law = JurisdictionLaw.new(law_params)
-        @law.created_by = current_user
+        @law.created_by_id = current_user.id
         if @law.save
             render status: 200, json: @law
         else
@@ -75,7 +75,7 @@ class LawController < ApplicationController
     # POST /api/law/jurisdiction
     def create_jurisdiction
         @jurisdiction = Jurisdiction.new(jurisdiction_params)
-        @jurisdiction.created_by = current_user
+        @jurisdiction.created_by_id = current_user.id
         if @jurisdiction.save
             render status: 200, json: @jurisdiction
         else
@@ -121,7 +121,7 @@ class LawController < ApplicationController
     # POST /api/law/category
     def create_category
         @law_category = JurisdictionLawCategory.new(law_category_params)
-        @law_category.created_by = current_user
+        @law_category.created_by_id = current_user.id
         @law_category.ordinal = JurisdictionLawCategory.all.count + 1
         if @law_category.save
             render status: 200, json: @law_category
@@ -164,7 +164,7 @@ class LawController < ApplicationController
         params.require(:law).permit(:title, :law_category_id, :law_class, :jurisdiction_id)
     end
 
-    private 
+    private
     def jurisdiction_params
         params.require(:jurisdiction).permit(:title)
     end

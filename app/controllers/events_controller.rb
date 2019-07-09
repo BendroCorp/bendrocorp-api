@@ -276,7 +276,7 @@ class EventsController < ApplicationController
         ecr = EventCertificationRequest.new(event_id: @event.id)
         #create approval
         ecr.approval_id = new_approval(6)
-        ecr.user = current_user
+        ecr.user_id = current_user.id
         if ecr.save
           @event.submitted_for_certification = true
           @event.event_certification_request_id = ecr.id

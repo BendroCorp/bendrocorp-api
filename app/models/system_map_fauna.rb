@@ -3,7 +3,8 @@ class SystemMapFauna < ApplicationRecord
   belongs_to :on_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'on_planet_id'
   belongs_to :on_system_object, :class_name => 'SystemMapSystemObject', :foreign_key => 'on_system_object_id'
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  validates :discovered_by_id, presence: true
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id'
 

@@ -1,5 +1,6 @@
 class OffenderReportApprovalRequest < ApplicationRecord
-  belongs_to :user #required field/fk
+  validates :user_id, presence: true
+  belongs_to :user, optional: true #required field/fk
   belongs_to :offender_report #required - request owner
   belongs_to :approval #required field/fk
 

@@ -36,9 +36,9 @@ class PageEntriesController < ApplicationController
   # POST api/pages/
   def create_page
     @page = Page.new(title: 'New Page')
-    @page.creator = current_user
+    @page.creator_id = current_user.id
     @page.archived = false
-    @page.page_entry_edits << PageEntryEdit.new(user: current_user, comment: 'Page created')
+    @page.page_entry_edits << PageEntryEdit.new(user_id: current_user.id, comment: 'Page created')
     if @page.save
       render status: 200, json: { message: 'Page created', page: @page.as_json(include: { roles:{}, page_category: {}, creator: { only:[], methods: [:main_character_full_name]}, page_entry_edits: { include: { user: { only:[], methods: [:main_character_full_name] } } } }) }
     else
@@ -51,7 +51,7 @@ class PageEntriesController < ApplicationController
     @page = Page.find_by_id(params[:page_id].to_i)
     if @page != nil
       if (!@page.is_official || (@page.is_official && current_user.isinrole(30)))
-        @page.page_entry_edits << PageEntryEdit.new(user: current_user, comment: 'Updated page content')
+        @page.page_entry_edits << PageEntryEdit.new(user_id: current_user.id, comment: 'Updated page content')
         if @page.update_attributes(page_params)
           render status: 200, json: { message: 'Page updated' }
         else
@@ -69,7 +69,7 @@ class PageEntriesController < ApplicationController
   def delete_page
     @page = Page.find_by_id(params[:page_id].to_i)
     if @page != nil
-      @page.page_entry_edits << PageEntryEdit.new(user: current_user, comment: 'Archived page')
+      @page.page_entry_edits << PageEntryEdit.new(user_id: current_user.id, comment: 'Archived page')
       @page.archived = true
       if @page.save
         render status: 200, json: { message: 'Page updated' }
@@ -85,7 +85,7 @@ class PageEntriesController < ApplicationController
   def publish
     @page = Page.find_by_id(params[:page_id].to_i)
     if @page != nil
-      @page.page_entry_edits << PageEntryEdit.new(user: current_user, comment: 'Published page')
+      @page.page_entry_edits << PageEntryEdit.new(user_id: current_user.id, comment: 'Published page')
       @page.published_when = Time.now
       @page.is_published = true
       if @page.save
@@ -102,7 +102,7 @@ class PageEntriesController < ApplicationController
   def unpublish
     @page = Page.find_by_id(params[:page_id].to_i)
     if @page != nil
-      @page.page_entry_edits << PageEntryEdit.new(user: current_user, comment: 'Un-published page')
+      @page.page_entry_edits << PageEntryEdit.new(user_id: current_user.id, comment: 'Un-published page')
       @page.published_when = nil
       @page.is_published = false
       if @page.save

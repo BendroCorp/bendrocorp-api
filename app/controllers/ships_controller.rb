@@ -22,7 +22,7 @@ class ShipsController < ApplicationController
 
       in_crew = @owned_ship.user_in_crew(current_user)
 
-      if @owned_ship.character.user == current_user
+      if @owned_ship.character.user_id == current_user.id
         permissions = { isEditor: true }
       else
         permissions = { isEditor: false }
@@ -72,8 +72,8 @@ class ShipsController < ApplicationController
   def delete_owned_ship
     @owned_ship = OwnedShip.find_by id: params[:owned_ship_id]
     if @owned_ship != nil
-      if (@owned_ship.character.user.id == current_user.id) || current_user.is_admin?
-        @owned_ship.hidden # we soft delete owned ships as they can be tied to many things - ships are kind of central to Star Citizen
+      if (@owned_ship.character.user.id == current_user.id) || current_user.is_in_one_role([2])
+        @owned_ship.hidden = true # we soft delete owned ships as they can be tied to many things - ships are kind of central to Star Citizen
         if @owned_ship.save
           render status: 200, json: { message: 'Owned ship removed!' }
         else

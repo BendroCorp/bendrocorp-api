@@ -1,11 +1,11 @@
 class EventCertificationRequest < ApplicationRecord
   belongs_to :event
   belongs_to :approval
-  belongs_to :user
+  belongs_to :user, optional: true
 
   validates :event, presence: true
   validates :approval, presence: true
-  validates :user, presence: true
+  validates :user_id, presence: true
 
   accepts_nested_attributes_for :approval
   accepts_nested_attributes_for :event

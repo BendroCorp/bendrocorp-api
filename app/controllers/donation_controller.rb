@@ -25,7 +25,7 @@ class DonationController < ApplicationController
   def create
     @item = DonationItem.new(donation_item_params)
     @item.ordinal = DonationItem.all.count + 1
-    @item.created_by = current_user
+    @item.created_by_id = current_user.id
     if @item.save
       render status: 200, json: @item.as_json(include: { donations: { include: { user: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } }, methods: [:total_donations, :is_completed])
     else
@@ -49,7 +49,7 @@ class DonationController < ApplicationController
 
   # GET api/donation/mine
   def my_donations
-    render status: 200, json: Donation.where(user: current_user).as_json(include: { donation_item: { } })
+    render status: 200, json: Donation.where(user_id: current_user.id).as_json(include: { donation_item: { } })
   end
 
   # DELETE api/donation/:donation_item_id
@@ -73,7 +73,7 @@ class DonationController < ApplicationController
     @new_donation = Donation.new(donation_params)
 
     # Add the current_user as the doner
-    @new_donation.user = current_user
+    @new_donation.user_id = current_user.id
 
     # Make sure the donation amount is an int
     @new_donation.amount = @new_donation.amount.to_i
@@ -107,7 +107,7 @@ class DonationController < ApplicationController
           if charge.id != nil
             @new_donation.stripe_transaction_id = charge.id
             @new_donation.charge_succeeded = true
-            if @new_donation.save
+            if @new_donation.save!
               # Email user
               send_email(@new_donation.user.email, "Thank you!", "<p>#{@new_donation.user.main_character.full_name},</p><p>We just wanted to say thank you for donation of <strong>$#{@new_donation.amount}</strong> for the <strong>#{@new_donation.donation_item.title}</strong>. It helps out and means a lot to everyone in leadership - again thank you!</p><p>(This also serves as your receipt.)</p>")
 

@@ -1,5 +1,6 @@
 class TrainingCourseCompletion < ApplicationRecord
   validates :version, presence: true
-  belongs_to :user
+  validates :user_id, presence: true
+  belongs_to :user, optional: true
   belongs_to :training_course
 end

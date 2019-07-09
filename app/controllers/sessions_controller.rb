@@ -10,16 +10,17 @@ class SessionsController < ApplicationController
        if !@user.locked && @user.login_allowed && @user.active
          if @user.authenticate(params[:session][:password]) && (!@user.locked && @user.login_allowed) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code])))
            # create the token text
-           token_text = make_token
-           # token is not perpetual
-           new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 24.hours) if !params[:session][:perpetual]
-           # token is perpetual
-           new_token = UserToken.new(token: token_text, device: params[:session][:device]) if params[:session][:perpetual]
-           @user.user_tokens << new_token
+           # token_text = make_token
+           # # token is not perpetual
+           # new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 24.hours) if !params[:session][:perpetual]
+           # # token is perpetual
+           # new_token = UserToken.new(token: token_text, device: params[:session][:device]) if params[:session][:perpetual]
+           # @user.user_tokens << new_token
            @user.login_attempts = 0
            if @user.save
              SiteLog.create(module: 'Session', submodule: 'Success', message: "User ##{@user.id} successfully authenticated!", site_log_type_id: 1)
-             render status: 200, json: { id: @user.id, character: @user.main_character.as_json(only: [:id, :first_name, :last_name], methods: [:full_name, :avatar_url, :current_job]), tfa_enabled: @user.use_two_factor, token: token_text, token_expires: new_token.expires_ms, claims: @user.claims }
+             # render status: 200, json: { id: @user.id, character: @user.main_character.as_json(only: [:id, :first_name, :last_name], methods: [:full_name, :avatar_url, :current_job]), tfa_enabled: @user.use_two_factor, token: token_text, token_expires: new_token.expires_ms, claims: @user.claims }
+             render status: 200, json: { id_token: make_jwt(@user) }
            else
             SiteLog.create(module: 'Session', submodule: 'User Save on Success Fail', message: "User could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
             render status: 500, json: { message: "Login was not successful because: #{@user.errors.full_messages.to_sentence}" }

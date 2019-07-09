@@ -6,7 +6,8 @@ class SystemMapSystem < ApplicationRecord
 
   has_many :system_objects, :class_name => 'SystemMapSystemObject', :foreign_key => 'orbits_system_id'
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  validates :discovered_by_id, presence: true
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_system_id'
 
