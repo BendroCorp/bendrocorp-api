@@ -35,6 +35,9 @@ class ApplicationController < ActionController::API
   end
 
   def make_jwt user, persisent = false
+    # secret guard
+    throw 'Secret could not be retrieved for tokenization!' if Rails.application.secrets.secret_key_base == nil || Rails.application.secrets.secret_key_base.length < 10 # secret will be longer than this
+
     # get our secret
     secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
 
