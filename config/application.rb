@@ -33,5 +33,6 @@ module BendrocorpApi
     # custom includes
     require_relative '../lib/error_handler'
     require_relative '../lib/usps_mail_calc.rb'
+    require_relative '../lib/token_user.rb'
   end
 end

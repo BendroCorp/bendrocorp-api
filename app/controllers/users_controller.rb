@@ -12,45 +12,47 @@ class UsersController < ApplicationController
 
   # GET api/user/me
   def me
-    render status: 200, json: current_user.as_json(only: [:id, :email], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
+    # NOTE: This may be worth deprecating
+    render status: 200, json: current_user.db_user.as_json(only: [:id, :email], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
   # GET api/user/approvals
   # GET api/user/approvals/:count
   def approvals
     if params[:count]
-      render status: 200, json: current_user.approval_approvers.order('created_at desc').take(params[:count].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+      render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').take(params[:count].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
     else
-      render status: 200, json: current_user.approval_approvers.order('created_at desc').as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+      render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
     end
   end
 
   # GET api/user/approvals-count
   def approvals_count
-    render status: 200, json: current_user.approval_approvers.where('approval_type_id < 4').count
+    render status: 200, json: current_user.db_user.approval_approvers.where('approval_type_id < 4').count
   end
 
   # GET api/user/oauth-tokens
   def oauth_tokens
-    render status: 200, json: OauthToken.where(user: current_user).as_json(methods: [:client_title])
+    render status: 200, json: OauthToken.where(user_id: current_user.id).as_json(methods: [:client_title])
   end
 
   # GET api/user/auth-tokens
   def auth_tokens
-    render status: 200, json: UserToken.where(user: current_user).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
+    render status: 200, json: UserToken.where(user_id: current_user.id).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
   # POST api/user/push-token
   # Must contain token and user_device_type_id (1 = iOS, 2(TODO) = Amazon)
   def add_push_token
     if params[:token] && params[:user_device_type_id]
+      db_user = current_user.db_user
       device_type = UserDeviceType.find_by_id(params[:user_device_type_id].to_i)
       if device_type
-        current_user.user_push_tokens << UserPushToken.new(token: params[:token], user_device_type: device_type)
-        if current_user.save
+        db_user.user_push_tokens << UserPushToken.new(token: params[:token], user_device_type: device_type)
+        if db_user.save
           render status: 200, json: { message: 'Device token added!' }
         else
-          render status: 500, json: { message: "A push token could not be added because: #{current_user.errors.full_messages.to_sentence}" }
+          render status: 500, json: { message: "A push token could not be added because: #{db_user.errors.full_messages.to_sentence}" }
         end
       else
         render status: 400, json: { message: 'Device type if not found!' }

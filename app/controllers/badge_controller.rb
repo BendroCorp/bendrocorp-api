@@ -14,7 +14,7 @@ class BadgeController < ApplicationController
   # GET api/badge
   def create
     @badge = Badge.new(badge_params)
-    @badge.created_by = current_user
+    @badge.created_by_id = current_user.id
     if @badge.save
       render status: 200, json: @badge
     else

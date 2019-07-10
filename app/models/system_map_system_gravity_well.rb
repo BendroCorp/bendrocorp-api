@@ -4,7 +4,8 @@ class SystemMapSystemGravityWell < ApplicationRecord
   belongs_to :gravity_well_type, :class_name => 'SystemMapSystemGravityWellType', :foreign_key => 'gravity_well_type_id', optional: true
   belongs_to :luminosity_class, :class_name => 'SystemMapSystemGravityWellLuminosityClass', :foreign_key => 'luminosity_class_id', optional: true
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  validates :discovered_by_id, presence: true
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   has_many :system_map_images, :class_name => 'SystemMapImage', :foreign_key => 'of_gravity_well_id'
   has_many :observations, :class_name => 'SystemMapObservation', :foreign_key => 'of_gravity_well_id'

@@ -45,7 +45,7 @@ class TrainingController < ApplicationController
   def create_course
     @course = TrainingCourse.new(training_course_params)
     @course.version = 1
-    @course.created_by = current_user
+    @course.created_by_id = current_user.id
     if @course.save
       render status: 200, json: @course.as_json(include: { training_items: { include: { training_item_completions: { }, training_item_type: { },  created_by: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } })
     else
@@ -86,7 +86,7 @@ class TrainingController < ApplicationController
   # POST api/training/item
   def create_training_item
     @item = TrainingItem.new(training_item_params)
-    @item.created_by = current_user
+    @item.created_by_id = current_user.id
     @item.version = 1
     @item.training_course.version += 1
     @item.ordinal = @item.training_course.training_items.count + 1
@@ -134,7 +134,7 @@ class TrainingController < ApplicationController
   def complete_training_item
     @completion = TrainingItemCompletion.new(training_item_completion_params)
 
-    @completion.user = current_user
+    @completion.user_id = current_user.id
     @completion.completed = true if @completion.training_item.training_item_type.id != 4
     @completion.item_version = @completion.training_item.training_course.version # course version
 
@@ -145,11 +145,11 @@ class TrainingController < ApplicationController
           puts "#{@completion.training_item.training_course.inspect}"
           @course = TrainingCourse.find_by_id(@completion.training_item.training_course)
           completed_count = 0
-          @course.training_items.each { |item| completed_count += 1 if item.user_did_complete current_user }
+          @course.training_items.each { |item| completed_count += 1 if item.user_did_complete current_user.id }
 
           # if the training item count matches the completion count then the user finished everything
           if completed_count >= @course.training_items.count
-            @c_completion = TrainingCourseCompletion.new(user: current_user, training_course: @course, version: @course.version)
+            @c_completion = TrainingCourseCompletion.new(user_id: current_user.id, training_course: @course, version: @course.version)
             if @c_completion.save
               # Then finally award the badge, if one exists
               if @course.badge && current_user.badges.where(id: @course.badge_id).count == 0
@@ -175,7 +175,7 @@ class TrainingController < ApplicationController
           approvalRequest.approval.single_consent = true
 
           # lastly add the request to the current_user
-          approvalRequest.user = current_user
+          approvalRequest.user_id = current_user.id
 
           approvalRequest.training_item_completion = @completion
 

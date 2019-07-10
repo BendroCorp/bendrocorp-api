@@ -193,7 +193,7 @@ class SiteRequestsController < ApplicationController
     positionChangeRequest.approval_id = new_approval(22) # position change approval
 
     # lastly add the request to the current_user
-    positionChangeRequest.user = current_user
+    positionChangeRequest.user_id = current_user.id
 
     if positionChangeRequest.save
       render status: 200, json: { message: "Requested submitted" }
@@ -272,7 +272,7 @@ class SiteRequestsController < ApplicationController
         # BUG: this is very very broken lol
         @oscr = OwnedShipCrewRequest.new()
         @oscr.approval = new_approval(16, @owned_ship.character.user.id)
-        @oscr.user = current_user
+        @oscr.user_id = current_user.id
         @oscr.crew = crew_role
 
         if @oscr.save
@@ -299,7 +299,7 @@ class SiteRequestsController < ApplicationController
   # GET api/requests/job-creation
   def job_creation_fetch
 
-    @my_requests = JobBoardMissionCreationRequest.where(user: current_user)
+    @my_requests = JobBoardMissionCreationRequest.where(user_id: current_user.id)
     @criteria = JobBoardMissionCompletionCriterium.all
     render status: 200, json: { my_requests: @my_requests.as_json(include:{ job_board_mission: {}, approval:{ methods: [:approval_status, :created_at_ms] } }), criteria: @criteria }
   end
@@ -308,12 +308,12 @@ class SiteRequestsController < ApplicationController
   # Body should contain job_board_mission
   def job_creation_post
     @req = JobBoardMissionCreationRequest.new
-    @req.user = current_user
+    @req.user_id = current_user.id
     @req.approval_id = new_approval(19)
     @req.job_board_mission = JobBoardMission.new(job_board_mission_params)
     @req.job_board_mission.posting_approved = false
-    @req.job_board_mission.created_by = current_user
-    @req.job_board_mission.updated_by = current_user
+    @req.job_board_mission.created_by_id = current_user.id
+    @req.job_board_mission.updated_by_id = current_user.id
     @req.job_board_mission.mission_status_id = 1
     if @req.save
       render status: 200, json: { message: "Job request created." }
@@ -338,7 +338,7 @@ class SiteRequestsController < ApplicationController
         object_types: SystemMapObjectKind.all,
         connection_sizes: SystemMapSystemConnectionSize.all
       },
-      my_requests: AddSystemMapItemRequest.where(user: current_user).as_json(methods: [:object_title])
+      my_requests: AddSystemMapItemRequest.where(user_id: current_user.id).as_json(methods: [:object_title])
     }
   end
 
@@ -354,11 +354,11 @@ class SiteRequestsController < ApplicationController
         newObject.title = params[:title]
         newObject.description = params[:description]
         newObject.approved = false
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 1
           newRequest.kind_pk = newConnection.id
@@ -369,11 +369,11 @@ class SiteRequestsController < ApplicationController
             newConnection.system_one_id = newObject.id
             newConnection.system_two_id = params[:connected_to_id].to_i
             newConnection.system_map_system_connection_size_id = params[:connected_to_size_id].to_i
-            newConnection.discovered_by = current_user
+            newConnection.discovered_by_id = current_user.id
 
             if newConnection.save
               newRequest2 = AddSystemMapItemRequest.new
-              newRequest2.user = current_user
+              newRequest2.user_id = current_user.id
               newRequest2.approval_id = new_approval(20)
               newRequest2.system_map_object_kind = 10
               newRequest2.kind_pk = newConnection.id
@@ -403,7 +403,7 @@ class SiteRequestsController < ApplicationController
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind_id = 2
           newRequest.kind_pk = newObject.id
@@ -424,11 +424,11 @@ class SiteRequestsController < ApplicationController
         newObject.description = params[:description]
         newObject.orbits_system_id = params[:orbits_system_id].to_i
         newObject.approved = false
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind_id = 3
           newRequest.kind_pk = newObject.id
@@ -449,11 +449,11 @@ class SiteRequestsController < ApplicationController
         newObject.description = params[:description]
         newObject.approved = false
         newObject.orbits_planet_id = params[:orbits_planet_id].to_i
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 4
           newRequest.kind_pk = newObject.id
@@ -473,14 +473,14 @@ class SiteRequestsController < ApplicationController
         newObject.title = params[:title]
         newObject.description = params[:description]
         newObject.approved = false
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
         newObject.orbits_system_id = param[:orbits_system_id].to_i
         newObject.orbits_planet_id = param[:orbits_planet_id].to_i
         newObject.orbits_moon_id = param[:orbits_moon_id].to_i
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 5
           newRequest.kind_pk = newObject.id
@@ -502,11 +502,11 @@ class SiteRequestsController < ApplicationController
         newObject.approved = false
         newObject.on_planet_id = param[:on_planet_id].to_i
         newObject.on_moon_id = param[:on_moon_id].to_i
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 6
           newRequest.kind_pk = newObject.id
@@ -530,11 +530,11 @@ class SiteRequestsController < ApplicationController
         newObject.on_moon_id = param[:on_moon_id].to_i
         newObject.on_system_object_id = param[:on_system_object_id].to_i
         newObject.on_settlement_id = param[:on_settlement_id].to_i
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 7
           newRequest.kind_pk = newObject.id
@@ -556,11 +556,11 @@ class SiteRequestsController < ApplicationController
         newObject.on_planet_id = param[:on_planet_id].to_i
         newObject.on_moon_id = param[:on_moon_id].to_i
         newObject.on_system_object_id = param[:on_system_object_id].to_i
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 8
           newRequest.kind_pk = newObject.id
@@ -582,11 +582,11 @@ class SiteRequestsController < ApplicationController
         newObject.on_planet_id = param[:on_planet_id].to_i
         newObject.on_moon_id = param[:on_moon_id].to_i
         newObject.on_system_object_id = param[:on_system_object_id].to_i
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 9
           newRequest.kind_pk = newObject.id
@@ -606,11 +606,11 @@ class SiteRequestsController < ApplicationController
         newConnection.system_two_id = params[:connected_to_id].to_i
         newConnection.system_map_system_connection_size_id = params[:system_map_system_connection_size_id].to_i
         newObject.approved = false
-        newObject.discovered_by = current_user
+        newObject.discovered_by_id = current_user.id
 
         if newObject.save
           newRequest = AddSystemMapItemRequest.new
-          newRequest.user = current_user
+          newRequest.user_id = current_user.id
           newRequest.approval_id = new_approval(20)
           newRequest.system_map_object_kind = 10
           newRequest.kind_pk = newObject.id
@@ -639,7 +639,7 @@ class SiteRequestsController < ApplicationController
   # get api/approvals/:approval_id
   def approval_details
     @approval = Approval.find_by id: params[:approval_id].to_i
-    if (@approval == nil || current_user.approval_approvers.where('approval_id = ?', params[:approval_id].to_i).count < 1)
+    if (@approval == nil || current_user.db_user.approval_approvers.where('approval_id = ?', params[:approval_id].to_i).count < 1)
       render status: 404, json: { message: "Approval not found." }
     else
       # the requested approval details

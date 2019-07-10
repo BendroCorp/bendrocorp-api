@@ -6,7 +6,8 @@ class Application < ActiveRecord::Base
   validates :how_did_you_hear_about_us, presence: true, length: { minimum:1 }
   #validates :job, presence: true
 
-  belongs_to :last_status_changed_by, :class_name => 'User', :foreign_key => 'last_status_changed_by_id'
+  validates :last_status_changed_by_id, presence: true
+  belongs_to :last_status_changed_by, :class_name => 'User', :foreign_key => 'last_status_changed_by_id', optional: true
 
   belongs_to :job
   belongs_to :application_status

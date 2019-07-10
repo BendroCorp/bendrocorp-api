@@ -9,7 +9,7 @@ class ReportsController < ApplicationController
     @reports = []
 
     @reports_fetch.each do |report|
-      @reports << report if current_user == report.submitter
+      @reports << report if current_user.id == report.submitter_id
     end
 
     render status: 200, json: @reports.as_json(methods: [:url_title_string, :report_time_ms], include: { report_status_type: {}, report_type: {}, specified_submit_to_role: {} })
@@ -35,7 +35,7 @@ class ReportsController < ApplicationController
   #  POST api/report/
   def create
     @report = Report.new(report_params)
-    @report.submitter = current_user
+    @report.submitter_id = current_user.id
     @report.report_status_type_id = 1
     if @report.save
       render status: 200, json: @report
@@ -47,7 +47,7 @@ class ReportsController < ApplicationController
   def update
     @report = Report.find_by_id(params[:report][:id].to_i)
     if @report != nil
-      if @report.submitter == current_user
+      if @report.submitter_id == current_user.id
         if @report.submitted == false
           if @report.update_attributes(report_update_params)
             render status: 200, json: @report
@@ -69,7 +69,7 @@ class ReportsController < ApplicationController
   def delete
     @report = Report.find_by_id(params[:report_id].to_i)
     if @report != nil
-      if @report.submitter == current_user
+      if @report.submitter_id == current_user.id
         if @report.submitted == false
           if @report.destroy
             render status: 200, json: { message: "Report deleted." }
@@ -100,7 +100,7 @@ class ReportsController < ApplicationController
           approvalRequest.approval_id = new_approval(21, 0, @report.specified_submit_to_role_id) # report approval
 
           # lastly add the request to the current_user
-          approvalRequest.user = current_user
+          approvalRequest.user_id = current_user.id
           approvalRequest.report = @report
           @report.report_approval_request = approvalRequest
 

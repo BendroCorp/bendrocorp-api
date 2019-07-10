@@ -23,8 +23,8 @@ class JobBoardController < ApplicationController
   # Body should contain job_board_mission object
   def create
     @mission = JobBoardMission.new(job_board_mission_params)
-    @mission.created_by = current_user
-    @mission.updated_by = current_user
+    @mission.created_by_id = current_user.id
+    @mission.updated_by_id = current_user.id
     @mission.mission_status_id = 1 # open
     if @mission.save
       render status: 201, json: @missions.as_json(methods: [:on_mission, :url_title_string, :created_time_ms], include: { completion_request: { include: { flight_log: { methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}} } } }, mission_status:{}, created_by: { :only => [:username], methods: [:main_character] }, updated_by: { :only => [:username] }, completion_criteria: { } })
@@ -40,7 +40,7 @@ class JobBoardController < ApplicationController
     if @mission != nil
       # /expires_when_me
       # :title, :description, :completion_criteria_id, :expires_when, :max_acceptors, :op_value, :system_id, :planet_id, :moon_id, :system_object_id, :location_id
-      @mission.updated_by = current_user
+      @mission.updated_by_id = current_user.id
 
       @mission.title = params[:job_board_mission][:title]
       @mission.description = params[:job_board_mission][:description]
@@ -89,8 +89,9 @@ class JobBoardController < ApplicationController
     if @mission != nil
       if @mission.mission_status_id == 1
         if @mission.acceptors.count < @mission.max_acceptors
-          if @mission.acceptors.where('character_id = ?', current_user.main_character.id).count == 0
-            @mission.acceptors << JobBoardMissionAcceptor.new(character: current_user.main_character)
+          current_user_main_character = current_user.main_character
+          if @mission.acceptors.where('character_id = ?', current_user_main_character.id).count == 0
+            @mission.acceptors << JobBoardMissionAcceptor.new(character: current_user_main_character)
 
             # if the mission is full start the time
             if @mission.acceptors.count >= @mission.max_acceptors
@@ -161,7 +162,7 @@ class JobBoardController < ApplicationController
           if child_approval.approved == true
             approvalRequest = JobBoardMissionCompletionRequest.new
             approvalRequest.approval_id = new_approval(18)
-            approvalRequest.user = current_user
+            approvalRequest.user_id = current_user.id
 
             approvalRequest.flight_log_id = params[:completion_request][:flight_log_id].to_i
             approvalRequest.completion_message = params[:completion_request][:completion_message]
@@ -182,7 +183,7 @@ class JobBoardController < ApplicationController
           if !@mission.completion_criteria.child_approval_required #if its not required
             approvalRequest = JobBoardMissionCompletionRequest.new
             approvalRequest.approval_id = new_approval(18)
-            approvalRequest.user = current_user
+            approvalRequest.user_id = current_user.id
 
             approvalRequest.flight_log_id = params[:completion_request][:flight_log_id].to_i
             approvalRequest.completion_message = params[:completion_request][:completion_message]

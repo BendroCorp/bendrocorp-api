@@ -1,5 +1,6 @@
 class JobBoardMissionCreationRequest < ApplicationRecord
-  belongs_to :user #required field/fk
+  validates :user_id, presence: true
+  belongs_to :user, optional: true #required field/fk
   belongs_to :approval #required field/fk
   belongs_to :job_board_mission
 

@@ -22,7 +22,7 @@ class StoreController < ApplicationController
     all_orders = [] #if current_user.isinrole(31)
 
     orders.each do |order|
-      my_orders << order if order.cart.user == current_user
+      my_orders << order if order.cart.user_id == current_user.id
       all_orders << order if current_user.isinrole(31)
     end
 
@@ -40,7 +40,7 @@ class StoreController < ApplicationController
   # GET api/store/cart
   def list_cart
     render status: 200, json: {
-      current_cart: current_user.current_cart.as_json(methods: [:cart_currency_type], include: { user: { only: [], include: { user_information: { } } }, items: { include: { item: { include: { category: { }, currency_type: { } }, methods: [:original_image, :thumbnail_image, :small_image, :quantity_available, :big_image] } } } })
+      current_cart: current_user.db_user.current_cart.as_json(methods: [:cart_currency_type], include: { user: { only: [], include: { user_information: { } } }, items: { include: { item: { include: { category: { }, currency_type: { } }, methods: [:original_image, :thumbnail_image, :small_image, :quantity_available, :big_image] } } } })
     }
   end
 
@@ -51,10 +51,11 @@ class StoreController < ApplicationController
     @item = StoreItem.find_by_id(params[:item_id].to_i)
     if @item != nil
       if !@item.locked
+        current_cart = current_user.current_cart
         # Need to make sure we are not putting more than one kind of currency_type in the same cart
-        if current_user.current_cart.cart_currency_type == nil || (current_user.current_cart.cart_currency_type.id == @item.currency_type_id)
+        if current_cart.cart_currency_type == nil || (current_cart.cart_currency_type_id == @item.currency_type_id)
           # Check to see if the item already exists in the cart if so update the quantity
-          @item_exists_in_cart = StoreCartItem.where('cart_id = ? AND item_id = ?', current_user.current_cart.id, params[:item_id].to_i)
+          @item_exists_in_cart = StoreCartItem.where('cart_id = ? AND item_id = ?', current_cart.id, params[:item_id].to_i)
           if @item_exists_in_cart.count == 1
             total_quantity = @item_exists_in_cart.first.quantity + params[:quantity].to_i
             if total_quantity <= @item.quantity_available
@@ -75,7 +76,7 @@ class StoreController < ApplicationController
             render status: 500, json: { message: 'Error Occured: Current cart has more than once instance of the same product in the cart. This should not occur.' }
           else
             if params[:quantity].to_i <= @item.quantity_available
-              if StoreCartItem.create(item_id: @item.id, cart_id: current_user.current_cart.id, quantity: params[:quantity].to_i)
+              if StoreCartItem.create(item_id: @item.id, cart_id: current_cart.id, quantity: params[:quantity].to_i)
                 render status: 200, json: @item
               else
                 render status: 500, json: { message: 'Error Occured: Item could not be added to cart' }
@@ -302,7 +303,7 @@ class StoreController < ApplicationController
         elsif @order.cart.cart_currency_type.id == 2
           if @order.point_transaction_id != nil
             # We need to make an OP transaction
-            pt = PointTransaction.create(user_id: current_user.id, amount: @order.point_transaction.amount.abs, approved: true, reason: "Refund for BendroCorp store purchase.")
+            PointTransaction.create(user_id: current_user.id, amount: @order.point_transaction.amount.abs, approved: true, reason: "Refund for BendroCorp store purchase.")
           else
             render status: 403, json: { message: "You do not have enough operations points to complete this transaction." }
             return # exit out without completing the transaction
@@ -334,8 +335,8 @@ class StoreController < ApplicationController
   # POST api/store/item
   def create_item
     @item = StoreItem.new(item_params)
-    @item.creator = current_user
-    @item.last_updated_by = current_user
+    @item.creator_id = current_user.id
+    @item.last_updated_by_id = current_user.id
     if @item.currency_type_id != 1
       @item.weight = nil
       @item.max_shipping_cost = nil
@@ -358,7 +359,7 @@ class StoreController < ApplicationController
   def update_item
     @item = StoreItem.find_by_id(params[:item][:id].to_i)
     if @item != nil
-      @item.last_updated_by = current_user
+      @item.last_updated_by_id = current_user.id
       if @item.update_attributes(item_params)
         if @item.currency_type_id != 1
           @item.weight = nil
@@ -385,7 +386,7 @@ class StoreController < ApplicationController
   def archive_item
     @item = StoreItem.find_by_id(params[:item_id].to_i)
     if @item != nil
-      @item.last_updated_by = current_user
+      @item.last_updated_by_id = current_user.id
       @item.archived = true
       if @item.save
         render status: 200, json: { message: 'Item archived.' }
@@ -400,8 +401,8 @@ class StoreController < ApplicationController
   # POST api/store/category
   def create_category
     @item = StoreItemCategory.new(category_params)
-    @item.creator = current_user
-    @item.last_updated_by = current_user
+    @item.creator_id = current_user.id
+    @item.last_updated_by_id = current_user.id
     if @item.save
       render status: 200, json: { message: 'Category created.' }
     else
@@ -413,7 +414,7 @@ class StoreController < ApplicationController
   def update_category
     @item = StoreItemCategory.find_by_id(params[:category][:id].to_i)
     if @item != nil
-      @item.last_updated_by = current_user
+      @item.last_updated_by_id = current_user.id
       if @item.update_attributes(category_params)
         render status: 200, json: { message: 'Category updated.' }
       else
@@ -464,7 +465,7 @@ class StoreController < ApplicationController
         end
         # TODO: Email the order owner about status changes
       end
-      @order.last_updated_by = current_user
+      @order.last_updated_by_id = current_user.id
       if @order.save
         render status: 200, json: { message: 'Order updated.' }
       else

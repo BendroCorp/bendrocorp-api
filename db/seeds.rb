@@ -728,6 +728,12 @@ user1.roles << roles[8]
 user1.roles << Role.find_by_id(0)
 user2.roles << Role.find_by_id(0)
 
+Badge.create([{ id: 1, title: 'Member', image_link: '/assets/imgs/badges/member.png', ordinal: 1, created_by_id: 1 },
+              { id: 2, title: 'Founder', image_link: '/assets/imgs/badges/founder.png', ordinal: 2, created_by_id: 1 },
+              { id: 3, title: 'Executive Board', image_link: '/assets/imgs/badges/eb.png', ordinal: 3, created_by_id: 1 },
+              { id: 4, title: 'Pilot Certification', image_link: '/assets/imgs/badges/pilot.png', ordinal: 4, created_by_id: 1 },
+              { id: 5, title: 'Donor', image_link: '/assets/imgs/badges/donor.png', ordinal: 5, created_by_id: 1 }])
+
 user1.badges << Badge.find_by_id(1)
 user2.badges << Badge.find_by_id(1)
 

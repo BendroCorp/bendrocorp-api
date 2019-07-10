@@ -47,7 +47,8 @@ class OauthController < ApplicationController
 
       @client = OauthClient.find_by client_id: params[:request][:client_id]
       if @client != nil
-        token = OauthToken.new(oauth_client_id: @client.id, user: current_user)
+        db_user = current_user.db_user
+        token = OauthToken.new(oauth_client_id: @client.id, user_id: db_user, access_token: make_jwt(db_user, true))
         if token.save
           if params[:request][:redirect_uri] != nil
             link = "#{params[:request][:redirect_uri]}#access_token=#{token.access_token}&state=#{params[:request][:state]}&token_type=bearer"

@@ -1,4 +1,5 @@
 class PageEntryEdit < ApplicationRecord
   belongs_to :page
-  belongs_to :user
+  validates :user_id, presence: true
+  belongs_to :user, optional: true
 end

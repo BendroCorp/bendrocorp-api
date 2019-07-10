@@ -14,7 +14,8 @@ class SystemMapSystemPlanetaryBody < ApplicationRecord
   belongs_to :safety_rating, :class_name  => 'SystemMapSystemSafetyRating', :foreign_key => 'safety_rating_id', optional: true
   belongs_to :faction_affiliation, :class_name  => 'FactionAffiliation', :foreign_key => 'faction_affiliation_id', optional: true
 
-  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id'
+  validates :discovered_by_id, presence: true
+  belongs_to :discovered_by, :class_name => 'User', :foreign_key => 'discovered_by_id', optional: true
 
   has_many :settlements, :class_name => 'SystemMapSystemSettlement', :foreign_key => 'on_planet_id'
 

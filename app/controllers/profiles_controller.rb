@@ -177,7 +177,7 @@ class ProfilesController < ApplicationController
       # TODO: Add character app status check
 
       @comment = ApplicationComment.new
-      @comment.user = current_user
+      @comment.user_id = current_user.id
       @comment.comment = params[:application_comment][:comment]
 
       @application.comments << @comment

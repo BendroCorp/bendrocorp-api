@@ -15,15 +15,16 @@ class SignupsController < ApplicationController
       else
         render status: 500, json: { message: "Your account could not be created because: #{@user.errors.full_messages.to_sentence}" }
       end
-   else
-    render status: 400, json: { message: 'This password is a common password and/or it was a part of a security breach and cannot be used on our service!' }
-   end
+    else
+      render status: 400, json: { message: 'This password is a common password and/or it was a part of a security breach and cannot be used on our service!' }
+    end
   end
 
   # GET api/verification
   def resend_verification
-    if !current_user.email_verified
-      send_email(current_user.email, "BendroCorp Email Verfification", "<h1>Welcome!</h1><p>Hey there #{current_user.username}! Before we can let you apply to BendroCorp we need you to verify your email.</p><br /><p><a href=\'http://localhost:4200/verify/#{@user.verification_string}\'>Click Here to Verify</a></p><br />")
+    db_user = current_user.db_user
+    if !db_user.email_verified
+      send_email(db_user.email, "BendroCorp Email Verfification", "<h1>Welcome!</h1><p>Hey there #{db_user.username}! Before we can let you apply to BendroCorp we need you to verify your email.</p><br /><p><a href=\'http://localhost:4200/verify/#{@user.verification_string}\'>Click Here to Verify</a></p><br />")
       render status: 200, json: { message: '' }
     else
       render status: 400, json: { message: 'Your email has already been verified...' }

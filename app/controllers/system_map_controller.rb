@@ -141,7 +141,7 @@ class SystemMapController < ApplicationController
     @planet.minimum_criminality_rating = params[:planet][:minimum_criminality_rating]
     @planet.jurisdiction_id = params[:planet][:jurisdiction_id]
 
-    @planet.discovered_by = current_user
+    @planet.discovered_by_id = current_user.id
 
     if params[:planet][:new_primary_image] != nil
       if @planet.primary_image != nil
@@ -233,7 +233,7 @@ class SystemMapController < ApplicationController
     @moon.minimum_criminality_rating = params[:moon][:minimum_criminality_rating]
     @moon.jurisdiction_id = params[:moon][:jurisdiction_id]
 
-    @moon.discovered_by = current_user
+    @moon.discovered_by_id = current_user.id
 
     if params[:moon][:new_primary_image] != nil
       if @moon.primary_image != nil
@@ -352,7 +352,7 @@ class SystemMapController < ApplicationController
             end
           end
 
-          @so.discovered_by = current_user
+          @so.discovered_by_id = current_user.id
 
           if @so.save
             render status: 200, json: @so.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, flora: {}, fauna: {}, observations: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
@@ -401,7 +401,7 @@ class SystemMapController < ApplicationController
     @settlement.on_moon_id = params[:settlement][:on_moon_id]
     @settlement.jurisdiction_id = params[:settlement][:jurisdiction_id]
 
-    @settlement.discovered_by = current_user
+    @settlement.discovered_by_id = current_user.id
 
     if @settlement.save
       render status: 200, json: @settlement.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
@@ -470,7 +470,7 @@ class SystemMapController < ApplicationController
     @location.on_moon_id = params[:location][:on_moon_id]
     @location.on_system_object_id = params[:location][:on_system_object_id]
     @location.on_settlement_id = params[:location][:on_settlement_id]
-    @location.discovered_by = current_user
+    @location.discovered_by_id = current_user.id
 
     if @location.save
       render status: 200, json: @location.as_json(methods: [:primary_image_url, :primary_image_url_full])
@@ -542,7 +542,7 @@ class SystemMapController < ApplicationController
     @flora.on_planet_id = params[:new_flora][:on_planet_id]
     @flora.on_moon_id = params[:new_flora][:on_moon_id]
     @flora.on_system_object_id = params[:new_flora][:on_system_object_id]
-    @flora.discovered_by = current_user
+    @flora.discovered_by_id = current_user.id
 
     if @flora.save
       render status: 200, json: { message: "Success" }
@@ -566,7 +566,6 @@ class SystemMapController < ApplicationController
       @flora.on_planet_id = params[:new_flora][:on_planet_id]
       @flora.on_moon_id = params[:new_flora][:on_moon_id]
       @flora.on_system_object_id = params[:new_flora][:on_system_object_id]
-      @flora.discovered_by = current_user
 
       if @flora.save
         render status: 200, json: { message: "Success" }
@@ -607,7 +606,7 @@ class SystemMapController < ApplicationController
     @fauna.on_planet_id = params[:new_fauna][:on_planet_id]
     @fauna.on_moon_id = params[:new_fauna][:on_moon_id]
     @fauna.on_system_object_id = params[:new_fauna][:on_system_object_id]
-    @fauna.discovered_by = current_user
+    @fauna.discovered_by_id = current_user.id
 
     if @fauna.save
       render status: 200, json: { message: "Success" }
@@ -632,7 +631,6 @@ class SystemMapController < ApplicationController
       @fauna.on_planet_id = params[:new_fauna][:on_planet_id]
       @fauna.on_moon_id = params[:new_fauna][:on_moon_id]
       @fauna.on_system_object_id = params[:new_fauna][:on_system_object_id]
-      @fauna.discovered_by = current_user
 
       if @fauna.save
         render status: 200, json: { message: "Success" }
@@ -665,7 +663,7 @@ class SystemMapController < ApplicationController
       @image.image = params[:image][:new_image][:base64]
       @image.image_file_name = params[:image][:new_image][:name]
 
-      @image.created_by = current_user
+      @image.created_by_id = current_user.id
 
       #If its the system objects first image make it the default image
       #:of_system_id, :of_planet_id, :of_moon_id, :of_system_object_id, :of_settlement_id, :of_location_id, :of_gravity_well_id
@@ -919,30 +917,30 @@ class SystemMapController < ApplicationController
     puts 'Fixing system discovered bys///'
     # go through gravity Wells
     system_object.gravity_wells.each do |gravity_well|
-      gravity_well.discovered_by = current_user if gravity_well.discovered_by == nil
-      puts "Fixed gravity_well added #{current_user.username}" if gravity_well.discovered_by == nil
+      gravity_well.discovered_by_id = current_user.id if gravity_well.discovered_by_id == nil
+      puts "Fixed gravity_well added #{current_user.username}" if gravity_well.discovered_by_id == nil
     end
 
     # go through system objects
     system_object.system_objects.each do |system_system_object|
-      system_system_object.discovered_by = current_user if system_system_object.discovered_by == nil
-      puts "Fixed system_system_object added #{current_user.username}" if system_system_object.discovered_by == nil
+      system_system_object.discovered_by_id = current_user.id if system_system_object.discovered_by_id == nil
+      puts "Fixed system_system_object added #{current_user.username}" if system_system_object.discovered_by_id == nil
     end
 
     # go through planets
     system_object.planets.each do |planet|
-      planet.discovered_by = current_user if planet.discovered_by == nil
-      puts "Fixed planet added #{current_user.username}" if planet.discovered_by == nil
+      planet.discovered_by_id = current_user.id if planet.discovered_by_id == nil
+      puts "Fixed planet added #{current_user.username}" if planet.discovered_by_id == nil
       planet.system_objects.each do |planet_system_object|
-        planet_system_object.discovered_by = current_user if planet_system_object.discovered_by == nil
-        puts "Fixed planet_system_object added #{current_user.username}" if planet_system_object.discovered_by == nil
+        planet_system_object.discovered_by_id = current_user.id if planet_system_object.discovered_by_id == nil
+        puts "Fixed planet_system_object added #{current_user.username}" if planet_system_object.discovered_by_id == nil
       end
       planet.moons.each do |planet_moon|
-        planet_moon.discovered_by = current_user if planet_moon.discovered_by == nil
-        puts "Fixed planet_moon added #{current_user.username}" if planet_moon.discovered_by == nil
+        planet_moon.discovered_by_id = current_user.id if planet_moon.discovered_by_id == nil
+        puts "Fixed planet_moon added #{current_user.username}" if planet_moon.discovered_by_id == nil
         planet_moon.system_objects.each do |planet_moon_system_object|
-          planet_moon_system_object.discovered_by = current_user if planet_moon_system_object.discovered_by == nil
-          puts "Fixed planet_moon_system_object added #{current_user.username}" if planet_moon_system_object.discovered_by == nil
+          planet_moon_system_object.discovered_by_id = current_user.id if planet_moon_system_object.discovered_by_id == nil
+          puts "Fixed planet_moon_system_object added #{current_user.username}" if planet_moon_system_object.discovered_by_id == nil
         end
       end
     end

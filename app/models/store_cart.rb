@@ -1,5 +1,6 @@
 class StoreCart < ApplicationRecord
-  belongs_to :user
+  validates :user_id, presence: true
+  belongs_to :user, optional: true
   belongs_to :order, :class_name => 'StoreOrder', :foreign_key => 'order_id'
   has_many :items, :dependent => :delete_all, :class_name => 'StoreCartItem', :foreign_key => 'cart_id'
 

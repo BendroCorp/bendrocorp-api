@@ -9,8 +9,10 @@ class JobBoardMission < ApplicationRecord
   accepts_nested_attributes_for :job_board_mission_awards
   accepts_nested_attributes_for :awards
 
-  belongs_to :created_by, :class_name => "User", :foreign_key => "created_by_id" #user
-  belongs_to :updated_by, :class_name => "User", :foreign_key => "updated_by_id" #user #user
+  validates :created_by_id, presence: true
+  belongs_to :created_by, :class_name => "User", :foreign_key => "created_by_id", optional: true #user
+  validates :updated_by_id, presence: true
+  belongs_to :updated_by, :class_name => "User", :foreign_key => "updated_by_id", optional: true #user #user
 
   belongs_to :completion_criteria, :class_name => "JobBoardMissionCompletionCriterium", :foreign_key => "completion_criteria_id"
   belongs_to :completion_request, :class_name => "JobBoardMissionCompletionRequest", :foreign_key => "completion_request_id", optional: true

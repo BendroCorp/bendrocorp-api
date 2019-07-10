@@ -34,26 +34,72 @@ class ApplicationController < ActionController::API
     Digest::SHA256.hexdigest (0...50).map { o[rand(o.length)] }.join
   end
 
-  def current_user
-    # TODO: All of this needs to be handled better. Need to consider JWT Token feasability and refresh tokens
+  def make_jwt user, persisent = false
+    # secret guard
+    throw 'Secret could not be retrieved for tokenization!' if Rails.application.secrets.secret_key_base == nil || Rails.application.secrets.secret_key_base.length < 10 # secret will be longer than this
 
+    # get our secret
+    secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
+
+    # form our payload
+    payload = {
+      sub: user.id,
+      email: user.email,
+      roles: user.get_all_roles.map { |r| r[:id] },
+      name: user.username,
+      tfa_enabled: user.use_two_factor,
+      iat: Time.now.to_i,
+      nbf: Time.now.to_i
+    }
+
+    # if the user has a character include that information
+    if user.main_character
+      payload[:character_id] = user.main_character.id
+      payload[:given_name] = user.main_character.first_name
+      payload[:family_name] = user.main_character.last_name
+      payload[:avatar] = user.main_character.avatar_url
+    end
+
+    # set the expiration unless we want this to last awhile
+    payload[:exp] = Time.now.to_i + (12 * 3600) unless persisent
+
+    token = JWT.encode payload, secret, 'HS256'
+    return token
+  end
+
+  def current_user
     if bearer_token
-      if /^[a-z0-9]+$/.match bearer_token
-        @token = UserToken.find_by token: bearer_token
-        if @token != nil && !@token.is_expired
-          @current_user = @token.user
-          @current_user
-        else
-          # if we dont find it check to see if this token is OAuth
-          @oauth_token = OauthToken.find_by access_token: bearer_token
-          if @oauth_token # eventually check for expiration currently they are perpetual and can be cleared by the user
-            @current_user = @oauth_token.user
-            @current_user
-          end
-          # then do nothing so this just returns nil
-        end
+      # get our secret
+      secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
+      begin
+        # decode
+        decoded_token = JWT.decode bearer_token, secret, true, { algorithm: 'HS256' }
+        # make a token user
+        user = TokenUser.new(decoded_token[0])
+        # return payload
+        user
+      rescue JWT::ExpiredSignature
+        # We will do nothing. A nulll return will trigger a 401 wherever current_user is required
       end
     end
+
+    # if bearer_token
+    #   if /^[a-z0-9]+$/.match bearer_token
+    #     @token = UserToken.find_by token: bearer_token
+    #     if @token != nil && !@token.is_expired
+    #       @current_user = @token.user
+    #       @current_user
+    #     else
+    #       # if we dont find it check to see if this token is OAuth
+    #       @oauth_token = OauthToken.find_by access_token: bearer_token
+    #       if @oauth_token # eventually check for expiration currently they are perpetual and can be cleared by the user
+    #         @current_user = @oauth_token.user
+    #         @current_user
+    #       end
+    #       # then do nothing so this just returns nil
+    #     end
+    #   end
+    # end
   end
 
   # checks to make sure that a user is "logged in"
@@ -72,7 +118,7 @@ class ApplicationController < ActionController::API
     if !(current_user && current_user.isinrole(roleId))
       # Email if this is a logged in user trying to access part of the api they shouldn't be in
       if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production' && current_user
-        vMessage = "#{current_user} tried to access an endpoint which they do not have access to: #{request.original_url}. Please take appropriate action."
+        vMessage = "#{current_user.id} tried to access an endpoint which they do not have access to: #{request.original_url}. Please take appropriate action."
         send_email('dale@daleslab.com', 'Unauthorized Endpoint Use', vMessage)
       end
 

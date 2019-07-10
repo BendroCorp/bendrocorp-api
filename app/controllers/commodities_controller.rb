@@ -76,7 +76,7 @@ class CommoditiesController < ApplicationController
       @tiv.trade_item_id = value[:trade_item_id]
       @tiv.buy_price = value[:buy_price]
       @tiv.sell_price = value[:sell_price]
-      @tiv.added_by = current_user
+      @tiv.added_by_id = current_user.id
       @tiv.is_finalized = true
       @tiv.is_ignored = false
 
