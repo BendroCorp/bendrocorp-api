@@ -61,7 +61,7 @@ class ApplicationController < ActionController::API
     end
 
     # set the expiration unless we want this to last awhile
-    payload[:exp] = Time.now.to_i + 4 * 3600 unless persisent
+    payload[:exp] = Time.now.to_i + (12 * 3600) unless persisent
 
     token = JWT.encode payload, secret, 'HS256'
     return token
