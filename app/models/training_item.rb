@@ -3,7 +3,7 @@ class TrainingItem < ApplicationRecord
   belongs_to :training_item_type
   has_many :training_item_completions
   validates :created_by_id, presence: true
-  belongs_to :created_by_id, class_name: 'User', foreign_key: 'created_by_id', optional: true
+  belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id', optional: true
 
   accepts_nested_attributes_for :training_course
 
