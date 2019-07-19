@@ -35,6 +35,7 @@ class JobBoardController < ApplicationController
     @mission = JobBoardMission.new(job_board_mission_params)
     @mission.created_by_id = current_user.id
     @mission.updated_by_id = current_user.id
+    @mission.posting_approved = true
     @mission.mission_status_id = 1 # open
     if @mission.save
       render status: 201, json: @missions.as_json(methods: [:on_mission, :url_title_string, :created_time_ms], include: { completion_request: { include: { flight_log: { methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}} } } }, mission_status:{}, created_by: { :only => [:username], methods: [:main_character] }, updated_by: { :only => [:username] }, completion_criteria: { } })
