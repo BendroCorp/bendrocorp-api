@@ -2,7 +2,7 @@ class JobBoardController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  before_action except: [:index, :fetch, :accept_mission, :abandon_mission, :complete_mission] do |a|
+  before_action except: [:index, :show, :accept_mission, :abandon_mission, :complete_mission] do |a|
     a.require_one_role([28]) #job board admin
   end
 
@@ -12,6 +12,16 @@ class JobBoardController < ApplicationController
     @missions = JobBoardMission.where('posting_approved = ? AND archived = ?', true, false).order('created_at DESC')
     render status: 200, json: @missions.order('created_at desc').as_json(methods: [:on_mission, :url_title_string, :created_time_ms], include: { completion_request: { include: { flight_log: { methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}} } } }, mission_status:{}, created_by: { :only => [:username], methods: [:main_character] }, updated_by: { :only => [:username] }, completion_criteria: { } })
     # , not_approved_missions: @not_approved_missions.as_json(methods: [:on_mission], include: { completion_request: { methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}} }, mission_status:{}, created_by: { :only => [:username], methods: [:main_character] }, updated_by: { :only => [:username] }, completion_criteria: {} })
+  end
+
+  # GET api/job-board/:mission_id
+  def show
+    @job = JobBoardMission.find_by_id params[:mission_id]
+    if @job
+      render status: 200, json: @job.as_json(methods: [:on_mission, :url_title_string, :created_time_ms], include: { completion_request: { include: { flight_log: { methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}} } } }, mission_status:{}, created_by: { :only => [:username], methods: [:main_character] }, updated_by: { :only => [:username] }, completion_criteria: { } })
+    else
+      render status: 404, json: { message: 'Job board mission not found or it may have been removed!' }
+    end
   end
 
   # GET api/job-board/types
