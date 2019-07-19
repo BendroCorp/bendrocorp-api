@@ -319,6 +319,7 @@ Rails.application.routes.draw do
   get 'api/user/approvals' => 'users#approvals'
   get 'api/user/approvals/:count' => 'users#approvals'
   get 'api/user/approvals-count' => 'users#approvals_count'
+  get 'api/user/approvals-count-total' => 'users#approvals_count_total'
   get 'api/user/oauth-tokens' => 'users#oauth_tokens'
   get 'api/user/auth-tokens' => 'users#auth_tokens'
   post 'api/user/push-token' => 'users#add_push_token'

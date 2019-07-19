@@ -26,6 +26,11 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET api/user/approvals-count-total
+  def approvals_count_total
+    render status: 200, json: current_user.db_user.approval_approvers.count
+  end
+
   # GET api/user/approvals-count
   def approvals_count
     render status: 200, json: current_user.db_user.approval_approvers.where('approval_type_id < 4').count
