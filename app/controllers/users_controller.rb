@@ -18,9 +18,14 @@ class UsersController < ApplicationController
 
   # GET api/user/approvals
   # GET api/user/approvals/:count
+  # GET api/user/approvals/:count/:skip
   def approvals
     if params[:count]
-      render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').take(params[:count].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+      if params[:skip]
+        render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').take(params[:count].to_i).skip(params[:skip].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+      else
+        render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').take(params[:count].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+      end
     else
       render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
     end
