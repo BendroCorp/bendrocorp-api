@@ -122,10 +122,11 @@ Rails.application.routes.draw do
   get 'api/job-board/types' => 'job_board#list_types'
   post 'api/job-board/' => 'job_board#create'
   patch 'api/job-board/' => 'job_board#update'
-  delete 'api/job-board/:mission_id/' => 'job_board#delete'
   post 'api/job-board/accept' => 'job_board#accept_mission'
   post 'api/job-board/abandon' => 'job_board#abandon_mission'
   post 'api/job-board/complete' => 'job_board#complete_mission'
+  get 'api/job-board/:mission_id/' => 'job_board#show'
+  delete 'api/job-board/:mission_id/' => 'job_board#delete'
 
   # 'jobs' (as in employment ops)
   get 'api/job' => 'jobs#list'
