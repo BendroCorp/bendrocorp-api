@@ -162,6 +162,9 @@ Rails.application.routes.draw do
   patch 'api/menu' => 'menu_items#update'
   delete 'api/menu/:menu_item_id' => 'menu_items#delete'
 
+  # news
+  get 'api/news' => 'rp_news_stories#index'
+
   # offender reports
   get 'api/offender-report' => 'offender_reports#list'
   get 'api/offender-report/types' => 'offender_reports#list_types'
