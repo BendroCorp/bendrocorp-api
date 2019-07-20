@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190703000049) do
+ActiveRecord::Schema.define(version: 20190720042259) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -1358,6 +1358,18 @@ ActiveRecord::Schema.define(version: 20190703000049) do
     t.integer "max_users", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "rp_news_stories", force: :cascade do |t|
+    t.text "title"
+    t.text "text"
+    t.integer "created_by_id"
+    t.integer "updated_by_id"
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_rp_news_stories_on_created_by_id"
+    t.index ["updated_by_id"], name: "index_rp_news_stories_on_updated_by_id"
   end
 
   create_table "rpush_apps", force: :cascade do |t|
