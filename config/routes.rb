@@ -164,6 +164,11 @@ Rails.application.routes.draw do
 
   # news
   get 'api/news' => 'rp_news_stories#index'
+  get 'api/news/public' => 'rp_news_stories#index_public'
+  get 'api/news/:news_id' => 'rp_news_stories#show'
+  post 'api/news/' => 'rp_news_stories#create'
+  put 'api/news/' => 'rp_news_stories#update'
+  delete 'api/news/:news_id' => 'rp_news_stories#destroy'
 
   # offender reports
   get 'api/offender-report' => 'offender_reports#list'

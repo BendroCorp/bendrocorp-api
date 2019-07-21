@@ -1,7 +1,7 @@
 class RpNewsStoriesController < ApplicationController
-  before_action :require_user
-  before_action :require_member
-  before_action except: [:index, :show] do |a|
+  before_action :require_user, except: [:index_public]
+  before_action :require_member, except: [:index_public]
+  before_action except: [:index, :show, :index_public] do |a|
     a.require_one_role([44])
   end
   before_action :set_rp_news_story, only: [:show, :update, :destroy]
@@ -9,6 +9,13 @@ class RpNewsStoriesController < ApplicationController
   # GET /api/news
   def index
     @rp_news_stories = RpNewsStory.where(archived: false)
+
+    render json: @rp_news_stories.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
+  end
+
+  # GET /api/news/public
+  def index_public
+    @rp_news_stories = RpNewsStory.where(archived: false, public: true)
 
     render json: @rp_news_stories.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
   end
@@ -74,6 +81,6 @@ class RpNewsStoriesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def rp_news_story_params
-      params.require(:news_story).permit(:title, :text)
+      params.require(:news_story).permit(:title, :text, :public)
     end
 end
