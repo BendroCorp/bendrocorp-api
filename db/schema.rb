@@ -1366,6 +1366,7 @@ ActiveRecord::Schema.define(version: 20190720042259) do
     t.integer "created_by_id"
     t.integer "updated_by_id"
     t.boolean "archived", default: false
+    t.boolean "published", default: false
     t.boolean "public", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
