@@ -31,7 +31,7 @@ class ApplicationController < ActionController::API
 
   def make_token(length = 50)
     o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
-    Digest::SHA256.hexdigest (0...50).map { o[rand(o.length)] }.join
+    Digest::SHA256.hexdigest (0...length).map { o[rand(o.length)] }.join
   end
 
   def make_jwt user, persisent = false
