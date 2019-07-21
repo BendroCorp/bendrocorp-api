@@ -76,8 +76,12 @@ class RpNewsStoriesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_rp_news_story
-      @rp_news_story = RpNewsStory.find_by_id(params[:news_id])
-      @rp_news_story = RpNewsStory.find_by_id(params[:news_story][:id]) if @rp_news_story.nil?
+      ns = RpNewsStory.find_by_id(params[:news_id])
+      ns ||= RpNewsStory.find_by_id(params[:news_story][:id]) if params[:news_story]
+      
+      if ns.archived == false && (ns.published == true || current_user.is_in_role(44))
+        @rp_news_story = ns
+      end
     end
 
     # Only allow a trusted parameter "white list" through.
