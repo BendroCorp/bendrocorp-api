@@ -8,15 +8,15 @@ class RpNewsStoriesController < ApplicationController
 
   # GET /api/news
   def index
-    @rp_news_stories = RpNewsStory.where(archived: false) if current_user.is_in_role 44
-    @rp_news_stories ||= RpNewsStory.where(archived: false, published: true) if !current_user.is_in_role 44
+    @rp_news_stories = RpNewsStory.where(archived: false).order('created_at desc') if current_user.is_in_role 44
+    @rp_news_stories ||= RpNewsStory.where(archived: false, published: true).order('created_at desc') if !current_user.is_in_role 44
     
     render json: @rp_news_stories.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
   end
 
   # GET /api/news/public
   def index_public
-    @rp_news_stories = RpNewsStory.where(archived: false, published: true, public: true)
+    @rp_news_stories = RpNewsStory.where(archived: false, published: true, public: true).order('created_at desc')
 
     render json: @rp_news_stories.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
   end
