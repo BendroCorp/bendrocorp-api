@@ -31,6 +31,16 @@ class UsersController < ApplicationController
     end
   end
 
+  # GET api/user/approval/:approval_approver_id
+  def approval
+    @aa = current_user.db_user.approval_approvers.find_by_id(params[:approval_approver_id].to_i)
+    if @aa
+      render status: 200, json: @aa.as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+    else
+      render status: 404, json: { message: 'No approver record found for that id' }
+    end
+  end
+
   # GET api/user/approvals-count-total
   def approvals_count_total
     render status: 200, json: current_user.db_user.approval_approvers.count
