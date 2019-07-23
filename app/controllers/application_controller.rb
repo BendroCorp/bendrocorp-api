@@ -58,6 +58,7 @@ class ApplicationController < ActionController::API
       payload[:given_name] = user.main_character.first_name
       payload[:family_name] = user.main_character.last_name
       payload[:avatar] = user.main_character.avatar_url
+      payload[:job_title] = user.main_character.current_job_title
     end
 
     # set the expiration unless we want this to last awhile
