@@ -148,7 +148,7 @@ class SystemMapController < ApplicationController
         @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
         @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
       else
-        @planet.primary_image = SystemMapImage.create(image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @moon.title, description: @moon.title)
+        @planet.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @moon.title, description: @moon.title)
       end
     end
     #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
@@ -181,7 +181,7 @@ class SystemMapController < ApplicationController
           @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
           @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
         else
-          @planet.primary_image = SystemMapImage.create(image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @planet.title, description: @planet.title)
+          @planet.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:planet][:new_primary_image][:base64], image_file_name: params[:planet][:new_primary_image][:name], title: @planet.title, description: @planet.title)
         end
       end
       #img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by: current_user)
@@ -240,7 +240,7 @@ class SystemMapController < ApplicationController
         @moon.primary_image.image = params[:moon][:new_primary_image][:base64]
         @moon.primary_image.image_file_name = params[:moon][:new_primary_image][:name]
       else
-        @moon.primary_image = SystemMapImage.create(image: params[:moon][:new_primary_image][:base64], image_file_name: params[:moon][:new_primary_image][:name], title: @moon.title, description: @moon.title)
+        @moon.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:moon][:new_primary_image][:base64], image_file_name: params[:moon][:new_primary_image][:name], title: @moon.title, description: @moon.title)
       end
     end
     if @moon.save
@@ -272,7 +272,7 @@ class SystemMapController < ApplicationController
           @moon.primary_image.image = params[:moon][:new_primary_image][:base64]
           @moon.primary_image.image_file_name = params[:moon][:new_primary_image][:name]
         else
-          @moon.primary_image = SystemMapImage.create(image: params[:moon][:new_primary_image][:base64], image_file_name: params[:moon][:new_primary_image][:name], title: @moon.title, description: @moon.title)
+          @moon.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:moon][:new_primary_image][:base64], image_file_name: params[:moon][:new_primary_image][:name], title: @moon.title, description: @moon.title)
         end
       end
       if @moon.update_attributes(moon_params)
@@ -319,7 +319,7 @@ class SystemMapController < ApplicationController
             @so.primary_image.image = params[:system_object][:new_primary_image][:base64]
             @so.primary_image.image_file_name = params[:system_object][:new_primary_image][:name]
           else
-            @so.primary_image = SystemMapImage.create(image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @so.title, description: @so.title)
+            @so.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @so.title, description: @so.title)
           end
         end
 
@@ -348,7 +348,7 @@ class SystemMapController < ApplicationController
               @so.primary_image.image = params[:system_object][:new_primary_image][:base64]
               @so.primary_image.image_file_name = params[:system_object][:new_primary_image][:name]
             else
-              @so.primary_image = SystemMapImage.create(image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @so.title, description: @so.title)
+              @so.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @so.title, description: @so.title)
             end
           end
 
@@ -392,7 +392,7 @@ class SystemMapController < ApplicationController
         @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
         @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
       else
-        @settlement.primary_image = SystemMapImage.create(image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name], title: @settlement.title, description: @settlement.title)
+        @settlement.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name], title: @settlement.title, description: @settlement.title)
       end
     end
     @settlement.title = params[:settlement][:title]
@@ -418,7 +418,7 @@ class SystemMapController < ApplicationController
           @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
           @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
         else
-          new_primary_image = SystemMapImage.create(image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name])
+          new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name])
           @settlement.primary_image = new_primary_image
         end
       end
@@ -460,7 +460,7 @@ class SystemMapController < ApplicationController
         @location.primary_image.image = params[:location][:new_primary_image][:base64]
         @location.primary_image.image_file_name = params[:location][:new_primary_image][:name]
       else
-        @location.primary_image = SystemMapImage.create(image: params[:location][:new_primary_image][:base64], image_file_name: params[:location][:new_primary_image][:name], title: @location.title, description: @location.title)
+        @location.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:location][:new_primary_image][:base64], image_file_name: params[:location][:new_primary_image][:name], title: @location.title, description: @location.title)
       end
     end
 
@@ -489,7 +489,7 @@ class SystemMapController < ApplicationController
           @location.primary_image.image = params[:location][:new_primary_image][:base64]
           @location.primary_image.image_file_name = params[:location][:new_primary_image][:name]
         else
-          new_primary_image = SystemMapImage.create(image: params[:location][:new_primary_image][:base64], image_file_name: params[:location][:new_primary_image][:name])
+          new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:location][:new_primary_image][:base64], image_file_name: params[:location][:new_primary_image][:name])
           @location.primary_image = new_primary_image
         end
       end
@@ -531,7 +531,7 @@ class SystemMapController < ApplicationController
     @flora = SystemMapFlora.new
 
     if params[:new_flora][:new_primary_image] != nil
-      new_primary_image = SystemMapImage.create(image: "data:#{params[:new_flora][:new_primary_image][:filetype]};base64,#{params[:new_flora][:new_primary_image][:base64]}", image_file_name: params[:new_flora][:new_primary_image][:filename])
+      new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: "data:#{params[:new_flora][:new_primary_image][:filetype]};base64,#{params[:new_flora][:new_primary_image][:base64]}", image_file_name: params[:new_flora][:new_primary_image][:filename])
       @flora.primary_image = new_primary_image
     else
       @flora.primary_image = SystemMapImage.new
@@ -555,7 +555,7 @@ class SystemMapController < ApplicationController
     @flora = SystemMapFlora.find_by_id(params[:new_flora][:id])
     if @flora != nil
       if params[:new_flora][:new_primary_image] != nil
-        new_primary_image = SystemMapImage.create(image: "data:#{params[:new_flora][:new_primary_image][:filetype]};base64,#{params[:new_flora][:new_primary_image][:base64]}", image_file_name: params[:new_flora][:new_primary_image][:filename])
+        new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: "data:#{params[:new_flora][:new_primary_image][:filetype]};base64,#{params[:new_flora][:new_primary_image][:base64]}", image_file_name: params[:new_flora][:new_primary_image][:filename])
         @flora.primary_image = new_primary_image
       else
         @flora.primary_image = SystemMapImage.new
@@ -595,7 +595,7 @@ class SystemMapController < ApplicationController
     @fauna = SystemMapFauna.new
 
     if params[:new_fauna][:new_primary_image] != nil
-      new_primary_image = SystemMapImage.create(image: "data:#{params[:new_fauna][:new_primary_image][:filetype]};base64,#{params[:new_fauna][:new_primary_image][:base64]}", image_file_name: params[:new_fauna][:new_primary_image][:filename])
+      new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: "data:#{params[:new_fauna][:new_primary_image][:filetype]};base64,#{params[:new_fauna][:new_primary_image][:base64]}", image_file_name: params[:new_fauna][:new_primary_image][:filename])
       @fauna.primary_image = new_primary_image
     else
       @fauna.primary_image = SystemMapImage.new
@@ -620,7 +620,7 @@ class SystemMapController < ApplicationController
 
     if @fauna != nil
       if params[:new_fauna][:new_primary_image] != nil
-        new_primary_image = SystemMapImage.create(image: "data:#{params[:new_fauna][:new_primary_image][:filetype]};base64,#{params[:new_fauna][:new_primary_image][:base64]}", image_file_name: params[:new_fauna][:new_primary_image][:filename])
+        new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: "data:#{params[:new_fauna][:new_primary_image][:filetype]};base64,#{params[:new_fauna][:new_primary_image][:base64]}", image_file_name: params[:new_fauna][:new_primary_image][:filename])
         @fauna.primary_image = new_primary_image
       else
         @fauna.primary_image = SystemMapImage.new
