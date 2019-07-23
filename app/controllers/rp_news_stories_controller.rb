@@ -38,7 +38,7 @@ class RpNewsStoriesController < ApplicationController
     @rp_news_story.updated_by_id = current_user.id
 
     if @rp_news_story.save
-      render json: @rp_news_story.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } }), status: :created, location: @rp_news_story
+      render status: 200, json: @rp_news_story.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
     else
       render status: :unprocessable_entity, json: { message: @rp_news_story.errors.full_messages.to_sentence }
     end
@@ -49,7 +49,7 @@ class RpNewsStoriesController < ApplicationController
     if @rp_news_story
       @rp_news_story.updated_by_id = current_user.id
       if @rp_news_story.update(rp_news_story_params)
-        render json: @rp_news_story.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
+        render status: 200, json: @rp_news_story.as_json(include: { created_by: { only: [:id], methods: [:main_character] }, updated_by: { only: [:id], methods: [:main_character] } })
       else
         render status: :unprocessable_entity, json: { message: @rp_news_story.errors.full_messages.to_sentence }
       end
@@ -76,8 +76,8 @@ class RpNewsStoriesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_rp_news_story
-      ns = RpNewsStory.find_by_id(params[:news_id])
-      ns ||= RpNewsStory.find_by_id(params[:news_story][:id]) if params[:news_story]
+      ns = RpNewsStory.find_by_id(params[:news_id].to_i)
+      ns ||= RpNewsStory.find_by_id(params[:news_story][:id].to_i) if params[:news_story] && params[:news_story][:id].to_i
       
       if ns.archived == false && (ns.published == true || current_user.is_in_role(44))
         @rp_news_story = ns
@@ -86,6 +86,6 @@ class RpNewsStoriesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def rp_news_story_params
-      params.require(:news_story).permit(:title, :text, :public)
+      params.require(:news_story).permit(:title, :text, :public, :published)
     end
 end
