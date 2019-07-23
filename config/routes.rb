@@ -324,6 +324,7 @@ Rails.application.routes.draw do
   # users
   get 'api/user' => 'users#list'
   get 'api/user/me' => 'users#me'
+  get 'api/user/approval/:approval_approver_id' => 'users#approval'
   get 'api/user/approvals' => 'users#approvals'
   get 'api/user/approvals/:count' => 'users#approvals'
   get 'api/user/approvals/:count/:skip' => 'users#approvals'
