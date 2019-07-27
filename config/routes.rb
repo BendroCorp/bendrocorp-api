@@ -107,6 +107,7 @@ Rails.application.routes.draw do
   get 'api/events/:event_id/certify' => 'events#certify_event_attendence'
   post 'api/events/:event_id/certify' => 'events#certify_event_attendence_post'
   get 'api/events/:event_id' => 'events#show'
+  delete 'api/events/:event_id/' => 'events#archive_event'
 
   # flight Logs
   get 'api/flight-logs' => 'flight_logs#list'

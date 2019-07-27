@@ -521,8 +521,10 @@ ActiveRecord::Schema.define(version: 20190720042259) do
     t.integer "briefing_id"
     t.integer "debriefing_id"
     t.integer "classification_level_id"
+    t.integer "archived_id", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["archived_id"], name: "index_events_on_archived_id"
     t.index ["briefing_id"], name: "index_events_on_briefing_id"
     t.index ["classification_level_id"], name: "index_events_on_classification_level_id"
     t.index ["debriefing_id"], name: "index_events_on_debriefing_id"
