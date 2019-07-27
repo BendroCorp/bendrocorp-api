@@ -11,13 +11,13 @@ class EventsController < ApplicationController
   # GET api/events
   def list
     render status: 200,
-    json: Event.where('end_date >= ?', Time.now).order('start_date asc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+    json: Event.where('end_date >= ? AND archived = ?', Time.now, false).order('start_date asc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
   end
 
   # GET api/events/next
   def list_next
     render status: 200,
-    json: Event.where('end_date >= ?', Time.now).order('start_date asc').first.as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+    json: Event.where('end_date >= ? AND archived = ?', Time.now, false).order('start_date asc').first.as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
   end
 
   # GET api/events/expired
@@ -25,17 +25,17 @@ class EventsController < ApplicationController
   def list_expired
     if params[:count] && params[:count].to_i
       render status: 200,
-      json: Event.where('end_date < ?', Time.now).order('start_date desc').limit(params[:count].to_i).as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+      json: Event.where('end_date < ? AND archived = ?', Time.now, false).order('start_date desc').limit(params[:count].to_i).as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
     else
       render status: 200,
-      json: Event.where('end_date < ?', Time.now).order('start_date desc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
+      json: Event.where('end_date < ? AND archived = ?', Time.now, false).order('start_date desc').as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
     end
   end
 
   # GET api/events/:event_id
   def show
     @event = Event.find_by_id(params[:event_id].to_i)
-    if @event
+    if @event && !@event.archived
       render status: 200, json: @event.as_json(include: { event_type: {}, briefing:{ include: { starting_system: {}, ending_system: {}, operational_leader: { methods: [:full_name] }, escort_leader: { methods: [:full_name] }, communications_designee: { methods: [:full_name] }, reporting_designee: { methods: [:full_name] } }}, debriefing: {}, awards: { methods: [:image_url]}, attendences: { include: { character: { methods: [:full_name] }, attendence_type: { } }} }, methods: [:start_date_ms, :end_date_ms, :is_expired])
     else
       render status: 404, json: { message: 'Event not found. It may have been removed.' }
@@ -73,7 +73,7 @@ class EventsController < ApplicationController
     # Time.at( 1394648309130 / 1000.0 )
     # :name, :description, :start_date, :end_date, :weekly_reccurance, :event_type_id, :show_on_dashboard
     @event = Event.find_by id: params[:event][:id]
-    if @event != nil || !@event.submitted_for_certification
+    if (@event != nil || !@event.submitted_for_certification) && !@event.archived
       @event.name = params[:event][:name]
       @event.description = params[:event][:description]
       @event.start_date = Time.at(params[:event][:start_date_ms] / 1000.0)
@@ -96,7 +96,7 @@ class EventsController < ApplicationController
   # Body should include event_id: number
   def publish
     @event = Event.find_by_id(params[:event_id].to_i)
-    if @event != nil
+    if @event != nil && !@event.archived
       if !@event.published
         @event.published = true
         @event.published_date = Time.now
@@ -136,7 +136,7 @@ class EventsController < ApplicationController
       end
     else
       # render status: 404, json: { message: 'Event award not found.' }
-      if @event != nil
+      if @event != nil && !@event.archived
         @award = Award.find_by_id(params[:event_id].to_i)
         if @award != nil
           @event.awards << @award
@@ -298,6 +298,21 @@ class EventsController < ApplicationController
       end
     else
       render status: 404, json: { message: 'Either this event was not found or has already been submitted for certification.' }
+    end
+  end
+
+  # DELETE api/events/:event_id/
+  def archive_event
+    @event = Event.find_by_id(params[:event_id])
+    if @event != nil && !@event.submitted_for_certification && !@event.certified && @event.event_certification_request == nil
+      @event.archived = true
+      if @event.save
+        render status: 200, json: { message: 'Event archived!' }
+      else
+        render status: 500, json: { message: "Event could not be archived because: #{@event.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 404, json: { message: 'Event was not found or has been submitted for certification.' }
     end
   end
 
