@@ -23,3 +23,6 @@
   dormant_event_worker:
     every: 24h # Run every 24 hours
     class: DormantEventWorker
+  kaiden_news_announce_worker:
+    every: 5m
+    class: KadenNewsAnnounceWorker

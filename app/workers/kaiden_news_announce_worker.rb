@@ -1,3 +1,6 @@
+require 'httparty'
+require 'sidekiq-scheduler'
+
 class KadenNewsAnnounceWorker
   include Sidekiq::Worker
 
@@ -7,11 +10,11 @@ class KadenNewsAnnounceWorker
 
       # content to post
       content = "@everyone A new spectrum news article has been published! Read it here: https://my.bendrocorp.com/news/#{story.id}"
-      push_contnet = "A new spectrum news article has been published!"
+      push_content = 'A new spectrum news article has been published!'
 
       # push to members
       User.all.each do |user|
-        send_push_notification user.id, push_contnet if user.isinrole(0)
+        send_push_notification user.id, push_content if user.isinrole(0)
       end
 
       # send to both hooks
