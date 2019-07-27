@@ -22,6 +22,8 @@ class CreateEvents < ActiveRecord::Migration[5.1]
       t.belongs_to :briefing
       t.belongs_to :debriefing
       t.belongs_to :classification_level
+
+      t.belongs_to :archived, default: false
       t.timestamps
     end
   end
