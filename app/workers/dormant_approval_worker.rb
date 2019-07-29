@@ -5,8 +5,8 @@ class DormantApprovalWorker
   include Sidekiq::Worker
 
   def perform(*args)
-    puts "Cheching for dormant approvals"
-    dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ? AND last_notified <= ?', Time.now - 2.days, Time.now + 12.hours)
+    puts "Checking for dormant approvals"
+    dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ? AND last_notified <= ?', Time.now - 2.days, Time.now - 12.hours)
 
     if dormant_approvals.count > 0
       puts "Found #{dormant_approvals.count} dormant approval(s)!"
