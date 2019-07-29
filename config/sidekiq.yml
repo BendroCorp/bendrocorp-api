@@ -9,7 +9,7 @@
     every: 1m # Runs once per minute
     class: TokenCleanupWorker
   dormant_approval_worker:
-    every: 12h # Run every 12 hours
+    every: 1m # Run every 1 minute
     class: DormantApprovalWorker
   required_course_worker:
     every: 48h # Run every 2 days
