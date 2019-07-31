@@ -62,13 +62,13 @@ class UsersController < ApplicationController
   end
 
   # POST api/user/push-token
-  # Must contain token and user_device_type_id (1 = iOS, 2(TODO) = Amazon)
+  # Must contain token, user_device_type_id, reg_data (1 = iOS, 2(TODO) = Amazon)
   def add_push_token
-    if params[:token] && params[:user_device_type_id]
+    if params[:push_token] && params[:push_token][:token] && params[:push_token][:user_device_type_id] && params[:push_token][:reg_data]
       db_user = current_user.db_user
-      device_type = UserDeviceType.find_by_id(params[:user_device_type_id].to_i)
+      device_type = UserDeviceType.find_by_id(params[:push_token][:user_device_type_id].to_i)
       if device_type
-        db_user.user_push_tokens << UserPushToken.new(token: params[:token], user_device_type: device_type)
+        db_user.user_push_tokens << UserPushToken.new(push_params)
         if db_user.save
           render status: 200, json: { message: 'Device token added!' }
         else
@@ -86,5 +86,10 @@ class UsersController < ApplicationController
   def push_self
     send_push_notification current_user.id, "This is a test. You sent this to your devices. :)"
     render status: 200, json: { message: 'Self push succeeded!' }
+  end
+
+  private
+  def push_params
+    params.require(:push_token).permit(:token, :user_device_type_id, :reg_data)
   end
 end
