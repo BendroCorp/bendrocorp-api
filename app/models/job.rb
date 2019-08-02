@@ -7,4 +7,8 @@ class Job < ActiveRecord::Base
   has_many :applications
   belongs_to :division, optional: true
   belongs_to :job_level, optional: true
+
+  def max_hired
+    true if self.max && self.characters.count >= self.max
+  end
 end

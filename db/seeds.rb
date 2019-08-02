@@ -681,7 +681,7 @@ divisions = Division.create([{ id: 1,
                                can_have_ships: false,
                                ordinal: 5 } ])
 
-jobs = Job.create([ { id:1, title: 'Chief Executive Officer', description: 'The boss', division: divisions[0], job_level_id: 1 },
+jobs = Job.create([ { id:1, title: 'Chief Executive Officer', description: 'The boss', division: divisions[0], job_level_id: 1, max: 1, hiring: true },
                      { id:2, title: 'Chief Operations Officer', description: 'The boss', division: divisions[0], job_level_id: 2 },
                      { id:3, title: 'Chief Financial Officer', description: 'The boss', division: divisions[0], job_level_id: 2 },
                      { id:4, title: 'Director of Human Resources', description: 'The boss', division: divisions[0], job_level_id: 2 },
@@ -708,7 +708,7 @@ jobs = Job.create([ { id:1, title: 'Chief Executive Officer', description: 'The 
                      { id:25, title: 'Chief Medical Officer', description: 'Is the senior physician within BendroCorp and directly responsible for the execution of proper medical care within BendroCorp. Responsible for developing the policies defined by the purpose for this division with input from other Directors and Executives. Develops training curriculum to train medical division staff in proper medical and patient care. Supervises, directs and is responsible for the day-to-day activities of the medical division. The Chief Medical Officer reports to the Chief Executive Officer.', job_level_id: 3, division_id: divisions[6]},
                      { id:26, title: 'Physician', description: 'Provides Tier 1 and Tier 2 medical care. Manages clinical teams as required. Assists the Chief Medical Officer as required in their duties.', job_level_id: 4, division_id: divisions[6]},
                      { id:27, title: 'First Responder', description: 'Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.', next_job_id: 25, job_level_id: 7, division_id: divisions[6]},
-                     { id:28, title: 'Junior First Responder', description: 'Probationary position. Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.', next_job_id: 26, job_level_id: 8, division_id: divisions[6]} ])
+                     { id:28, title: 'Junior First Responder', description: 'Probationary position. Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.', next_job_id: 26, job_level_id: 8, division_id: divisions[6], hiring: true} ])
 
 acttype = UserAccountType.create([{id: 1, title: 'Membership', ordinal: 1}, {id: 2, title: 'Diplomat', ordinal: 2}, {id: 3, title: 'Customer', ordinal: 3}])
 

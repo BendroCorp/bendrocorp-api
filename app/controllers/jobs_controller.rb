@@ -7,12 +7,16 @@ class JobsController < ApplicationController
 
   # GET api/job
   def list
-    render status: 200, json: Job.all.order('title')
+    render status: 200, json: Job.all.order('title').as_json(methods: [:max_hired])
   end
 
   # GET api/job/hiring
   def list_hiring
-    render status: 200, json: Job.where('hiring = ?', true).order('title')
+    jobs = []
+    Job.where('hiring = ?', true).order('title').each do |job|
+      jobs << job if !job.max_hired
+    end
+    render status: 200, json: jobs
   end
 
   # GET api/job/types
@@ -45,6 +49,6 @@ class JobsController < ApplicationController
   end
 
   def job_params
-    params.require(:job).permit(:title, :description, :hiring_description, :division_id, :hiring, :job_level_id)
+    params.require(:job).permit(:title, :description, :hiring_description, :division_id, :hiring, :job_level_id, :max)
   end
 end
