@@ -10,13 +10,22 @@ class EventCertificationRequest < ApplicationRecord
   accepts_nested_attributes_for :approval
   accepts_nested_attributes_for :event
 
-  def approval_completion #required function for request approval
-    #need to actually do something here :)
+  def approval_completion # required function for request approval
+    # need to actually do something here :)
     self.event.attendences.each do |attend|
       if attend.attendence_type_id == 1 # aka they attended
-        PointTransaction.create(user_id: attend.character.user.id, amount: 1, reason: "Certified as attending: #{self.event.name}.", approved: true)
+        # if the user/character is eligible to recieve operations points
+        if attend.character.is_op_eligible?
+          PointTransaction.create(
+            user_id: attend.character.user.id,
+            amount: 1,
+            reason: "Certified as attending: #{self.event.name}.",
+            approved: true
+          )
+        end
+
         self.event.awards.each do |award_it|
-          if attend.character.awards.find_by_id(award_it.id) == nil || award_it.multiple_awards_allowed
+          if attend.character.awards.find_by_id(award_it.id) == nil || award_it.multiple_awards_allowed && attend.character.is_op_eligible?
             PointTransaction.create(user_id: attend.character.user.id, amount: award_it.points, approved: true, reason: "Certified as attending: #{self.event.name} and recieved award #{award_it.name}.")
             AwardsAwarded.create(character_id: attend.character.id, award_id: award_it.id, citation: "Awarded for particpation in the event: #{self.event.name}")
             # TODO: Eventually email user when they get an award

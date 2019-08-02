@@ -760,6 +760,7 @@ ActiveRecord::Schema.define(version: 20190720042259) do
     t.integer "job_level_id"
     t.integer "max"
     t.boolean "read_only", default: false
+    t.boolean "op_eligible", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["division_id"], name: "index_jobs_on_division_id"
