@@ -37,7 +37,7 @@ class JobsController < ApplicationController
   # PATCH api/job
   def update
     @job = Job.find_by_id(params[:job][:id].to_i)
-    if @job
+    if @job && !@job.read_only
       if @job.update_attributes(job_params)
         render status: 201, json: @job
       else
