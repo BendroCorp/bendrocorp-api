@@ -10,6 +10,7 @@ class CreateJobs < ActiveRecord::Migration[5.1]
       t.boolean :hiring, default: false
       t.belongs_to :job_level
       t.integer :max
+      t.boolean :read_only, default: false
       t.timestamps
     end
   end
