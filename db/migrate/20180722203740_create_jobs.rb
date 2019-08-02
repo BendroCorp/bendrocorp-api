@@ -11,6 +11,8 @@ class CreateJobs < ActiveRecord::Migration[5.1]
       t.belongs_to :job_level
       t.integer :max
       t.boolean :read_only, default: false
+      t.boolean :op_eligible, default: true
+      t.belongs_to :checks_max_headcount_from
       t.timestamps
     end
   end

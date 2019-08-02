@@ -86,6 +86,10 @@ class Character < ActiveRecord::Base
     end
   end
 
+  def is_op_eligible?
+    current_job.op_eligible
+  end
+
   def current_division
     self.current_job.division
   end
