@@ -42,6 +42,7 @@ class ApplicationsController < ApplicationController
               approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
               approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
               approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
+              approverIds << user.id if user.isinrole(45) && @character.application.job.division_id == 7 #user is in medical director role and application job div is medical
             end
 
             # make sure there are no duplicates
