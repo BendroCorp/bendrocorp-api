@@ -9,8 +9,8 @@ class KadenNewsAnnounceWorker
       discordNewsUri = ENV["NEWS_WEBHOOK_LINK"] # spectrum-news
 
       # content to post
-      content = "@everyone A new spectrum news article has been published! Read it here: https://my.bendrocorp.com/news/#{story.id}"
-      push_content = 'A new spectrum news article has been published!'
+      content = "@everyone A new spectrum news article has been published: #{story.title}! Read it here: https://my.bendrocorp.com/news/#{story.id}"
+      push_content = "A new spectrum news article has been published: #{story.title}!"
 
       # push to members
       User.all.each do |user|
