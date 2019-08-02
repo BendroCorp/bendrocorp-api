@@ -9,6 +9,7 @@ class CreateJobs < ActiveRecord::Migration[5.1]
       t.belongs_to :division, index: true
       t.boolean :hiring, default: false
       t.belongs_to :job_level
+      t.integer :max
       t.timestamps
     end
   end
