@@ -30,7 +30,7 @@ class SiteRequestsController < ApplicationController
   # POST api/requests/add-role
   # Body needs to contain role_request object
   def add_role_post
-    #is the user already in the role_id
+    # is the user already in the role_id
     @userNewRole = Character.find_by_id(params[:role_request][:on_behalf_of_id].to_i)
     if @userNewRole != nil
       if !@userNewRole.user.isinrole(params[:role_request][:role_id])
@@ -44,23 +44,15 @@ class SiteRequestsController < ApplicationController
 
         # save the current_user
         if rr.save
-          # flash[:success] = 'Role request successfully submitted.'
-          # redirect_to '/requests/role-request'
           render status: 201, json: { message: 'Role requested created.' }
         else
-          # flash[:danger] = 'Error: Role request could not be saved.'
-          # redirect_to '/requests/role-request'
           cancel_approval(rr.approval_id)
           render status: 500, json: { message: "Role request could not be saved because: #{rr.errors.full_messages.to_sentence}" }
         end
       else
-        # flash[:info] = 'The selected user is already in the requested role.'
-        # redirect_to '/requests/role-request'
         render status: 400, json: { message: 'The selected user is already in the requested role.' }
       end
     else
-      # flash[:info] = "User not found. Request could not be made."
-      # redirect_to '/requests/role-request'
       render status: 400, json: { message: 'User not found. Request could not be made.' }
     end
   end
@@ -99,8 +91,8 @@ class SiteRequestsController < ApplicationController
         if rr.save
           render status: 201, json: { message: 'Role removal requested created.' }
         else
-          render status: 500, json: { message: "Role removal request could not be saved because: #{rr.errors.full_messages.to_sentence}" }
           cancel_approval(rr.approval_id)
+          render status: 500, json: { message: "Role removal request could not be saved because: #{rr.errors.full_messages.to_sentence}" }
         end
       else
         render status: 400, json: { message: 'The selected user is not in the requested role and thus cannot be removed from it.' }
@@ -186,20 +178,30 @@ class SiteRequestsController < ApplicationController
 
   # POST api/requests/position-change
   def position_change_post
-    # Create the position change request
-    positionChangeRequest = PositionChangeRequest.new(position_change_params)
+    # check to make sure that the job is available
+    job = Job.find_by_id(params[:position_change_request][:job_id].to_i)
+    if job
+      if !job.max_hired
+        # Create the position change request
+        positionChangeRequest = PositionChangeRequest.new(position_change_params)
 
-    # put the approval instance in the request
-    positionChangeRequest.approval_id = new_approval(22) # position change approval
+        # put the approval instance in the request
+        positionChangeRequest.approval_id = new_approval(22) # position change approval
 
-    # lastly add the request to the current_user
-    positionChangeRequest.user_id = current_user.id
+        # lastly add the request to the current_user
+        positionChangeRequest.user_id = current_user.id
 
-    if positionChangeRequest.save
-      render status: 200, json: { message: "Requested submitted" }
+        if positionChangeRequest.save
+          render status: 200, json: { message: 'Requested submitted!' }
+        else
+          cancel_approval(positionChangeRequest.approval_id)
+          render status: 500, json: { message: "Error occured. Could not complete request because: #{positionChangeRequest.errors.full_messages.to_sentence}" }
+        end
+      else
+        render status: 400, json: { message: 'Cannot create a position change for this job. All positions are filled.' }
+      end
     else
-      cancel_approval(positionChangeRequest.approval_id)
-      render status: 500, json: { message: "Error occured. Could not complete request" }
+      render status: 404, json: { message: 'Cannot create a position change for this job - it either does not exist or has been removed!' }
     end
   end
 

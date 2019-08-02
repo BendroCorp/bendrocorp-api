@@ -761,8 +761,10 @@ ActiveRecord::Schema.define(version: 20190720042259) do
     t.integer "max"
     t.boolean "read_only", default: false
     t.boolean "op_eligible", default: true
+    t.integer "checks_max_headcount_from_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["checks_max_headcount_from_id"], name: "index_jobs_on_checks_max_headcount_from_id"
     t.index ["division_id"], name: "index_jobs_on_division_id"
     t.index ["job_level_id"], name: "index_jobs_on_job_level_id"
   end
