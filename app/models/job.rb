@@ -7,8 +7,14 @@ class Job < ActiveRecord::Base
   has_many :applications
   belongs_to :division, optional: true
   belongs_to :job_level, optional: true
+  belongs_to :checks_max_headcount_from, class_name: 'Job', foreign_key: 'checks_max_headcount_from_id', optional: true
 
   def max_hired
-    true if self.max && self.characters.count >= self.max
+    if self.checks_max_headcount_from
+      true if self.checks_max_headcount_from.max && self.checks_max_headcount_from.max != -1 && self.checks_max_headcount_from.characters.count >= self.checks_max_headcount_from.max
+    else
+      true if self.max && self.max != -1 && self.characters.count >= self.max
+    end
+    false
   end
 end
