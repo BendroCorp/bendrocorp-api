@@ -16,26 +16,27 @@ class ApprovalsController < ApplicationController
             # check and see if we should update the approval status
             # first check to see if all of the approver have weighed in
             # full consent meta workflow
-            if @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= 1 && !@approval.single_consent
+            if @your_approval.approval.approval_approvers.where('approval_type_id > 3').count >= 1 && !@approval.single_consent
               # if we have all of the results in
               @approval = @your_approval.approval
 
               approversCount = @approval.approval_approvers.count
-              approved = @approval.approval_approvers.where("approval_type_id = 4").count
-              denied = @approval.approval_approvers.where("approval_type_id = 5").count
+              approved = @approval.approval_approvers.where(approval_type_id: 4).count
+              denied = @approval.approval_approvers.where(approval_type_id: 5).count
+              not_needed = @approval.approval_approvers.where(approval_type_id: 6).count
 
-              if denied > 0 # for full consent if any one denies then the approval has failed. So no need to keep going. ;)
+              if denied.positive? # for full consent if any one denies then the approval has failed. So no need to keep going. ;)
                 @approval.denied = true
                 # Change the status of unsubmitted approvals to not needed
-                @approval.approval_approvers.where("approval_type_id < 4").to_a.each do |approver|
+                @approval.approval_approvers.where('approval_type_id < 4').to_a.each do |approver|
                   approver.approval_type_id = 6
                   approver.save!
                 end
-              elsif approved >= approversCount
+              elsif approved + not_needed >= approversCount
                 @approval.approved = true
-              elsif approved < approversCount
-                # helpful note :)
-                # then do nothing becuase we dont have full consent yet
+              elsif approved + not_needed < approversCount
+                # helpful note just to mark out this condition :)
+                # do nothing because we dont have full consent yet
               else
                 raise 'Approval consent out of range!'
               end
@@ -51,26 +52,26 @@ class ApprovalsController < ApplicationController
                 # run final workflow
                 run_approval_workflow @approval
 
-                render status: 200, json: { message: "Approval status changed." }
+                render status: 200, json: { message: 'Approval status changed.' }
               else
-                render status: 500, json: { message: "The approval could not be completed." }
+                render status: 500, json: { message: 'The approval could not be completed.' }
               end
 
             # single consent meta workflow
-            elsif @your_approval.approval.approval_approvers.where("approval_type_id > 3").count >= 1 && @approval.single_consent
+            elsif @your_approval.approval.approval_approvers.where('approval_type_id > 3').count >= 1 && @approval.single_consent
               # re-fetch the approval
               @approval = @your_approval.approval
 
               # it only takes one person to approve this approval
-              if @approval.approval_approvers.where("approval_type_id = 4").count >= 1
+              if @approval.approval_approvers.where('approval_type_id = 4').count >= 1
                 @approval.approved = true
                 # Change the status of unsubmitted approvals to not needed
-                @approval.approval_approvers.where("approval_type_id < 4").to_a.each do |approver|
+                @approval.approval_approvers.where('approval_type_id < 4').to_a.each do |approver|
                   approver.approval_type_id = 6
                   approver.save!
                 end
 
-              elsif @approval.approval_approvers.where("approval_type_id = 5").count == @approval.approval_approvers.count
+              elsif @approval.approval_approvers.where('approval_type_id = 5').count == @approval.approval_approvers.count
                 @approval.denied = true
               else
                 raise 'Approval out of range (2)'
@@ -88,29 +89,29 @@ class ApprovalsController < ApplicationController
                   # run final workflows
                   run_approval_workflow @approval
 
-                  render status: 200, json: { message: "success" }
+                  render status: 200, json: { message: 'Success' }
                 else
-                  render status: 500, json: { message: "The approval could not be completed." }
+                  render status: 500, json: { message: 'The approval could not be completed.' }
                 end
               else
-                render status: 200, json: { message: "Approval updated." }
+                render status: 200, json: { message: 'Approval updated.' }
               end
             else
-              render status: 200, json: { message: "Approval updated." }
+              render status: 200, json: { message: 'Approval updated.' }
             end
           else
             # failure from the initial approver approval status change
-            render status: 500, json: { message: "Approval could not be saved." }
+            render status: 500, json: { message: 'Approval could not be saved.' }
           end
         else
           puts "Approval type not valid - Current Type Id: #{@your_approval.approval_type_id} - Incoming Type Id #{params[:approval_type]}"
-          render status: 500, json: { message: "Selected approval type not valid" }
+          render status: 500, json: { message: 'Selected approval type not valid' }
         end
       else
-        render status: 403, json: { message: "You are not authorized to change the status of this approval." }
+        render status: 403, json: { message: 'You are not authorized to change the status of this approval.' }
       end
     else
-      render status: 404, json: { message: "Approval does not exist..." }
+      render status: 404, json: { message: 'Approval does not exist...' }
     end
   end
 
@@ -147,7 +148,7 @@ class ApprovalsController < ApplicationController
               approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been approved via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
               send_push_notification approver.user.id, approverPushText
-              send_email approver.user.email, "Approval Overriden", approverEmailText
+              send_email approver.user.email, 'Approval Overriden', approverEmailText
             end
 
             # run the completetion workflow
@@ -195,7 +196,7 @@ class ApprovalsController < ApplicationController
               approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been completed via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
               send_push_notification approver.user.id, approverPushText
-              send_email approver.user.email, "Approval Overriden", approverEmailText
+              send_email approver.user.email, 'Approval Overriden', approverEmailText
             end
 
             # run the completetion workflow
