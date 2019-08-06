@@ -3,62 +3,80 @@ class SessionsController < ApplicationController
   # Non-oauth method this requires you to have the users password and email to create a token
   # The created token will be full scope
   def auth
-   if params[:session] && params[:session][:email] && params[:session][:password] && params[:session][:device]
-     @user = User.find_by email: params[:session][:email].to_s.downcase
-     # Does the user exist?
-     if @user != nil
-       if !@user.locked && @user.login_allowed && @user.active
-         if @user.authenticate(params[:session][:password]) && (!@user.locked && @user.login_allowed) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code])))
-           # create the token text
-           # token_text = make_token
-           # # token is not perpetual
-           # new_token = UserToken.new(token: token_text, device: params[:session][:device], expires: Time.now + 24.hours) if !params[:session][:perpetual]
-           # # token is perpetual
-           # new_token = UserToken.new(token: token_text, device: params[:session][:device]) if params[:session][:perpetual]
-           # @user.user_tokens << new_token
-           @user.login_attempts = 0
-           if @user.save
-             SiteLog.create(module: 'Session', submodule: 'Success', message: "User ##{@user.id} successfully authenticated!", site_log_type_id: 1)
-             # render status: 200, json: { id: @user.id, character: @user.main_character.as_json(only: [:id, :first_name, :last_name], methods: [:full_name, :avatar_url, :current_job]), tfa_enabled: @user.use_two_factor, token: token_text, token_expires: new_token.expires_ms, claims: @user.claims }
-             render status: 200, json: { id_token: make_jwt(@user) }
-           else
-            SiteLog.create(module: 'Session', submodule: 'User Save on Success Fail', message: "User could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
-            render status: 500, json: { message: "Login was not successful because: #{@user.errors.full_messages.to_sentence}" }
-           end
-         # if the auth fails
-         else
-           # if the account is not already locked
-           unless @user.locked
-             @user.login_attempts += 1
-             # if threshold exceeded then lock the account
-             @user.locked = true if @user.login_attempts >= 5
+    # regular password grant
+    if params[:session] && (!params[:session][:grant_type] || params[:session][:grant_type] == 'password') && params[:session][:email] && params[:session][:password] && params[:session][:device]
+      @user = User.find_by email: params[:session][:email].to_s.downcase
+      # Does the user exist?
+      if @user != nil
+        if !@user.locked && @user.login_allowed && @user.active
+          if @user.authenticate(params[:session][:password]) && (!@user.locked && @user.login_allowed) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code])))
+            # create the jwt token
+            allow_offline_access = params[:session][:offline_access] && params[:session][:offline_access] == true
+            allow_offline_access = false if !allow_offline_access
 
-             if @user.save
-               # if we locked the account then notify the user
-               if @user.locked
-                 # email the user
-                 SiteLog.create(module: 'Session', submodule: 'Account Lockout', message: "#{@user.email} has been locked out because of too many password attempts.", site_log_type_id: 1)
-                 send_email @user.email, "Account Lockout", "<div><p><h3>Account Lockout</h3></p><p>It looks like there is a security issue with your account. Please contact an admin on Discord to start the unlock process.</p></div>"
-               end
-             else
+            jwt_bundle = make_jwt(@user) if !allow_offline_access
+            jwt_bundle ||= make_jwt(@user, true) if allow_offline_access
+
+            @user.user_tokens << UserToken.new(token: jwt_bundle[:refresh_token], device: params[:session][:device], expires: Time.now + 2.years) if allow_offline_access
+
+            @user.login_attempts = 0
+            if @user.save
+              SiteLog.create(module: 'Session', submodule: 'Success', message: "User ##{@user.id} successfully authenticated!", site_log_type_id: 1)
+              render status: 200, json: jwt_bundle
+            else
+              SiteLog.create(module: 'Session', submodule: 'User Save on Success Fail', message: "User could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
+              render status: 500, json: { message: "Login was not successful because: #{@user.errors.full_messages.to_sentence}" }
+            end
+          # if the auth fails
+          else
+            # if the account is not already locked
+            unless @user.locked
+              @user.login_attempts += 1
+              # if threshold exceeded then lock the account
+              @user.locked = true if @user.login_attempts >= 5
+
+              if @user.save
+                # if we locked the account then notify the user
+                if @user.locked
+                  # email the user
+                  SiteLog.create(module: 'Session', submodule: 'Account Lockout', message: "#{@user.email} has been locked out because of too many password attempts.", site_log_type_id: 1)
+                  send_email @user.email, "Account Lockout", "<div><p><h3>Account Lockout</h3></p><p>It looks like there is a security issue with your account. Please contact an admin on Discord to start the unlock process.</p></div>"
+                end
+              else
               SiteLog.create(module: 'Session', submodule: 'Lockout Save Failure', message: "Lockout or attempt incrementation could not be saved because: #{@user.errors.full_messages.to_sentence}", site_log_type_id: 1)
               # render status: 500, json: { message: "Error occured while trying to access user data."}
-             end
-           end
-           SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed.", site_log_type_id: 1)
-           render status: 403, json: { message: "User not found or incorrect credentials were provided." }
-         end
-       else
-         SiteLog.create(module: 'Session', submodule: 'Account Locked', message: "User ##{@user.id} could not authenticated. Account is locked.", site_log_type_id: 1)
-         render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
-       end
-     else
-       SiteLog.create(module: 'Session', submodule: 'User does not exist', message: "User could not authenticated. User does not exist! Used: #{params[:session][:email]}", site_log_type_id: 1)
-       render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
-     end
-   else
+              end
+            end
+            SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed.", site_log_type_id: 1)
+            render status: 403, json: { message: "User not found or incorrect credentials were provided." }
+          end
+        else
+          SiteLog.create(module: 'Session', submodule: 'Account Locked', message: "User ##{@user.id} could not authenticated. Account is locked.", site_log_type_id: 1)
+          render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
+        end
+      else
+        SiteLog.create(module: 'Session', submodule: 'User does not exist', message: "User could not authenticated. User does not exist! Used: #{params[:session][:email]}", site_log_type_id: 1)
+        render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
+      end
+    # dealing with a refresh_token
+    elsif params[:session] && params[:session][:grant_type] && params[:session][:grant_type] == 'refresh_token' && params[:session][:refresh_token]
+      user_token = UserToken.find_by(token: params[:session][:refresh_token])
+      if user_token && user_token.user && !user_token.is_expired
+        # make sure that the user is not grounded
+        if !user_token.user.locked && user_token.user.login_allowed && user_token.user.active
+          jwt_bundle = make_jwt(user_token.user, true, false)
+          render status: 201, json: jwt_bundle
+        else
+          # if the user account is locked out for whatever reason then trash all of their refresh_tokens
+          user_token.user.user_tokens.destroy_all
+          render status: 401, json: { message: 'Refresh token not found, is expired or the account is unavailable.' } 
+        end
+      else
+        render status: 401, json: { message: 'Refresh token not found, is expired or the account is unavailable.' }
+      end
+    else
       SiteLog.create(module: 'Session', submodule: 'Bad Object', message: "Session object badly formed or not provided. #{params.inspect}", site_log_type_id: 1)
-     render status: 400, json: { message: 'Session object not provided or not properly created.' }
-   end
+      render status: 400, json: { message: 'Session object not provided or not properly created. Please see API documentation.' }
+    end
   end
 end
