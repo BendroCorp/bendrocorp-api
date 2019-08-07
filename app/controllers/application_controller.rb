@@ -34,7 +34,12 @@ class ApplicationController < ActionController::API
     Digest::SHA256.hexdigest (0...length).map { o[rand(o.length)] }.join
   end
 
-  def make_jwt user, persisent = false
+  # Create a JWT token set
+  # @param [User] The ActiveRecord user object
+  # @param [Bool] offline_access Optional: Create a refresh_token and short the JWT expiration
+  # @param [Bool] create_refresh Optional Override: Set to false to skip creating a fresh token when offline_access is supplied
+  # @return { id_token, refresh_token }
+  def make_jwt user, offline_access = false, create_refresh = true
     # secret guard
     throw 'Secret could not be retrieved for tokenization!' if Rails.application.secrets.secret_key_base == nil || Rails.application.secrets.secret_key_base.length < 10 # secret will be longer than this
 
@@ -61,11 +66,16 @@ class ApplicationController < ActionController::API
       payload[:job_title] = user.main_character.current_job_title
     end
 
-    # set the expiration unless we want this to last awhile
-    payload[:exp] = Time.now.to_i + (12 * 3600) unless persisent
+    # set the expiration
+    # NOTE: Expiration is currently set for three hours down from 12 hours since we are adding in refresh tokens
+    payload[:exp] = Time.now.to_i + (3 * 3600) if !offline_access
+    # if offline access is selected then the token will be very short lived at 6 minutes since we can refresh it after all
+    payload[:exp] = Time.now.to_i + (0.1 * 3600) if offline_access
 
     token = JWT.encode payload, secret, 'HS256'
-    return token
+
+    return { id_token: token } if !offline_access || (offline_access && !create_refresh)
+    return { id_token: token, refresh_token: make_token(75) } if offline_access && create_refresh
   end
 
   def current_user
@@ -80,27 +90,9 @@ class ApplicationController < ActionController::API
         # return payload
         user
       rescue JWT::ExpiredSignature
-        # We will do nothing. A nulll return will trigger a 401 wherever current_user is required
+        # We will do nothing. A null return will trigger a 401 wherever current_user is required
       end
     end
-
-    # if bearer_token
-    #   if /^[a-z0-9]+$/.match bearer_token
-    #     @token = UserToken.find_by token: bearer_token
-    #     if @token != nil && !@token.is_expired
-    #       @current_user = @token.user
-    #       @current_user
-    #     else
-    #       # if we dont find it check to see if this token is OAuth
-    #       @oauth_token = OauthToken.find_by access_token: bearer_token
-    #       if @oauth_token # eventually check for expiration currently they are perpetual and can be cleared by the user
-    #         @current_user = @oauth_token.user
-    #         @current_user
-    #       end
-    #       # then do nothing so this just returns nil
-    #     end
-    #   end
-    # end
   end
 
   # checks to make sure that a user is "logged in"

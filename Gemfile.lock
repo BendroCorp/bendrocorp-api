@@ -575,6 +575,7 @@ GEM
     fugit (1.1.6)
       et-orbi (~> 1.1, >= 1.1.6)
       raabro (~> 1.1)
+    geocoder (1.5.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     have-i-been-pwned (0.1.4)
@@ -722,6 +723,7 @@ DEPENDENCIES
   aws-sdk
   bcrypt (~> 3.1.7)
   byebug
+  geocoder
   have-i-been-pwned
   httparty
   listen (>= 3.0.5, < 3.2)
@@ -745,4 +747,4 @@ DEPENDENCIES
   tzinfo-data
 
 BUNDLED WITH
-   2.0.1
+   2.0.2
