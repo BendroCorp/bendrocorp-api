@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190720042259) do
+ActiveRecord::Schema.define(version: 20190807203735) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -2292,6 +2292,9 @@ ActiveRecord::Schema.define(version: 20190720042259) do
     t.index ["user_id"], name: "index_user_push_tokens_on_user_id"
   end
 
+# Could not dump table "user_sessions" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
   create_table "user_settings", force: :cascade do |t|
     t.boolean "notify_for_new_messages", default: true
     t.boolean "notify_for_new_events", default: true
@@ -2306,6 +2309,9 @@ ActiveRecord::Schema.define(version: 20190720042259) do
     t.text "token"
     t.datetime "expires"
     t.text "device"
+    t.text "ip_address"
+    t.float "longitude"
+    t.float "latitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_tokens_on_user_id"

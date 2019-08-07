@@ -3,6 +3,10 @@ class UserToken < ApplicationRecord
   validates :token, presence: true
   validates :device, presence: true
 
+  geocoded_by :ip_address,
+  :latitude => :lat, :longitude => :lon
+  after_validation :geocode
+
   def perpetual
     self.expires == nil
   end

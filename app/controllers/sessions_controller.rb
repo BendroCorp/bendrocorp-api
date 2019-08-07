@@ -17,7 +17,8 @@ class SessionsController < ApplicationController
             jwt_bundle = make_jwt(@user) if !allow_offline_access
             jwt_bundle ||= make_jwt(@user, true) if allow_offline_access
 
-            @user.user_tokens << UserToken.new(token: jwt_bundle[:refresh_token], device: params[:session][:device], expires: Time.now + 2.years) if allow_offline_access
+            @user.user_sessions << UserSession.new(ip_address: request.remote_ip)
+            @user.user_tokens << UserToken.new(token: jwt_bundle[:refresh_token], device: params[:session][:device], expires: Time.now + 2.years, ip_address: request.remote_ip) if allow_offline_access
 
             @user.login_attempts = 0
             if @user.save
@@ -64,6 +65,7 @@ class SessionsController < ApplicationController
       if user_token && user_token.user && !user_token.is_expired
         # make sure that the user is not grounded
         if !user_token.user.locked && user_token.user.login_allowed && user_token.user.active
+          user_token.user.user_sessions << UserSession.new(ip_address: request.remote_ip)
           jwt_bundle = make_jwt(user_token.user, true, false)
           render status: 201, json: jwt_bundle
         else
