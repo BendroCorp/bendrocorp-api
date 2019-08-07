@@ -3,6 +3,6 @@ class UserSession < ApplicationRecord
 
     belongs_to :user
     geocoded_by :ip_address,
-    :latitude => :lat, :longitude => :lon
+    :latitude => :latitude, :longitude => :longitude, :address => :location
     after_validation :geocode
 end

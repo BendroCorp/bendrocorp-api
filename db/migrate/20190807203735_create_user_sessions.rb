@@ -5,6 +5,7 @@ class CreateUserSessions < ActiveRecord::Migration[5.1]
       t.text :ip_address
       t.float :longitude
       t.float :latitude
+      t.text :location
       t.timestamps
     end
   end
