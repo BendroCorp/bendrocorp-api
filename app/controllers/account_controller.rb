@@ -122,17 +122,16 @@ class AccountController < ApplicationController
 
   # DELETE api/account/token/:token
   def remove_user_token
-    # @token = UserToken.find_by(user: current_user, token: params[:token])
-    # if @token
-    #   if @token.destroy
-    #     render status: 200, json: { message: 'Token removed!' }
-    #   else
-    #     render status: 500, json: { message: "The token could not be removed because: #{@token.errors.full_messages.to_sentence}" }
-    #   end
-    # else
-    #   render status: 404, json: { message: 'Token not found. It may have already been removed.' }
-    # end
-    render status: 400, json: { message: 'Method deprecated.' }
+    @token = UserToken.find_by(user: current_user, token: params[:token])
+    if @token
+      if @token.destroy
+        render status: 200, json: { message: 'Device removed!' }
+      else
+        render status: 500, json: { message: "The device token could not be removed because: #{@token.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 404, json: { message: 'Device token not found. It may have already been removed.' }
+    end
   end
 
   def fetch_user_countries
