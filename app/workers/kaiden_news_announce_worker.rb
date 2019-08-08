@@ -14,7 +14,7 @@ class KadenNewsAnnounceWorker
 
       # push to members
       User.all.each do |user|
-        send_push_notification user.id, push_content if user.isinrole(0)
+        PushWorker.perform_async user.id, push_content if user.isinrole(0)
       end
 
       # send to both hooks
