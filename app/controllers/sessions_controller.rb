@@ -49,15 +49,15 @@ class SessionsController < ApplicationController
               end
             end
             SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed.", site_log_type_id: 1)
-            render status: 403, json: { message: "User not found or incorrect credentials were provided." }
+            render status: 404, json: { message: "User not found or incorrect credentials were provided." }
           end
         else
           SiteLog.create(module: 'Session', submodule: 'Account Locked', message: "User ##{@user.id} could not authenticated. Account is locked.", site_log_type_id: 1)
-          render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
+          render status: 404, json: { message: 'User not found or incorrect credentials were provided.' }
         end
       else
         SiteLog.create(module: 'Session', submodule: 'User does not exist', message: "User could not authenticated. User does not exist! Used: #{params[:session][:email]}", site_log_type_id: 1)
-        render status: 403, json: { message: 'User not found or incorrect credentials were provided.' }
+        render status: 404, json: { message: 'User not found or incorrect credentials were provided.' }
       end
     # dealing with a refresh_token
     elsif params[:session] && params[:session][:grant_type] && params[:session][:grant_type] == 'refresh_token' && params[:session][:refresh_token]
@@ -71,10 +71,10 @@ class SessionsController < ApplicationController
         else
           # if the user account is locked out for whatever reason then trash all of their refresh_tokens
           user_token.user.user_tokens.destroy_all
-          render status: 401, json: { message: 'Refresh token not found, is expired or the account is unavailable.' } 
+          render status: 404, json: { message: 'Refresh token not found, is expired or the account is unavailable.' } 
         end
       else
-        render status: 401, json: { message: 'Refresh token not found, is expired or the account is unavailable.' }
+        render status: 404, json: { message: 'Refresh token not found, is expired or the account is unavailable.' }
       end
     else
       SiteLog.create(module: 'Session', submodule: 'Bad Object', message: "Session object badly formed or not provided. #{params.inspect}", site_log_type_id: 1)
