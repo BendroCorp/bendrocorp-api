@@ -11,11 +11,10 @@ class SessionsController < ApplicationController
         if !@user.locked && @user.login_allowed && @user.active
           if @user.authenticate(params[:session][:password]) && (!@user.locked && @user.login_allowed) && (!@user.use_two_factor || (@user.use_two_factor && @user.two_factor_valid(params[:session][:code])))
             # create the jwt token
-            allow_offline_access = params[:session][:offline_access] && params[:session][:offline_access] == true
+            allow_offline_access = true if params[:session][:offline_access] && params[:session][:offline_access] == true
             allow_offline_access = false if !allow_offline_access
 
-            jwt_bundle = make_jwt(@user) if !allow_offline_access
-            jwt_bundle ||= make_jwt(@user, true) if allow_offline_access
+            jwt_bundle = make_jwt(@user, allow_offline_access)
 
             @user.user_sessions << UserSession.new(ip_address: request.remote_ip)
             @user.user_tokens << UserToken.new(token: jwt_bundle[:refresh_token], device: params[:session][:device], expires: Time.now + 2.years, ip_address: request.remote_ip) if allow_offline_access
