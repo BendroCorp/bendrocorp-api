@@ -4,7 +4,7 @@ class UserToken < ApplicationRecord
   validates :device, presence: true
 
   geocoded_by :ip_address,
-  :latitude => :lat, :longitude => :lon
+  :latitude => :latitude, :longitude => :longitude
   after_validation :geocode
 
   def perpetual
