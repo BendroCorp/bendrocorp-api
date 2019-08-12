@@ -42,6 +42,8 @@ Rails.application.routes.draw do
   get 'api/approval-kinds' => 'approval_kind#list'
 
   # approvals controller
+  post 'api/approvals/approver' => 'approvals#add_approver'
+  delete 'api/approvals/approver/:approver_id' => 'approvals#not_needed_approver'
   get 'api/approval/types' => 'approvals#approval_types'
   get 'api/approvals/pending/' => 'approvals#pending_approval_count'
   get 'api/approvals/:approval_id/:approval_type' => 'approvals#approval_request'
