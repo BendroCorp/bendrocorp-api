@@ -5,88 +5,90 @@ class ApplicationsController < ApplicationController
   before_action :require_member, except: [:fetch, :create] # :advance_application_status, :reject_application,
 
   before_action only: [:advance_application_status, :reject_application] do |a|
-    a.require_one_role([9,12])
+    a.require_one_role([9, 12])
   end
 
   # POST api/apply
   def create
-    @character = Character.new(application_params)
-    puts params[:character].inspect
-    if Character.where('first_name = ? AND last_name = ?', @character.first_name, @character.last_name).count == 0
-      @character.is_main_character = true
-      @character.user_id = current_user.id
-      @character.application.application_status_id = 1
-      @character.application.interview = ApplicationInterview.new #create the interview packet
-      applicantjob = Job.find_by id: 21 # applicant job id - cause everyone starts as an applicant
-      # @character.jobs << applicantjob
-      @character.job_trackings << JobTracking.new(job: applicantjob)
+    # make sure that the current user isn't already a member and that thier application hasn't already been logged
+    if current_user.db_user.characters.count == 0
+      @character = Character.new(application_params)
+      puts params[:character].inspect
+      if Character.where('first_name = ? AND last_name = ?', @character.first_name, @character.last_name).count == 0
+        @character.is_main_character = true
+        @character.user_id = current_user.id
+        @character.application.application_status_id = 1
+        @character.application.interview = ApplicationInterview.new #create the interview packet
+        applicantjob = Job.find_by id: 21 # applicant job id - cause everyone starts as an applicant
+        # @character.jobs << applicantjob
+        @character.job_trackings << JobTracking.new(job: applicantjob)
 
-      @character.application.last_status_change = Time.now
-      @character.application.last_status_changed_by_id = current_user.id
+        @character.application.last_status_change = Time.now
+        @character.application.last_status_changed_by_id = current_user.id
 
-      # update rsi_handle
-      @character.user.rsi_handle = params[:character][:user_attributes][:rsi_handle].downcase
+        # update rsi_handle
+        @character.user.rsi_handle = params[:character][:user_attributes][:rsi_handle].downcase
 
-      page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{@character.user.rsi_handle.downcase}")
+        page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{@character.user.rsi_handle.downcase}")
 
-      # Check to make sure the handle check passed
-      if page.code == 200
-        @offender = OffenderReportOffender.find_by offender_handle: @character.user.rsi_handle.downcase
-        if !(@offender && @offender.offender_reports.count > 0)
-          # try to save
-          if @character.save
-            SiteLog.create(module: 'Application', submodule: 'Application Success', message: "Application successfully created for #{@character.id}", site_log_type_id: 1)
-            approverIds = []
-            User.where('is_member = ?', true).each do |user|
-              approverIds << user.id if user.isinrole(2) # executive role
-              approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
-              approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
-              approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
-              approverIds << user.id if user.isinrole(45) && @character.application.job.division_id == 7 #user is in medical director role and application job div is medical
-            end
-
-            # make sure there are no duplicates
-            approverIds.uniq!
-
-            #Create the new approval request
-            approvalRequest = ApplicantApprovalRequest.new
-
-            approvalRequest.user_id = current_user.id
-
-            # put the approval instance in the request
-            approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
-
-            # lastly add the request to the current_user
-            # approvalRequest.user = current_user # may not need to actually use this
-            approvalRequest.application = @character.application
-
-            @character.application.applicant_approval_request = approvalRequest
+        # Check to make sure the handle check passed
+        if page.code == 200
+          @offender = OffenderReportOffender.find_by offender_handle: @character.user.rsi_handle.downcase
+          if !(@offender && @offender.offender_reports.count > 0)
+            # try to save
             if @character.save
-              SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
-              # mail Exec, Directors and HR
-              email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
-              render status: 200, json: @character.application.as_json(include: { application_status: { } })
+              SiteLog.create(module: 'Application', submodule: 'Application Success', message: "Application successfully created for #{@character.id}", site_log_type_id: 1)
+              approverIds = []
+              User.where('is_member = ?', true).each do |user|
+                approverIds << user.id if user.isinrole(2) # executive role
+                approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
+                approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
+                approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
+                approverIds << user.id if user.isinrole(45) && @character.application.job.division_id == 7 #user is in medical director role and application job div is medical
+              end
+
+              # make sure there are no duplicates
+              approverIds.uniq!
+
+              #Create the new approval request
+              approvalRequest = ApplicantApprovalRequest.new
+
+              approvalRequest.user_id = current_user.id
+
+              # put the approval instance in the request
+              approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
+
+              # lastly add the request to the current_user
+              # approvalRequest.user = current_user # may not need to actually use this
+              approvalRequest.application = @character.application
+
+              @character.application.applicant_approval_request = approvalRequest
+              if @character.save
+                SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
+                # mail Exec, Directors and HR
+                email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
+                render status: 200, json: @character.application.as_json(include: { application_status: { } })
+              else
+                puts @character.errors.full_messages.inspect
+                SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
+                render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
+              end
             else
               puts @character.errors.full_messages.inspect
               SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
               render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
             end
           else
-            puts @character.errors.full_messages.inspect
-            SiteLog.create(module: 'Application', submodule: 'Application Save Failed', message: "Application could not be saved because: #{@character.errors.full_messages.inspect}", site_log_type_id: 3)
-            render status: 500, json: { message: "There was a problem saving your application because: #{@character.errors.full_messages.to_sentence}" }
+            render status: 400, json: { message: 'You are not eligible to apply to BendroCorp. There are currently outstanding offender reports against the provided player handle.' }
           end
         else
-          render status: 400, json: { message: 'You are not eligible to apply to BendroCorp. There are currently outstanding offender reports against the provided player handle.' }
+          render status: 400, json: { message: "RSI handle could not be verified. Please double check your entry." }
         end
       else
-        render status: 400, json: { message: "RSI handle could not be verified. Please double check your entry." }
+        render status: 400, json: { message: 'A character with the first and last name combination you entered already exists. Please enter another.' }
       end
-
     else
-      # flash[:warning] = "A character with the first and last name combination you entered already exists. Please enter another."
-      # render 'new', :layout => 'login_background'
-      render status: 400, json: { message: 'A character with the first and last name combination you entered already exists. Please enter another.' }
+      render status: 400, json: { message: 'You already have a character under your account. If you are applying and encountered an error try refreshing the page.' }
     end
   end
 
@@ -109,16 +111,8 @@ class ApplicationsController < ApplicationController
     if current_user.main_character
       render status: 200, json: current_user.main_character.application.as_json(include: { application_status: { } })
     else
-      render status: 200, json: { }
+      render status: 404, json: { message: 'A chara' }
     end
-
-    # if !current_user.member? && current_user.user_account_type.id == 1 && current_user.characters.count > 0
-    #   # @app = current_user.characters.last.application
-    #   # render 'show', :layout => 'login_background'
-    #   render status: 200, json: current_user.characters.last.application.as_json(include: { application_status: { } })
-    # else
-    #   render status: 403, json: { message: 'Application access not allowed' }
-    # end
   end
 
   # DELETE api/apply
@@ -126,7 +120,7 @@ class ApplicationsController < ApplicationController
     db_user = current_user.db_user
     if !db_user.member? # members should not be able to do this
       db_user.characters.each do |char|
-        job = Job.find_by_id(24) #withdrawn job
+        job = Job.find_by_id(24) # withdrawn job
         char.jobs << job
         char.application.application_status_id = 8 # withdrawn status
       end
@@ -143,6 +137,10 @@ class ApplicationsController < ApplicationController
     else
       render status: 400, json: { message: 'Members cannot withdraw a membership application.' }
     end
+  end
+
+  def reapply
+    # TODO
   end
 
   # GET /api/apply/:character_id/advance

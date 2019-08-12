@@ -16,7 +16,7 @@ class OwnedShip < ActiveRecord::Base
   accepts_nested_attributes_for :flight_logs
   accepts_nested_attributes_for :avatar
 
-  before_create { self.avatar = ImageUpload.new(title: "ship avatar #{self.title}", description: "ship avatar #{self.title}") }
+  before_create { self.avatar = ImageUpload.new(title: "ship avatar #{self.title}", description: "ship avatar #{self.title}", uploaded_by_id: 0) }
 
   def fetch_avatar
     if self.avatar != nil
