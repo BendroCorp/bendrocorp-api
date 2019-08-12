@@ -1,6 +1,9 @@
 class ApprovalsController < ApplicationController
   before_action :require_user
   before_action :require_member
+  before_action only: [:add_approver, :not_needed_approver] do |a|
+    a.require_one_role([9]) # ceo
+  end
 
   # get api/approvals/:approval_id/:approval_type
   def approval_request
@@ -16,89 +19,7 @@ class ApprovalsController < ApplicationController
             # check and see if we should update the approval status
             # first check to see if all of the approver have weighed in
             # full consent meta workflow
-            if @your_approval.approval.approval_approvers.where('approval_type_id > 3').count >= 1 && !@approval.single_consent
-              # if we have all of the results in
-              @approval = @your_approval.approval
-
-              approversCount = @approval.approval_approvers.count
-              approved = @approval.approval_approvers.where(approval_type_id: 4).count
-              denied = @approval.approval_approvers.where(approval_type_id: 5).count
-              not_needed = @approval.approval_approvers.where(approval_type_id: 6).count
-
-              if denied.positive? # for full consent if any one denies then the approval has failed. So no need to keep going. ;)
-                @approval.denied = true
-                # Change the status of unsubmitted approvals to not needed
-                @approval.approval_approvers.where('approval_type_id < 4').to_a.each do |approver|
-                  approver.approval_type_id = 6
-                  approver.save!
-                end
-              elsif approved + not_needed >= approversCount
-                @approval.approved = true
-              elsif approved + not_needed < approversCount
-                # helpful note just to mark out this condition :)
-                # do nothing because we dont have full consent yet
-              else
-                raise 'Approval consent out of range!'
-              end
-
-              if @approval.save
-                # #
-                if @approval.approved && !@approval.denied
-                  SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{@approval.id} has been approved!", site_log_type_id: 2)
-                elsif !@approval.approved && @approval.denied
-                  SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{@approval.id} has been denied!", site_log_type_id: 2)
-                end
-
-                # run final workflow
-                run_approval_workflow @approval
-
-                render status: 200, json: { message: 'Approval status changed.' }
-              else
-                render status: 500, json: { message: 'The approval could not be completed.' }
-              end
-
-            # single consent meta workflow
-            elsif @your_approval.approval.approval_approvers.where('approval_type_id > 3').count >= 1 && @approval.single_consent
-              # re-fetch the approval
-              @approval = @your_approval.approval
-
-              # it only takes one person to approve this approval
-              if @approval.approval_approvers.where('approval_type_id = 4').count >= 1
-                @approval.approved = true
-                # Change the status of unsubmitted approvals to not needed
-                @approval.approval_approvers.where('approval_type_id < 4').to_a.each do |approver|
-                  approver.approval_type_id = 6
-                  approver.save!
-                end
-
-              elsif @approval.approval_approvers.where('approval_type_id = 5').count == @approval.approval_approvers.count
-                @approval.denied = true
-              else
-                raise 'Approval out of range (2)'
-              end
-              # NOTE: This if statement does not totally make sense
-              if @approval.approved == true || @approval.denied == true
-                if @approval.save
-                  # if the approval saves then run the completion function
-                  if @approval.approved && !@approval.denied
-                    SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{@approval.id} has been approved!", site_log_type_id: 2)
-                  elsif !@approval.approved && @approval.denied
-                    SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{@approval.id} has been denied!", site_log_type_id: 2)
-                  end
-
-                  # run final workflows
-                  run_approval_workflow @approval
-
-                  render status: 200, json: { message: 'Success' }
-                else
-                  render status: 500, json: { message: 'The approval could not be completed.' }
-                end
-              else
-                render status: 200, json: { message: 'Approval updated.' }
-              end
-            else
-              render status: 200, json: { message: 'Approval updated.' }
-            end
+            check_for_approval_completion @your_approval.approval
           else
             # failure from the initial approver approval status change
             render status: 500, json: { message: 'Approval could not be saved.' }
@@ -122,6 +43,36 @@ class ApprovalsController < ApplicationController
       render status: 200, json: { count: @pending_approval_count }
     else
       render status: 403, json: { message: 'You are not authorized to use this endpoint!' }
+    end
+  end
+
+  # POST api/approvals/approver
+  # :approval_id, :user_id
+  def add_approver
+    approval_approver = ApprovalApprover.new(approval_id: params[:approval_id].to_i, user_id: params[:user_id].to_i, approval_type_id: 1)
+    if approval_approver.save
+      render status: 200, json: { message: 'Approver added.' }
+    else
+      render status: 500, json: { message: "Approver could not be added because: #{approval_approver.errors.full_messages.to_sentence}" }
+    end
+  end
+
+  # DELETE api/approvals/approver/:approver_id
+  def not_needed_approver
+    approval_approver = ApprovalApprover.find_by_id(params[:approver_id])
+    puts approval_approver.inspect
+    approval = Approval.find_by_id(approval_approver.approval_id)
+    # make sure we found the object and that 
+    if approval_approver && !(approval.denied || approval.approved)
+      approval_approver.approval_type_id = 6
+      if approval_approver.save
+        check_for_approval_completion approval, true
+        render status: 200, json: { message: 'Approver status changed to no longer required.' }
+      else
+        render status: 500, json: { message: "Approver status could not be changed because: #{approval_approver.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 404, json: { message: 'Approval approver not found or the approval has already been completed!' }
     end
   end
 
@@ -223,6 +174,100 @@ class ApprovalsController < ApplicationController
 
   # handles the approval approved and denied workflows
   private
+  def check_for_approval_completion approval, skipRender = false
+    if approval.approval_approvers.where('approval_type_id > 3').count >= 1 && !approval.single_consent
+
+      approversCount = approval.approval_approvers.count
+      approved = approval.approval_approvers.where(approval_type_id: 4).count
+      denied = approval.approval_approvers.where(approval_type_id: 5).count
+      not_needed = approval.approval_approvers.where(approval_type_id: 6).count
+
+      if denied.positive? # for full consent if any one denies then the approval has failed. So no need to keep going. ;)
+        approval.denied = true
+        # Change the status of unsubmitted approvals to not needed
+        approval.approval_approvers.where('approval_type_id < 4').to_a.each do |approver|
+          approver.approval_type_id = 6
+          approver.save!
+        end
+      elsif approved + not_needed >= approversCount
+        approval.approved = true
+      elsif approved + not_needed < approversCount
+        # helpful note just to mark out this condition :)
+        # do nothing because we dont have full consent yet
+      else
+        raise 'Approval consent out of range!'
+      end
+
+      if approval.save
+        # #
+        if approval.approved && !approval.denied
+          SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{@approval.id} has been approved!", site_log_type_id: 2)
+        elsif !approval.approved && approval.denied
+          SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{@approval.id} has been denied!", site_log_type_id: 2)
+        end
+
+        # run final workflow
+        run_approval_workflow approval
+
+        if !skipRender
+          render status: 200, json: { message: 'Approval status changed.' }
+        end
+      else
+        if !skipRender
+          render status: 500, json: { message: 'The approval could not be completed.' }
+        end
+      end
+
+    # single consent meta workflow
+    elsif approval.approval_approvers.where('approval_type_id > 3').count >= 1 && approval.single_consent
+
+      # it only takes one person to approve this approval
+      if approval.approval_approvers.where('approval_type_id = 4').count >= 1
+        approval.approved = true
+        # Change the status of unsubmitted approvals to not needed
+        approval.approval_approvers.where('approval_type_id < 4').to_a.each do |approver|
+          approver.approval_type_id = 6
+          approver.save!
+        end
+
+      elsif approval.approval_approvers.where('approval_type_id = 5').count == approval.approval_approvers.count
+        approval.denied = true
+      else
+        raise 'Approval out of range (2)'
+      end
+      # NOTE: This if statement does not totally make sense
+      if approval.approved == true || approval.denied == true
+        if approval.save
+          # if the approval saves then run the completion function
+          if approval.approved && !approval.denied
+            SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{approval.id} has been approved!", site_log_type_id: 2)
+          elsif !approval.approved && approval.denied
+            SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{approval.id} has been denied!", site_log_type_id: 2)
+          end
+
+          # run final workflows
+          run_approval_workflow approval
+
+          if !skipRender
+            render status: 200, json: { message: 'Success' }
+          end
+        else
+          if !skipRender
+            render status: 500, json: { message: 'The approval could not be completed.' }
+          end
+        end
+      else
+        if !skipRender
+          render status: 200, json: { message: 'Approval updated.' }
+        end
+      end
+    else
+      if !skipRender
+        render status: 200, json: { message: 'Approval updated.' }
+      end
+    end
+  end
+
   def run_approval_workflow approval
     # run the normal approval workflow
     if approval.approved == true && !approval.denied == true
