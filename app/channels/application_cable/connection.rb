@@ -8,9 +8,11 @@ module ApplicationCable
 
     private
       def find_verified_user
-        if verified_user = (UserToken.find_by token: request.params[:token])
+        decoded_token = JWT.decode request.params[:token], secret, true, { algorithm: 'HS256' }
+        verified_user = TokenUser.new(decoded_token[0])
+        if verified_user
           puts "Registered #{verified_user.user.username}"
-          verified_user.user
+          verified_user.db_user
           # TODO: Need to do more here. We should identify by session not user
         else
           # If we don't know who you are you cannot log on
