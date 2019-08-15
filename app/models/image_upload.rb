@@ -14,7 +14,7 @@ class ImageUpload < ApplicationRecord
   #attr_accessor :image
   #attr_accessor :image_file_name
 
-  validates :uploaded_by_id #, presence: true
+  # validates :uploaded_by_id , presence: true
   belongs_to :uploaded_by, :class_name => 'User', :foreign_key => 'uploaded_by_id', optional: true
 
   def image_url_mini
