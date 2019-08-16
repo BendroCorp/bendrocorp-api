@@ -14,6 +14,10 @@ Rails.application.configure do
     }
   }
 
+  # setup acton cable methods
+  config.web_socket_server_url = 'wss://api.bendrocorp.com/cable'
+  config.action_cable.allowed_request_origins = [%r{https?://\S+}]
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 
