@@ -155,7 +155,8 @@ class ProfilesController < ApplicationController
   def remove_ship
     @owned_ship = OwnedShip.find_by_id(params[:owned_ship_id].to_i)
     if @owned_ship && !@owned_ship.hidden
-      if current_user.id === @owned_ship.character.user_id || current_user.isinrole(7)
+      if current_user.id == @owned_ship.character.user_id || current_user.isinrole(7)
+        @owned_ship.hidden = true
         if @owned_ship.save
           render status: 200, json: @owned_ship
         else
