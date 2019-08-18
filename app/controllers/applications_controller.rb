@@ -56,7 +56,7 @@ class ApplicationsController < ApplicationController
               approvalRequest.user_id = current_user.id
 
               # put the approval instance in the request
-              approvalRequest.approval_id = new_approval(23, 0, 0, approverIds) # applicant approval request
+              approvalRequest.approval_id = new_approval(23, 0, 0, approverIds, false) # applicant approval request
 
               # lastly add the request to the current_user
               # approvalRequest.user = current_user # may not need to actually use this
@@ -195,7 +195,10 @@ class ApplicationsController < ApplicationController
               needed_approvals = @character.application.applicant_approval_request.approval.approval_approvers.where('approval_type_id < ?', 4)
               if needed_approvals.count > 0
                 needed_approvals.each do |approver|
-                  #send email
+                  # change the approval approver required to true
+                  approver.required = true
+                  approver.save
+                  # send email
                   send_email(approver.user.email, "Application Approval Requested",
                   "<p>Hello #{approver.user.username}!</p><p>The application for <strong>#{@character.full_name}</strong> requires your approval (Accepted or Declined) please submit below.</p>"
                   ) #to, subject, message
