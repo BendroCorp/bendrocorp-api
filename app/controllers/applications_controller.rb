@@ -216,6 +216,10 @@ class ApplicationsController < ApplicationController
               KaidenAnnounceWorker.perform_async("The '360' Review for #{@character.full_name} has been closed. Thank you to everyone who participated!")
             end
 
+            if @character.application.application_status_id == 6
+              KaidenAnnounceWorker.perform_async("#{@character.full_name} has been accepted as a Member of BendroCorp. Everyone please make sure to give a warm welcome!")
+            end
+
             render status: 200, json: { message: 'Successfully updated application status!' }
           else
             #err
