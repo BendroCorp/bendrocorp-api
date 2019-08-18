@@ -137,7 +137,7 @@ class ApplicationController < ActionController::API
     # TODO:
   end
 
-  def new_approval approval_k_id, owner_id = 0, approval_group = 0, approverIdList = []
+  def new_approval approval_k_id, owner_id = 0, approval_group = 0, approverIdList = [], approvals_required = true
     @approval_kind = ApprovalKind.find(approval_k_id.to_i);
     if @approval_kind != nil
       new_approval = Approval.new(approval_kind_id: @approval_kind.id) #approval kind id
@@ -183,7 +183,7 @@ class ApplicationController < ActionController::API
       if usersArray.count > 0
         # add all of the approvers to the approval and email them
         usersArray.each do |user|
-          new_approval.approval_approvers << ApprovalApprover.new(user_id: user.id, approval_type_id: 1)
+          new_approval.approval_approvers << ApprovalApprover.new(user_id: user.id, approval_type_id: 1, required: approvals_required)
           # send push notifications
           send_push_notification user.id, "You have a new Approval Request"
 

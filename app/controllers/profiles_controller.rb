@@ -19,7 +19,7 @@ class ProfilesController < ApplicationController
 
   # GET api/profile/not-grouped
   def list_not_grouped
-
+    # TODO
   end
 
   # GET api/profile/:profile_id
@@ -175,18 +175,22 @@ class ProfilesController < ApplicationController
   def add_application_comment
     @application = Application.find_by_id(params[:application_comment][:application_id])
     if @application
-      # TODO: Add character app status check
+      # character app status check
+      # Between submitted and executive review
+      if @application.application_status_id > 1 && @application.application_status_id < 4
+        @comment = ApplicationComment.new
+        @comment.user_id = current_user.id
+        @comment.comment = params[:application_comment][:comment]
 
-      @comment = ApplicationComment.new
-      @comment.user_id = current_user.id
-      @comment.comment = params[:application_comment][:comment]
+        @application.comments << @comment
 
-      @application.comments << @comment
-
-      if @application.save
-       render status: 201, json: @comment.as_json(methods: [:commenter_name, :avatar_url])
+        if @application.save
+          render status: 201, json: @comment.as_json(methods: [:commenter_name, :avatar_url])
+        else
+          render status: 500, json: { message: "Application comment could not be added because: #{@application.errors.full_messages.to_sentence}" }
+        end
       else
-       render status: 500, json: { message: "Application comment could not be added because: #{@application.errors.full_messages.to_sentence}" }
+        render status: 403, json: { message: 'Application not eligible for application comments.' }
       end
     else
       render status: 404, json: { message: 'Application not found' }

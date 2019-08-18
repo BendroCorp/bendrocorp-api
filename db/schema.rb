@@ -151,6 +151,8 @@ ActiveRecord::Schema.define(version: 20190807203735) do
     t.integer "approval_id"
     t.integer "user_id"
     t.integer "approval_type_id"
+    t.datetime "last_notified"
+    t.boolean "required", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_approval_approvers_on_approval_id"
