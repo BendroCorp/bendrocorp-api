@@ -6,7 +6,7 @@ class DormantApprovalWorker
 
   def perform(*args)
     puts "Checking for dormant approvals"
-    dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ? AND last_notified <= ?', Time.now - 2.days, Time.now - 12.hours)
+    dormant_approvals = ApprovalApprover.where('approval_type_id < 4 AND created_at <= ? AND last_notified <= ? AND required = ?', Time.now - 2.days, Time.now - 12.hours, true)
     dormant_approvals_count = dormant_approvals.count
 
     if dormant_approvals_count > 0
