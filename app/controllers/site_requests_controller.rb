@@ -1,13 +1,13 @@
 class SiteRequestsController < ApplicationController
   before_action :require_user
   before_action :require_member
-  before_action only: [:add_role, :add_role_post, :position_change, :position_change_post] do |a|
+  before_action only: [:add_role, :add_role_post, :add_award, :add_award_post, :add_award_fetch_toon_awards, ] do |a|
     a.require_one_role([2])
   end
   before_action only: [:remove_role, :remove_role_post, :remove_role_fetch_user_roles] do |a|
     a.require_one_role([2])
   end
-  before_action only: [:add_award, :add_award_post, :add_award_fetch_toon_awards] do |a|
+  before_action only: [:position_change, :position_change_post] do |a|
     a.require_one_role([2, 3])
   end
 
