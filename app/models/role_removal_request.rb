@@ -9,7 +9,7 @@ class RoleRemovalRequest < ApplicationRecord
 
   def approval_completion #required for approval
     if !self.on_behalf_of.user.roles.delete(self.role)
-      error #throw an error :)
+      raise "Could not remove user from role via role request! #{self.inspect}"
     end
   end
 
