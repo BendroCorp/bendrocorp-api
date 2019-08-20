@@ -15,6 +15,10 @@ class PositionChangeRequest < ApplicationRecord
     # Retired, Discharged, Withdrawn
     if self.job_id == 22 && self.job_id == 23 && self.job_id == 24
       if self.character.user.is_in_one_role([0])
+        # revoke all of their refresh tokens
+        u_t = UserToken.where(user_id: self.character.user_id)
+        u_t.destroy_all
+
         member_role_in = InRole.where(user_id: self.character.user_id, role_id: 0)
         member_role_in.destroy_all if member_role_in
 
