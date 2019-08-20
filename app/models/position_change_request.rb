@@ -14,9 +14,9 @@ class PositionChangeRequest < ApplicationRecord
     # if its a "leave out" job. remove them as a member
     # Retired, Discharged, Withdrawn
     if self.job_id == 22 && self.job_id == 23 && self.job_id == 24
-      if self.character.user.is_in_one_role([22, 23, 24])
+      if self.character.user.is_in_one_role([0])
         member_role_in = InRole.where(user_id: self.character.user_id, role_id: 0)
-        member_role_in.destroy if member_role_in
+        member_role_in.destroy_all if member_role_in
 
         # exec notification
         Role.find_by_id(2).role_full_users.each do |exec_user|
