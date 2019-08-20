@@ -9,6 +9,11 @@ class RoleRemovalRequest < ApplicationRecord
 
   def approval_completion #required for approval
     if !self.on_behalf_of.user.roles.delete(self.role)
+      if self.role_id = 0 # ie we are removing thier membership
+        # revoke all of their refresh tokens
+        u_t = UserToken.where(user_id: self.character.user_id)
+        u_t.destroy_all
+      end
       raise "Could not remove user from role via role request! #{self.inspect}"
     end
   end
