@@ -2,7 +2,7 @@ class JobBoardController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  before_action except: [:index, :show, :accept_mission, :abandon_mission, :complete_mission] do |a|
+  before_action except: [:list, :list_types, :show, :accept_mission, :abandon_mission, :complete_mission] do |a|
     a.require_one_role([28]) #job board admin
   end
 
