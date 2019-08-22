@@ -77,10 +77,10 @@ class SystemMapController < ApplicationController
       if @system.save
         render status: 200, json: { message: "Success" }
       else
-        render status: 500, json: { message: "ERROR Occured: New system could not be saved."}
+        render status: 500, json: { message: "ERROR Occured: New system could not be created because: #{@system.errors.full_messages.to_sentence}"}
       end
     rescue => e
-      render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
+      render status: 500, json: { message: "ERROR Occured: New system could not be created: " + e.message}
     end
   end
 
@@ -97,7 +97,7 @@ class SystemMapController < ApplicationController
           # @system.save
           render status: 200, json: { message: "Success" }
         else
-          render status: 500, json: { message: "ERROR Occured: System could not be edited."}
+          render status: 500, json: { message: "ERROR Occured: System could not be edited because: #{@system.errors.full_messages.to_sentence}"}
         end
       else
         render status: 404, json: { message: "Star System not found." }
@@ -114,7 +114,7 @@ class SystemMapController < ApplicationController
           if @obj.destroy
             render status: 200, json: { message: "Success" }
           else
-            render status: 500, json: { message: "ERROR Occured: Gravity well could not be rmeoved."}
+            render status: 500, json: { message: "ERROR Occured: Gravity well could not be removed."}
           end
         else
           render status: 404, json: { message: "Gravity well not found." }
