@@ -111,7 +111,7 @@ class ApplicationsController < ApplicationController
     if current_user.main_character
       render status: 200, json: current_user.main_character.application.as_json(include: { application_status: { } })
     else
-      render status: 404, json: { message: 'A chara' }
+      render status: 404, json: { message: 'Your currently do not have a character!' }
     end
   end
 
