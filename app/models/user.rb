@@ -83,7 +83,12 @@ class User < ActiveRecord::Base
     self.auth_secret = ROTP::Base32.random_base32
   end
 
+  # Deprecated do not call directly. Call is_in_role instead
   def isinrole (roleid)
+    is_in_role roleid
+  end
+
+  def is_in_role roleid
     if roleid != nil
       self.get_all_roles.each do |role|
         return true if role[:id].to_i == roleid.to_i

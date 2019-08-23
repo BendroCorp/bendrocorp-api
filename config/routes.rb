@@ -203,6 +203,7 @@ Rails.application.routes.draw do
 
   # profiles
   get 'api/profile' => 'profiles#list'
+  get 'api/profile/member' => 'profiles#list_members'
   get 'api/profile/by-group' => 'profiles#list_groups'
   get 'api/profile/not-grouped' => 'profiles#list_not_grouped'
   get 'api/profile/by-division' => 'profiles#list_by_divsion'

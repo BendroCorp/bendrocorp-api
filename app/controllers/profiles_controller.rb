@@ -7,6 +7,15 @@ class ProfilesController < ApplicationController
     render status: 200, json: Character.all.order('first_name').as_json(methods: [:full_name, :current_job, :current_division], include: { jobs: { } })
   end
 
+  # GET api/profile/member
+  def list_members
+    characters = Character.all.order('first_name')
+    characters_out = []
+    characters.each { |character| characters_out << character if character.user.is_in_role(0) }
+
+    render status: 200, json: characters_out.as_json(methods: [:full_name, :current_job, :current_division], include: { jobs: { } })
+  end
+
   # GET api/profile/by-division
   def list_by_divsion
     render status: 200, json: Division.all.order('ordinal').as_json(methods: [:division_members])
