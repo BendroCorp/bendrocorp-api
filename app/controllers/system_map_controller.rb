@@ -145,6 +145,7 @@ class SystemMapController < ApplicationController
 
     if params[:planet][:new_primary_image] != nil
       if @planet.primary_image != nil
+        @planet.primary_image.created_by_id = current_user.id
         @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
         @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
       else
@@ -178,6 +179,7 @@ class SystemMapController < ApplicationController
       @planet.jurisdiction_id = params[:planet][:jurisdiction_id]
       if params[:planet][:new_primary_image] != nil
         if @planet.primary_image != nil
+          @planet.primary_image.created_by_id = current_user.id
           @planet.primary_image.image = params[:planet][:new_primary_image][:base64]
           @planet.primary_image.image_file_name = params[:planet][:new_primary_image][:name]
         else
