@@ -139,19 +139,18 @@ class ProfilesController < ApplicationController
   # [:owned_ship] :character_id, :ship_id, :title
   def add_ship
     @owned_ship = OwnedShip.new(owned_ship_params)
-    if @owned_ship
+    if @owned_ship.valid?
       if current_user.id == @owned_ship.character.user_id || current_user.isinrole(7)
-        @owned_ship.user_id = current_user.id
         if @owned_ship.save
           render status: 200, json: @owned_ship
         else
           render status: 500, json: { message: "Owned ship could not be archived because: #{@owned_ship.errors.full_messages.to_sentence}" }
         end
       else
-        render status: 403, json: { message: "You are not authorized to create this ship!" }
+        render status: 403, json: { message: 'You are not authorized to create this ship!' }
       end
     else
-      render status: 404, json: { message: "Owned ship not found!" }
+      render status: 400, json: { message: @owned_ship.errors.full_messages.to_sentence }
     end
   end
 
