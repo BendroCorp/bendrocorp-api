@@ -139,8 +139,9 @@ class ProfilesController < ApplicationController
   # [:owned_ship] :character_id, :ship_id, :title
   def add_ship
     @owned_ship = OwnedShip.new(owned_ship_params)
-    if @owned_ship && !@owned_ship.hidden
-      if current_user.id === @owned_ship.character.user_id || current_user.isinrole(7)
+    if @owned_ship
+      if current_user.id == @owned_ship.character.user_id || current_user.isinrole(7)
+        @owned_ship.user_id = current_user.id
         if @owned_ship.save
           render status: 200, json: @owned_ship
         else
