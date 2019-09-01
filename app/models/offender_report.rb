@@ -2,12 +2,14 @@ class OffenderReport < ApplicationRecord
   validates :infractions_committed, presence: true#, :length => { :minimum => 1 }
 
   validates :created_by_id, presence: true
+
+  validates :description, presence: true, length: { minimum: 10 }
+  validates :occured_when, presence: true
+
+  # fks
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true
-
   belongs_to :offender, :class_name => 'OffenderReportOffender', :foreign_key => 'offender_id'
-
   belongs_to :violence_rating, :class_name => 'OffenderReportViolenceRating', :foreign_key => 'violence_rating_id'
-
   belongs_to :ship, :class_name => 'Ship', :foreign_key => 'ship_id', optional: true
   belongs_to :system, :class_name => 'SystemMapSystem', :foreign_key => 'system_id', optional: true
   belongs_to :moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'moon_id', optional: true
