@@ -100,7 +100,6 @@ class OffenderReportsController < ApplicationController
       puts @offender_report.errors.inspect
       render status: 500, json: { message: "Offender report could not be created because: #{@offender_report.errors.full_messages.to_sentence}" }
     end
-
   end
 
   # PATCH api/offender-report
