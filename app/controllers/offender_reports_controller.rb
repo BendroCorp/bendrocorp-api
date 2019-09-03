@@ -111,15 +111,19 @@ class OffenderReportsController < ApplicationController
       if @offender_report.created_by_id == current_user.id || current_user.isinrole(16) # offender report admin
         @offender_report.occured_when = Time.at(params[:offender_report][:occured_when_ms].to_f / 1000)
 
-        # Handle removing the infractions from params[:offender_report][:remove_infractions]
-        params[:offender_report][:remove_infractions].each do |infraction|
-          @offender_report.infractions_committed.where(infraction_id: infraction[:id].to_i).delete_all
+        # Handle removing the infractions
+        if params[:offender_report][:remove_infractions]
+          params[:offender_report][:remove_infractions].each do |infraction|
+            @offender_report.infractions_committed.where(infraction_id: infraction[:id].to_i).delete_all
+          end
         end
 
-        # Handle adding the intial infractions from params[:offender_report][:new_infractions]
-        params[:offender_report][:new_infractions].each do |infraction|
-          found_infraction = OffenderReportInfraction.find_by_id(infraction[:id].to_i)
-          @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
+        # Handle adding the intial infractions
+        if params[:offender_report][:new_infractions]
+          params[:offender_report][:new_infractions].each do |infraction|
+            found_infraction = OffenderReportInfraction.find_by_id(infraction[:id].to_i)
+            @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
+          end
         end
 
         # Save back
