@@ -22,14 +22,14 @@ class OffenderReportsController < ApplicationController
       @offenders << offender if offender.offender_reports.count > 0
     end
 
-    render status: 200, json: @offenders.as_json(include: { offender_rating: { }, offender_report_org: { include: { violence_rating: { }, known_offenders: { } } }, offender_reports: { include: { infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location] } })
+    render status: 200, json: @offenders.as_json(include: { offender_rating: { }, offender_report_org: { include: { violence_rating: { }, known_offenders: { } } }, offender_reports: { include: { offender: {}, infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location] } })
   end
 
   # GET api/offender-report/offender/:offender_id
   def fetch_offender
     @offender = OffenderReportOffender.find_by_id(params[:offender_id])
     if @offender
-      render status: 200, json: @offender.as_json(include: { offender_rating: { }, offender_report_org: { include: { violence_rating: { }, known_offenders: { } } }, offender_reports: { include: { infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location] } })
+      render status: 200, json: @offender.as_json(include: { offender_rating: { }, offender_report_org: { include: { violence_rating: { }, known_offenders: { } } }, offender_reports: { include: { offender: {}, infractions: {}, force_level_applied: {}, created_by: { only: [:username], methods: [:main_character] } }, methods: [:occured_when_ms, :full_location] } })
     else
       render status: 404, json: { message: "Offender not found!" }
     end
