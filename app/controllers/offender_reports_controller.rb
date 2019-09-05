@@ -74,6 +74,8 @@ class OffenderReportsController < ApplicationController
 
     offender_check = OffenderReportOffender.find_by offender_name: params[:offender_report][:offender_attributes][:offender_name].to_s.downcase
 
+    # check the handle against RSI
+
     # If we find the offender with the same name use that rather than creating a new one
     if offender_check != nil
       @offender_report.offender = offender_check
@@ -83,15 +85,11 @@ class OffenderReportsController < ApplicationController
     @offender_report.submitted_for_approval = false
     @offender_report.created_by_id = current_user.id
 
-    # Handle adding the intial infractions from params[:offender_report][:new_infractions]
-    puts params[:offender_report][:new_infractions]
-    params[:offender_report][:new_infractions].to_a.each do |infraction|
+    # Handle adding the intial infractions from params[:offender_report][:infractions]
+    params[:offender_report][:infractions].to_a.each do |infraction|
       found_infraction = OffenderReportInfraction.find_by_id(infraction[:id].to_i)
       @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
     end
-
-    puts "#{@offender_report.infractions_committed.inspect}"
-    puts "Infractions: #{@offender_report.infractions_committed.count}"
 
     # lastly save the item to the db
     if @offender_report.save
@@ -111,30 +109,46 @@ class OffenderReportsController < ApplicationController
       if @offender_report.created_by_id == current_user.id || current_user.isinrole(16) # offender report admin
         @offender_report.occured_when = Time.at(params[:offender_report][:occured_when_ms].to_f / 1000)
 
-        # Handle removing the infractions
-        if params[:offender_report][:remove_infractions]
-          params[:offender_report][:remove_infractions].each do |infraction|
-            @offender_report.infractions_committed.where(infraction_id: infraction[:id].to_i).delete_all
-          end
-        end
+        # update the infractions
+        if params[:offender_report][:infractions]
+          original_infractions = @offender_report.infractions.map { |item| item.id }
+          updated_infractions = params[:offender_report][:infractions].map { |item| item[:id].to_i }
 
-        # Handle adding the intial infractions
-        if params[:offender_report][:new_infractions]
-          params[:offender_report][:new_infractions].each do |infraction|
-            found_infraction = OffenderReportInfraction.find_by_id(infraction[:id].to_i)
+          # remove old infractions
+          @offender_report.infractions_committed.where(infraction_id: (original_infractions - updated_infractions)).delete_all
+
+          # add infraction items
+          (updated_infractions - original_infractions).each do |add_infraction_id|
+            found_infraction = OffenderReportInfraction.find_by_id(add_infraction_id)
             @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
           end
         end
+
+        # OLD CODE - TO BE REMOVED
+        # Handle removing the infractions
+        # if params[:offender_report][:remove_infractions]
+        #   params[:offender_report][:remove_infractions].each do |infraction|
+        #     @offender_report.infractions_committed.where(infraction_id: infraction[:id].to_i).delete_all
+        #   end
+        # end
+
+        # Handle adding the intial infractions
+        # if params[:offender_report][:new_infractions]
+        #   params[:offender_report][:new_infractions].each do |infraction|
+        #     found_infraction = OffenderReportInfraction.find_by_id(infraction[:id].to_i)
+        #     @offender_report.infractions_committed << OffenderReportInfractionsCommitted.new(infraction: found_infraction) if found_infraction
+        #   end
+        # end
 
         # Save back
         if @offender_report.update_attributes(offender_report_update_params)
           render status: 200, json: @offender_report.as_json(include: { infractions: {}, force_level_applied: {}, created_by:{}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
         else
-          render status: 500, json: { message:"The offender report could not be updated because: #{@offender_report.errors.full_messages.to_sentence}" }
+          render status: 500, json: { message: "The offender report could not be updated because: #{@offender_report.errors.full_messages.to_sentence}" }
         end
 
       else
-        render status: 403, json: { message: "You do not have the rights to edit this offender report!" }
+        render status: 403, json: { message: 'You do not have the rights to edit this offender report!' }
       end
     else
       render status: 404, json: { message: 'Either the requested report was not found or it is locked for approval.' }
