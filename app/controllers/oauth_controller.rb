@@ -60,21 +60,12 @@ class OauthController < ApplicationController
             render status: 400, json: { message: "Redirect uri not passed. Cannot process request. #{params[:request][:client_id]}" }
           end
         else
-          # puts "Token could not be created."
-          # raise "Oauth token could not be created."
-          # flash[:danger] = "OAuth token could not be created. Cannot process request. #{params[:client_id]}"
-          # render 'authorize', :layout => 'login_background'
-          render status: 400, json: { message: "OAuth token could not be created. Cannot process request. #{params[:request][:client_id]}" }
+          render status: 400, json: { message: "OAuth token could not be created. Cannot process request. #{params[:request][:client_id]}. #{token.errors.full_messages.to_sentence}" }
         end
       else
-        # puts "OAuth client unknown. Cannot process request."
-        # flash[:danger] = "OAuth client unknown. Cannot process request."
-        # render 'authorize', :layout => 'login_background'
         render status: 400, json: { message: "OAuth client unknown. Cannot process request." }
       end
     else
-      # puts "Invalid response type: #{params[:response_type]}"
-      # throw "invalid response_type"
       render status: 400, json: { message: "Invalid response type: #{params[:request][:response_type]}. Cannot process request." }
     end
   end
