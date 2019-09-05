@@ -46,21 +46,26 @@ class OauthController < ApplicationController
       # @redirect_uri = params[:redirect_uri]
 
       @client = OauthClient.find_by client_id: params[:request][:client_id]
-      if @client != nil
+      if @client
         db_user = current_user.db_user
-        token = OauthToken.new(oauth_client_id: @client.id, user_id: db_user, access_token: make_jwt(db_user, true))
-        if token.save
-          if params[:request][:redirect_uri] != nil
-            link = "#{params[:request][:redirect_uri]}#access_token=#{token.access_token}&state=#{params[:request][:state]}&token_type=bearer"
-            # puts "token created. redirecting...."
-            # puts link
-            # redirect_to link
-            render status: 200, json: { message: link }
+        if db_user
+          jwt_token = make_jwt(db_user, true, false)
+          token = OauthToken.new(oauth_client_id: @client.id, user_id: current_user.id, access_token: jwt_token[:id_token])
+          if token.save
+            if params[:request][:redirect_uri] != nil
+              link = "#{params[:request][:redirect_uri]}#access_token=#{token.access_token}&state=#{params[:request][:state]}&token_type=bearer"
+              # puts "token created. redirecting...."
+              # puts link
+              # redirect_to link
+              render status: 200, json: { message: link }
+            else
+              render status: 400, json: { message: "Redirect uri not passed. Cannot process request. #{params[:request][:client_id]}" }
+            end
           else
-            render status: 400, json: { message: "Redirect uri not passed. Cannot process request. #{params[:request][:client_id]}" }
+            render status: 400, json: { message: "OAuth token could not be created. Cannot process request. #{params[:request][:client_id]}. #{token.errors.full_messages.to_sentence}" }
           end
         else
-          render status: 400, json: { message: "OAuth token could not be created. Cannot process request. #{params[:request][:client_id]}. #{token.errors.full_messages.to_sentence}" }
+          render status: 400, json: { message: 'DB user could not be located!' }
         end
       else
         render status: 400, json: { message: "OAuth client unknown. Cannot process request." }
