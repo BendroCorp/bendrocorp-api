@@ -1,5 +1,5 @@
 class OffenderReportOffender < ApplicationRecord
-  before_save { self.offender_name.downcase! }
+  before_save { self.offender_name.downcase! if self.offender_name }
 
   validates :offender_handle, presence: true, length: { maximum: 255 }, uniqueness: { case_sensitive: false }
   validates :offender_name, length: { maximum: 255 }
