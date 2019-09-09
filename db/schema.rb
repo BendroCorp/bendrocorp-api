@@ -956,6 +956,7 @@ ActiveRecord::Schema.define(version: 20190807203735) do
     t.integer "offender_report_org_id"
     t.integer "offender_org_rank"
     t.text "org_title"
+    t.boolean "dont_scrape", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["offender_rating_id"], name: "index_offender_report_offenders_on_offender_rating_id"
