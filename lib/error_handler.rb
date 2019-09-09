@@ -74,7 +74,7 @@ module Error
           outro = "<p><b><strong>Please do not reply to this email.</strong></b><p/><p>Sincerely,</p><p>Kaden Aayhan<br />Assistant to the CEO<br />BendroCorp, Inc.</p><p>Corp Plaza 11, Platform R3Q<br />Crusader, Stanton</p>"
 
           # message
-          message_in = "<p>The following error occured on the BendroCorp site:</p> <p>#{exception}</p>"
+          message_in = "<p>The following error occurred on the BendroCorp site:</p> <p>#{exception}</p>"
 
           # the actual email itself
           from = Email.new(email: 'no-reply@bendrocorp.com')

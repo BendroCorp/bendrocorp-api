@@ -91,6 +91,9 @@ class OffenderScraperWorker
           end
         else
           # Need to do something here
+          # If we get a 404 dont scrape this any more
+          offender.dont_scrape = true
+          offender.save!
         end
         puts "Finished #{offender.offender_handle}"
       else
@@ -107,7 +110,7 @@ class OffenderScraperWorker
     # It will be a sad day when CIG does something else with this page
     page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{rsi_handle}")
 
-    if page.code != 404
+    if page.code == 200
 
       parse_page = Nokogiri::HTML(page)
 
@@ -126,8 +129,11 @@ class OffenderScraperWorker
 
       # get picture
       toon_pic = ""
+      thumb_element = parse_page.css('.profile').css('.inner').css('.thumb img')
 
-      toon_pic = parse_page.css('.profile').css('.inner').css('.thumb img').attr('src') #a.text
+      if thumb_element
+        toon_pic = thumb_element.attr('src')
+      end
 
       final_hash[:toon_name] = toon_raw[0].text if toon_raw[0]
       final_hash[:toon_handle] = toon_raw[1].text if toon_raw[1]

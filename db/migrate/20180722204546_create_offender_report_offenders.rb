@@ -14,6 +14,9 @@ class CreateOffenderReportOffenders < ActiveRecord::Migration[5.1]
       # offender specific org items
       t.integer :offender_org_rank
       t.text :org_title
+
+      # 
+      t.boolean :dont_scrape, default: false
       t.timestamps
     end
   end
