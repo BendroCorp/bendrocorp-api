@@ -72,13 +72,18 @@ class OffenderReportsController < ApplicationController
   def create
     @offender_report = OffenderReport.new(offender_report_params)
 
-    offender_check = OffenderReportOffender.find_by offender_name: params[:offender_report][:offender_attributes][:offender_name].to_s.downcase
-
-    # check the handle against RSI
+    offender_check = OffenderReportOffender.find_by offender_handle: params[:offender_report][:offender_attributes][:offender_handle].to_s.downcase
 
     # If we find the offender with the same name use that rather than creating a new one
     if offender_check != nil
       @offender_report.offender = offender_check
+    else 
+      # check the handle against RSI
+      page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{params[:offender_report][:offender_attributes][:offender_handle]}")
+      if page.code != 200
+        render status: 400, json: { message: 'Offender handle is invalid.' }
+        return
+      end
     end
 
     @offender_report.occured_when = Time.at(params[:offender_report][:occured_when_ms].to_f / 1000)
