@@ -951,6 +951,7 @@ ActiveRecord::Schema.define(version: 20190807203735) do
     t.boolean "offender_handle_verified"
     t.text "offender_rsi_url"
     t.text "offender_rsi_avatar"
+    t.integer "offender_citizen_number"
     t.integer "offender_rating_percentage"
     t.integer "offender_rating_id"
     t.integer "offender_report_org_id"
