@@ -186,6 +186,9 @@ ActiveRecord::Schema.define(version: 20190807203735) do
     t.boolean "single_consent", default: false
     t.boolean "denied", default: false
     t.boolean "approved", default: false
+    t.boolean "bound", default: false
+    t.integer "bound_tries", default: 0
+    t.boolean "notifications_sent", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_kind_id"], name: "index_approvals_on_approval_kind_id"

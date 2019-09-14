@@ -27,7 +27,7 @@ class EmailWorker
     if ENV['SENDGRID_API_KEY'] == nil
       puts
       puts "The email that would have been sent to..."
-      puts sg_email_json
+      puts mail.to_json
       puts
     else
       puts "SendGrid response code:"

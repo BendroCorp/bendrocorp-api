@@ -8,6 +8,10 @@ class Approval < ApplicationRecord
     self.created_at.to_f * 1000
   end
 
+  def is_bound?
+    !self.approval_source.nil?
+  end
+
   def approval_status
     if !self.approved && !self.denied
       "Awaiting Responses"
