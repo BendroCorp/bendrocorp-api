@@ -1,7 +1,7 @@
 class ApprovalBoundWorker
   include Sidekiq::Worker
 
-  def perform(_args)
+  def perform(*args)
     # Approval.all[0].approval_approvers[0].user
     # get all of the checkable approvals
     Approval.where(bound: false).each do |approval|
