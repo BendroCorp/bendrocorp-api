@@ -1,6 +1,6 @@
 :schedule:
   offender_worker:
-    every: 10m # Runs once per minute
+    every: 10m # Runs once ever 10 minutes
     class: OffenderScraperWorker
   kaiden_worker:
     every: 1m # Runs once per minute
@@ -26,3 +26,6 @@
   kaiden_news_announce_worker:
     every: 5m
     class: KadenNewsAnnounceWorker
+  approval_bound_worker:
+    every: 3m
+    class: ApprovalBoundWorker

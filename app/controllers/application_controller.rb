@@ -137,60 +137,53 @@ class ApplicationController < ActionController::API
     # TODO:
   end
 
-  def new_approval approval_k_id, owner_id = 0, approval_group = 0, approverIdList = [], approvals_required = true
-    @approval_kind = ApprovalKind.find(approval_k_id.to_i);
+  def new_approval (approval_kind_id, owner_id = 0, approval_group = 0, approval_id_list = [], approvals_required = true)
+    @approval_kind = ApprovalKind.find(approval_kind_id.to_i)
     if @approval_kind != nil
       new_approval = Approval.new(approval_kind_id: @approval_kind.id) #approval kind id
       new_approval.full_consent = true #eventually this should be passed in logic
 
-      usersArray = Array.new
-      approvalKindRoles = @approval_kind.roles
-      if approvalKindRoles.count > 0
-        approvalKindRoles.each do |role|
+      users_array = Array.new
+      approval_kind_roles = @approval_kind.roles
+      if approval_kind_roles.count > 0
+        approval_kind_roles.each do |role|
           User.where("is_member = ?", true).each do |user|
-            usersArray << user if user.isinrole(role.id)
+            users_array << user if user.isinrole(role.id)
           end
         end
       else
         # if we can't find roles then we need to get the owner object
         # somehow we need to get the ship owner user here when that object is no available yet
         # some kinds of requests might not have roles - it might be an object with an owner who gets to manage what happens
-        if owner_id != 0 && approval_group == 0 && approverIdList.count == 0
+        if owner_id != 0 && approval_group.zero? && approval_id_list.zero?
           owner = User.find_by_id(owner_id.to_i)
-          if owner != nil
-            usersArray << owner
+          if !owner.nil?
+            users_array << owner
           else
             raise 'Cannot create the approval request. The selected approval kind has no roles assigned to it and no valid owner user id was supplied.'
           end
-        elsif owner_id == 0 && approval_group != 0 && approverIdList.count == 0
+        elsif owner_id == 0 && approval_group != 0 && approval_id_list.count == 0
           role = Role.find_by_id(approval_group.to_i)
-          if role != nil
+          if !role.nil?
             User.where("is_member = ?", true).each do |user|
-              usersArray << user if user.isinrole(role.id)
+              users_array << user if user.isinrole(role.id)
             end
           else
             raise 'Cannot not create approval request. The selected approval kind has no assigned roles and the provided group value could not be found.'
           end
-        elsif owner_id == 0 && approval_group == 0 && approverIdList.count != 0
-          usersArray.concat User.where('id IN (?) AND is_member = ?', approverIdList, true)
+        elsif owner_id == 0 && approval_group == 0 && approval_id_list.count != 0
+          users_array.concat User.where('id IN (?) AND is_member = ?', approval_id_list, true)
         else
           raise 'Cannot create the approval request. The selected approval kind has no roles assigned to it.'
         end
       end
 
-      usersArray.uniq! { |x| x } # get uniq users
+      users_array.uniq! { |x| x } # get uniq users
 
-      if usersArray.count > 0
+      if users_array.count > 0
         # add all of the approvers to the approval and email them
-        usersArray.each do |user|
+        users_array.each do |user|
           new_approval.approval_approvers << ApprovalApprover.new(user_id: user.id, approval_type_id: 1, required: approvals_required)
-          # send push notifications
-          send_push_notification user.id, "You have a new Approval Request"
-
-          # send emails
-          send_email(user.email, "New Approval Request",
-          "<p>Hello #{user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
-          ) #to, subject, message
         end
 
         new_approval.save #save approval so we can get the id since this is disconnected somewhat
@@ -202,13 +195,13 @@ class ApplicationController < ActionController::API
         #cannot create approval...there has to be approvers
       end
     else
-
+      raise 'approval_kind_id not passed to make_approval!'
     end
   end
 
   # remove an existing approval. This is usually done if some kind of error occurs in the process
-  def cancel_approval approvalId
-    @approval = Approval.find_by_id(approvalId)
+  def cancel_approval(approval_id)
+    @approval = Approval.find_by_id(approval_id)
     if @approval
       # Email all of the approvers
       @approval.approval_approvers do |approver|
@@ -227,7 +220,7 @@ class ApplicationController < ActionController::API
     end
   end
 
-  #eventually this goes into a background process
+  # eventually this goes into a background process
   def email_groups(roleIdArray, subject, message)
     emailsArray = Array.new
     roleIdArray.each do |roleId|

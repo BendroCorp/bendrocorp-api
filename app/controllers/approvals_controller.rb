@@ -5,6 +5,24 @@ class ApprovalsController < ApplicationController
     a.require_one_role([9]) # ceo
   end
 
+  # POST api/approvals
+  # 
+  def create_approval
+    # approval_kind_id, owner_id = 0, approval_group = 0, approval_id_list = [], approvals_required = true
+    if params[:new_approval] && params[:new_approval][:approval_kind_id]
+      approval_id = new_approval(
+        params[:new_approval][:approval_kind_id],
+        params[:new_approval][:owner_id],
+        params[:new_approval][:approval_group],
+        params[:new_approval][:approval_id_list],
+        params[:new_approval][:approvals_required]
+      )
+      render status: 200, json: { approval_id: approval_id }
+    else
+      render status: 400, json: { message: 'Request not properly formed. See documentation.' }
+    end
+  end
+
   # get api/approvals/:approval_id/:approval_type
   def approval_request
     #@your_approval = ApprovalApprover.find_by id: params[:approval_id].to_i

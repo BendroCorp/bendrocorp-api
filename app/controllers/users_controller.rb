@@ -10,9 +10,8 @@ class UsersController < ApplicationController
     render status: 200, json: User.where('id <> 0').as_json(only: [:id, :username, :rsi_handle], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
-  # GET api/user/me
+  # GET api/user/me | /userinfo
   def me
-    # NOTE: This may be worth deprecating
     render status: 200, json: current_user.db_user.as_json(only: [:id, :email], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
@@ -20,15 +19,21 @@ class UsersController < ApplicationController
   # GET api/user/approvals/:count
   # GET api/user/approvals/:count/:skip
   def approvals
+    approvals_list = []
     if params[:count]
       if params[:skip]
-        render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').offset(params[:skip].to_i).take(params[:count].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+        approvals_list = current_user.db_user.approval_approvers.order('created_at desc').offset(params[:skip].to_i).take(params[:count].to_i)
       else
-        render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').take(params[:count].to_i).as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+        approvals_list = current_user.db_user.approval_approvers.order('created_at desc').take(params[:count].to_i)
       end
     else
-      render status: 200, json: current_user.db_user.approval_approvers.order('created_at desc').as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
+      approvals_list = current_user.db_user.approval_approvers.order('created_at desc')
     end
+
+    # make sure we are only fetching bound approvals
+    approvals_list = approvals_list.to_a.select { |approver| approver.approval.is_bound? }
+    # return final approvals_list
+    render status: 200, json: approvals_list.as_json(include: { approval_type: { }, approval: { methods: [:approval_status, :approval_link, :approval_source_requested_item, :approval_source, :approval_source_character_name, :approval_source_on_behalf_of], include: { approval_kind: { }, approval_approvers: { methods: [:character_name, :approver_response], include: { approval_type: { } } } } } })
   end
 
   # GET api/user/approval/:approval_approver_id
