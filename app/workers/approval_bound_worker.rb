@@ -13,7 +13,7 @@ class ApprovalBoundWorker
           PushWorker.perform_async approver.user.id, "You have a new Approval Request"
 
           # send emails
-          send_email(approver.user.email, "New Approval Request",
+          EmailWorker.perform_async(approver.user.email, "New Approval Request",
           "<p>Hello #{approver.user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
           ) # to, subject, message
 
