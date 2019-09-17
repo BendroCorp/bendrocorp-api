@@ -18,16 +18,17 @@ class ApprovalBoundWorker
           ) # to, subject, message
 
           approver.last_notified = Time.now
-          approver.save
+          approver.save!
         end
 
         approval.bound = true
         approval.notifications_sent = true
-        approval.save
       else
         approval.bound_tries += 1
-        approval.save
       end
+
+      # save any changes to the approval
+      approval.save!
     end
 
     # get rid of all the still unbound approvals
