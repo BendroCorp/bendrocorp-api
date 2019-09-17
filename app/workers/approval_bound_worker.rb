@@ -10,11 +10,11 @@ class ApprovalBoundWorker
 
         approval.approval_approvers.each do |approver|
           # send push notifications
-          send_push_notification approval.user.id, "You have a new Approval Request"
+          send_push_notification approver.user.id, "You have a new Approval Request"
 
           # send emails
-          send_email(approval.user.email, "New Approval Request",
-          "<p>Hello #{approval.user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
+          send_email(approver.user.email, "New Approval Request",
+          "<p>Hello #{approver.user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
           ) # to, subject, message
 
           approver.last_notified = Time.now
