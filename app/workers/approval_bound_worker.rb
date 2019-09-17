@@ -13,21 +13,22 @@ class ApprovalBoundWorker
           PushWorker.perform_async approver.user.id, "You have a new Approval Request"
 
           # send emails
-          send_email(approver.user.email, "New Approval Request",
+          EmailWorker.perform_async(approver.user.email, "New Approval Request",
           "<p>Hello #{approver.user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
           ) # to, subject, message
 
           approver.last_notified = Time.now
-          approver.save
+          approver.save!
         end
 
         approval.bound = true
         approval.notifications_sent = true
-        approval.save
       else
         approval.bound_tries += 1
-        approval.save
       end
+
+      # save any changes to the approval
+      approval.save!
     end
 
     # get rid of all the still unbound approvals
