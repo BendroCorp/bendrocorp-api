@@ -10,7 +10,7 @@ class ApprovalBoundWorker
 
         approval.approval_approvers.each do |approver|
           # send push notifications
-          send_push_notification approver.user.id, "You have a new Approval Request"
+          PushWorker.perform_async approver.user.id, "You have a new Approval Request"
 
           # send emails
           send_email(approver.user.email, "New Approval Request",
