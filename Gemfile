@@ -54,6 +54,9 @@ gem 'have-i-been-pwned'
 # redis
 # gem 'redis', '~> 3.0'
 
+# jwt
+gem 'jwt'
+
 # file attachments
 # DEPRECATED :(
 gem 'paperclip' #, :git=> 'https://github.com/thoughtbot/paperclip'#, :ref => '523bd46c768226893f23889079a7aa9c73b57d68'

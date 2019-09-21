@@ -726,6 +726,7 @@ DEPENDENCIES
   geocoder
   have-i-been-pwned
   httparty
+  jwt
   listen (>= 3.0.5, < 3.2)
   mail
   nokogiri
