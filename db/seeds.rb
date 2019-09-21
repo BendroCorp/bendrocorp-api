@@ -366,10 +366,15 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
                      { id: 39, name: 'Logs Viewer', description: 'Can view site logs' },
                      { id: 40, name: 'Liabilities Viewer', description: 'Can view the liabilites' },
-                     { id: 41, name: 'CEO Assistant', description: 'Assistant to the CEO' },
+                     { id: 41, name: 'CEO Assistant (Old)', description: 'Assistant to the CEO' },
                      { id: 42, name: 'Admin Menu', description: 'Allows access to the admin menu' },
                      { id: 43, name: 'Legal Administrator', description: 'Allow admin access to the law system.'},
-                     { id: 44, name: 'News Administrator', description: 'Allow admin access to the in-fiction news system.'}])
+                     { id: 44, name: 'News Administrator', description: 'Allow admin access to the in-fiction news system.'},
+                     { id: 45, name: 'Director of Medicine', description: 'Allow admin access to the in-fiction news system.'},
+                     { id: 46, name: 'Medical', description: 'The medical division'},
+                     { id: 47, name: 'Assistant to the CEO ', description: 'Allow admin access to the in-fiction news system.'},
+                     { id: 48, name: 'Report Builder', description: 'Controls the ability to create, update and archive report templates and fields.'},
+                     { id: 49, name: 'Report Admin', description: 'The ability to view all reports, regardless of the user not being the sender or the receiver.'}])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
