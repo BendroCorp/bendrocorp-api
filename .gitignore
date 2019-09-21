@@ -7,6 +7,10 @@
 # any vs code stuff
 .vscode
 
+# rbenv
+.rbenv
+/.rbenv
+
 # Ignore bundler config.
 /.bundle
 
