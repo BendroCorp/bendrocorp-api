@@ -9,7 +9,7 @@
 
 # rbenv
 .rbenv
-/.rbenv
+/.rbenv/*
 
 # Ignore bundler config.
 /.bundle
