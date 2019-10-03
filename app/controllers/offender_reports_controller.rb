@@ -129,6 +129,12 @@ class OffenderReportsController < ApplicationController
           end
         end
 
+        # prevent issues where there could be no infractions
+        if @offender_report.infractions_committed.count == 0
+          render status: 400, json: { message: 'An offender report must list infractions!' }
+          return
+        end
+
         # OLD CODE - TO BE REMOVED
         # Handle removing the infractions
         # if params[:offender_report][:remove_infractions]
