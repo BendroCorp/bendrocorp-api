@@ -31,7 +31,7 @@ class TokenUser
     if role_id != nil
       # check the token
       roles.each do |role|
-        return true if role == role_id.to_i
+        return true if role == role_id.to_i || role == -1
       end
 
       # check the database users roll - in case roles are added after a token is rolled
@@ -60,7 +60,8 @@ class TokenUser
     if u
       u
     else
-      raise 'Database user not found for token!'
+      # TODO: Bots won't have DB users...need to come up with a better method for this
+      # raise 'Database user not found for token!'
     end
   end
 

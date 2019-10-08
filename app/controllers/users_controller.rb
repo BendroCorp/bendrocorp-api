@@ -12,7 +12,7 @@ class UsersController < ApplicationController
 
   # GET api/user/me | /userinfo
   def me
-    render status: 200, json: current_user.db_user.as_json(only: [:id, :email], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
+    render status: 200, json: current_user.db_user.as_json(only: [:id, :email], include: { discord_identity: { }, roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
   # GET api/user/approvals
@@ -66,6 +66,22 @@ class UsersController < ApplicationController
     render status: 200, json: UserToken.where(user_id: current_user.id).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
+  # POST api/user/discord-identity
+  def discord_identity
+    user = current_user.db_user
+    if user.discord_identity
+      user.discord_identity.discord_identity = DiscordIdentity.new(discord_id: params[:discord_identity][:discord_id])
+    else
+      user.discord_identity.discord_identity.discord_id = params[:discord_identity][:discord_id]
+    end
+
+    if user.save
+      render status: 200, json: { message: 'Discord identity updated!' }
+    else
+      render status: 400, json: { message: "Discord identity could not be created or updated because: #{user.errors.full_messages.to_sentence}" }
+    end
+  end
+
   # POST api/user/push-token
   # Must contain token, user_device_type_id, reg_data (1 = iOS, 2(TODO) = Amazon)
   def add_push_token
@@ -96,5 +112,9 @@ class UsersController < ApplicationController
   private
   def push_params
     params.require(:push_token).permit(:token, :user_device_type_id, :reg_data)
+  end
+
+  def discord_identity_params
+    params.require(:discord_identity).permit(:discord_id, :discord_snowflake_id)
   end
 end

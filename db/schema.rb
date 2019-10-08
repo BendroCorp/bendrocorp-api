@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190807203735) do
+ActiveRecord::Schema.define(version: 20191008185217) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -275,6 +275,9 @@ ActiveRecord::Schema.define(version: 20190807203735) do
     t.index ["created_by_id"], name: "index_badges_on_created_by_id"
   end
 
+# Could not dump table "bots" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
   create_table "character_genders", force: :cascade do |t|
     t.text "title"
     t.text "description"
@@ -379,6 +382,9 @@ ActiveRecord::Schema.define(version: 20190807203735) do
     t.index ["award_id"], name: "index_create_award_requests_on_award_id"
     t.index ["user_id"], name: "index_create_award_requests_on_user_id"
   end
+
+# Could not dump table "discord_identities" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
   create_table "division_groups", force: :cascade do |t|
     t.text "title"

@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   # Authenticate a user
   post 'auth' => 'sessions#auth'
 
+  # user info
+  # get 'userinfo' => 'users#me'
+
   # account routes
   post 'api/account/change-password' => 'account#change_password'
   get 'api/account/fetch-tfa' => 'account#fetch_two_factor_auth'
@@ -63,6 +66,11 @@ Rails.application.routes.draw do
   patch 'api/badge/:badge_id' => 'badge#update'
   put 'api/badge/:badge_id' => 'badge#update'
   delete 'api/badge/:badge_id' => 'badge#archive'
+
+  # Bots
+  get 'api/bot' => 'bots#list'
+  post 'api/bot' => 'bots#create'
+  delete 'api/bot/:bot_id' => 'alerts#destroy'
 
   # chat
   get 'api/chat' => 'chat#list'
@@ -339,6 +347,7 @@ Rails.application.routes.draw do
   get 'api/user/auth-tokens' => 'users#auth_tokens'
   post 'api/user/push-token' => 'users#add_push_token'
   get 'api/user/push' => 'users#push_self'
+  post 'api/user/discord-identity' => 'users#discord_identity'
 
   # oauth
   post 'api/oauth-client-check' => 'oauth#client_check'
