@@ -1,3 +1,5 @@
+require 'httparty'
+
 class UsersController < ApplicationController
   before_action :require_user
   before_action :require_member
@@ -66,19 +68,83 @@ class UsersController < ApplicationController
     render status: 200, json: UserToken.where(user_id: current_user.id).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
-  # POST api/user/discord-identity
+  # POST api/user/discord-identity?code=<core here>
   def discord_identity
-    user = current_user.db_user
-    if user.discord_identity
-      user.discord_identity.discord_identity = DiscordIdentity.new(discord_id: params[:discord_identity][:discord_id])
-    else
-      user.discord_identity.discord_identity.discord_id = params[:discord_identity][:discord_id]
-    end
 
-    if user.save
-      render status: 200, json: { message: 'Discord identity updated!' }
+    if params[:code]
+      guild_id = '123161736181317632'
+      client_id = '630786822863061014'
+      client_secret = ENV['DISCORD_BOT_CLIENT_SECRET']
+
+      body_string = "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=https%3A%2F%2Fmy.bendrocorp.com%2Fdiscord_callback&scope=guilds.join+email+identify" if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
+      body_string ||= "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fdiscord_callback&scope=guilds.join+email+identify"
+
+      response = HTTParty.post('https://discordapp.com/api/v6/oauth2/token', {
+        body: "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost&scope=guilds.join+email+identify",
+        headers: {
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'charset' => 'utf-8'
+        }
+      })
+
+      if response.code == 200
+        discord_access_token = response['access_token']
+        discord_refresh_token = response['refresh_token']
+
+        info_response = HTTParty.get('https://discordapp.com/api/users/@me', {
+          headers: {
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer #{discord_access_token}"
+          }
+        })
+
+        if info_response.code == 200
+          discord_user_id = info_response['id']
+          discord_email = info_response['email'] # use this to reference the user account
+          discord_username = info_response['username']
+
+          db_user = user.db_user
+          if discord_email == db_user.email
+            db_user.discord_identity = DiscordIdentity.new(discord_username: discord_username, discord_id: discord_user_id, refresh_token: discord_user_id)
+
+            if db_user.save
+              # emit the event
+              EventStreamWorker.perform_async(type: 'discord-join', object: db_user.discord_identity)
+
+              # render 200
+              render status: 200, json: { message: 'Discord identity registered!' }
+            else
+              render status: 500, json: { message: "Error occured could not save discord identity to user because: #{db_user.errors.full_messages.to_sentence}" }
+            end
+          else
+            render status: 404, json: { message: 'User not found. Your Discord email and account email must match!' }
+          end
+        else
+          throw info_response['error_description']
+        end
+      else
+        throw response['error_description']
+      end
     else
-      render status: 400, json: { message: "Discord identity could not be created or updated because: #{user.errors.full_messages.to_sentence}" }
+      render status: 400, json: { message: 'Code not provided' }
+    end
+  end
+
+  # PUT api/user/discord-identity/:discord_identity_id
+  def discord_identity_joined
+    id = DiscordIdentity.find_by_id(params[:discord_identity_id])
+    if id
+      id.joined = true
+      if id.save
+        # emit event
+        EventStreamWorker.perform_async(type: 'discord-join-complete', object: { message: "#{id.discord_id} joined to BendroCorp Discord!", discord_identity: id })
+
+        render status: 200, json: { message: "#{id.discord_id} joined to BendroCorp Discord!" }
+      else
+        render status: 500, json: { message: "Error occured could update discord identity because: #{id.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 404, json: { message: 'Discord identity not found!' }
     end
   end
 

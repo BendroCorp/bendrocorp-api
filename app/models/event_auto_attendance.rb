@@ -1,0 +1,2 @@
+class EventAutoAttendance < ApplicationRecord
+end

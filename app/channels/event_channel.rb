@@ -1,6 +1,6 @@
 class EventChannel < ApplicationCable::Channel
   def subscribed
-    stream_from ''
+    stream_from 'event'
   end
 
   def unsubscribed
