@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191008185217) do
+ActiveRecord::Schema.define(version: 20191009220853) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -442,6 +442,9 @@ ActiveRecord::Schema.define(version: 20191008185217) do
     t.index ["donation_item_id"], name: "index_donations_on_donation_item_id"
     t.index ["user_id"], name: "index_donations_on_user_id"
   end
+
+# Could not dump table "event_auto_attendances" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
   create_table "event_awards", force: :cascade do |t|
     t.integer "award_id"

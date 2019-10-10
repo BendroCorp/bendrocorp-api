@@ -80,7 +80,7 @@ class UsersController < ApplicationController
       body_string ||= "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fdiscord_callback&scope=guilds.join+email+identify"
 
       response = HTTParty.post('https://discordapp.com/api/v6/oauth2/token', {
-        body: "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost&scope=guilds.join+email+identify",
+        body: body_string,
         headers: {
           'Content-Type' => 'application/x-www-form-urlencoded',
           'charset' => 'utf-8'
