@@ -68,9 +68,10 @@ Rails.application.routes.draw do
   delete 'api/badge/:badge_id' => 'badge#archive'
 
   # Bots
-  get 'api/bot' => 'bots#list'
-  post 'api/bot' => 'bots#create'
-  delete 'api/bot/:bot_id' => 'alerts#destroy'
+  get 'api/bot' => 'bot#list'
+  post 'api/bot' => 'bot#create'
+  delete 'api/bot/:bot_id' => 'bot#destroy'
+  get 'api/bot/check' => 'bot#bot_check'
 
   # chat
   get 'api/chat' => 'chat#list'
@@ -348,6 +349,7 @@ Rails.application.routes.draw do
   post 'api/user/push-token' => 'users#add_push_token'
   get 'api/user/push' => 'users#push_self'
   post 'api/user/discord-identity' => 'users#discord_identity'
+  put 'api/user/discord-identity/:discord_identity_id' => 'users#discord_identity_joined'
 
   # oauth
   post 'api/oauth-client-check' => 'oauth#client_check'

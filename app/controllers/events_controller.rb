@@ -8,6 +8,11 @@ class EventsController < ApplicationController
     a.require_one_role([19])
   end
 
+  # bot only
+  before_action only: [:set_auto_attendance] do |a|
+    a.require_one_role([-1])
+  end
+
   # GET api/events
   def list
     render status: 200,
@@ -230,6 +235,30 @@ class EventsController < ApplicationController
     end
   end
 
+  # POST api/events/attend/auto
+  # :event_id, :discord_user_ids [string]
+  def set_auto_attendance
+    @event = Event.find_by_id(params[:event_id].to_i)
+    if @event
+      current_auto_attenders = EventAutoAttendance.where("event_id = ?", params[:event_id]).map(&:user_id) if params[:discord_user_id].count > 0
+
+      params[:discord_user_id].each do |discord_id|
+        # check to see if there already is a record
+        discord_identity = DiscordIdentity.find_by discord_id: discord_id
+        if discord_identity
+          if !current_auto_attenders.include? discord_identity.user_id
+            eaa = EventAutoAttendance.new(event_id: params[:event_id], user_id: discord_identity.user_id)
+            eaa.save
+          end
+        end
+      end
+
+      render status: 200, json: { message: 'Auto attendance completed!' }
+    else
+      render status: 404, json: { message: 'Event not found.' }
+    end
+  end
+
   # GET api/events/:event_id/certify
   # This creates negative attendence objects for all members who did not already create an attendence for the event
   # Body should contain event_id
@@ -237,7 +266,7 @@ class EventsController < ApplicationController
     @event = Event.find_by_id(params[:event_id].to_i)
     if @event != nil && !@event.submitted_for_certification
       if @event.is_expired
-        #get all the members not in event and create negative attendence entries for them
+        # get all the members not in event and create negative attendence entries for them
         attender_ids = Attendence.where("event_id = ?", params[:event_id]).map(&:user_id)
         attender_ids << 0 unless attender_ids.count > 0
         users = User.where("is_member = ? AND id NOT IN (?) AND id <> 0", true, attender_ids)

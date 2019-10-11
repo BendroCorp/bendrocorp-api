@@ -68,11 +68,11 @@ class UsersController < ApplicationController
     render status: 200, json: UserToken.where(user_id: current_user.id).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
-  # POST api/user/discord-identity?code=<core here>
+  # POST api/user/discord-identity
   def discord_identity
 
     if params[:code]
-      guild_id = '123161736181317632'
+      # guild_id = '123161736181317632'
       client_id = '630786822863061014'
       client_secret = ENV['DISCORD_BOT_CLIENT_SECRET']
 
@@ -105,7 +105,7 @@ class UsersController < ApplicationController
 
           db_user = user.db_user
           if discord_email == db_user.email
-            db_user.discord_identity = DiscordIdentity.new(discord_username: discord_username, discord_id: discord_user_id, refresh_token: discord_user_id)
+            db_user.discord_identity = DiscordIdentity.new(discord_username: discord_username, discord_id: discord_user_id, refresh_token: discord_refresh_token)
 
             if db_user.save
               # emit the event
@@ -120,10 +120,10 @@ class UsersController < ApplicationController
             render status: 404, json: { message: 'User not found. Your Discord email and account email must match!' }
           end
         else
-          throw info_response['error_description']
+          render status: 500, json: { message: info_response['error_description'] }
         end
       else
-        throw response['error_description']
+        render status: 500, json: { message: response['error_description'] }
       end
     else
       render status: 400, json: { message: 'Code not provided' }

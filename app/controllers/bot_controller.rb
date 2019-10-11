@@ -2,8 +2,12 @@ class BotController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  before_action except: [] do |a|
+  before_action except: [:bot_check] do |a|
     a.require_one_role([9])
+  end
+
+  before_action only: [:bot_check] do |a|
+    a.require_one_role([-1])
   end
 
   def list
@@ -32,6 +36,11 @@ class BotController < ApplicationController
     else
       render status: 500, json: { message: "Bot could not be deleted because: #{@bot.errors.full_messages.to_sentence}" }
     end
+  end
+
+  # GET /api/bot/check
+  def bot_check
+    render status: 200, json: { message: 'Hello from bot check!' }
   end
 
   private
