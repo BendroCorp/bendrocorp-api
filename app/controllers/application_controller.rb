@@ -74,8 +74,8 @@ class ApplicationController < ActionController::API
 
     token = JWT.encode payload, secret, 'HS256'
 
-    return { id_token: token } if !offline_access || (offline_access && !create_refresh)
-    return { id_token: token, refresh_token: make_token(75) } if offline_access && create_refresh
+    return { access_token: token, id_token: token } if !offline_access || (offline_access && !create_refresh)
+    return { access_token: token, id_token: token, refresh_token: make_token(75) } if offline_access && create_refresh
   end
 
   def current_user
