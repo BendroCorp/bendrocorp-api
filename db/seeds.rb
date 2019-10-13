@@ -369,7 +369,13 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 41, name: 'CEO Assistant', description: 'Assistant to the CEO' },
                      { id: 42, name: 'Admin Menu', description: 'Allows access to the admin menu' },
                      { id: 43, name: 'Legal Administrator', description: 'Allow admin access to the law system.'},
-                     { id: 44, name: 'News Administrator', description: 'Allow admin access to the in-fiction news system.'}])
+                     { id: 44, name: 'News Administrator', description: 'Allow admin access to the in-fiction news system.'},
+                     { id: 45, name: 'Director of Medicine', description: '' },
+                     { id: 46, name: 'Medical', description: '' },
+                     { id: 47, name: 'Assistant to the CEO', description: '' },
+                     { id: 48, name: 'Report Builder', description: '' },
+                     { id: 49, name: 'Report Admin', description: '' },
+                     { id: 50, name: 'Bot Master', description: '' }])
 
 ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
                    { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },

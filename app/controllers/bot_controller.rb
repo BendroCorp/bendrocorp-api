@@ -3,7 +3,7 @@ class BotController < ApplicationController
   before_action :require_member
 
   before_action except: [:bot_check] do |a|
-    a.require_one_role([9])
+    a.require_one_role([9, 50])
   end
 
   before_action only: [:bot_check] do |a|
