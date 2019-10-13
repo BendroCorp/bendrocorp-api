@@ -245,15 +245,17 @@ class EventsController < ApplicationController
   def set_auto_attendance
     @event = Event.find_by_id(params[:event_id].to_i)
     if @event
-      current_auto_attenders = EventAutoAttendance.where("event_id = ?", params[:event_id]).map(&:user_id) if params[:discord_user_id].count > 0
-
+      current_auto_attenders = EventAutoAttendance.where("event_id = ?", params[:event_id]).map(&:user_id) if params[:discord_user_ids].count > 0
+      # iterate through each user
       params[:discord_user_ids].each do |discord_id|
         # check to see if there already is a record
         discord_identity = DiscordIdentity.find_by discord_id: discord_id
         if discord_identity
           if !current_auto_attenders.include? discord_identity.user_id
             eaa = EventAutoAttendance.new(event_id: params[:event_id], user_id: discord_identity.user_id)
-            eaa.save
+            if !eaa.save
+              raise "Could not save auto-attendance because: #{eaa.errors.full_messages.to_sentence}"
+            end
           end
         end
       end
@@ -271,16 +273,23 @@ class EventsController < ApplicationController
     @event = Event.find_by_id(params[:event_id].to_i)
     if @event != nil && !@event.submitted_for_certification
       if @event.is_expired
+        # fetch the auto attendance array
+        auto_attendance = EventAutoAttendance.where(event_id: 4).map(&:user_id)
+
         # get all the members not in event and create negative attendence entries for them
         attender_ids = Attendence.where("event_id = ?", params[:event_id]).map(&:user_id)
         attender_ids << 0 unless attender_ids.count > 0
         users = User.where("is_member = ? AND id NOT IN (?) AND id <> 0", true, attender_ids)
         users.each do |user|
-          puts user.username
+          # puts user.username
+          # if the user exists in the auto attendance for the event the mark as attending
+          attendence_type_id = 1 if auto_attendance.include? user.id
+          # if they are not in the list then set to not attending
+          attendence_type_id ||= 2
           attendence = Attendence.new(event_id: params[:event_id].to_i,
                                        user_id: user.id,
                                        character_id: user.main_character.id,
-                                       attendence_type_id: 2)
+                                       attendence_type_id: attendence_type_id)
           attendence.save
         end
 

@@ -114,6 +114,7 @@ Rails.application.routes.draw do
   patch 'api/events/briefing' => 'events#event_briefing_update'
   patch 'api/events/debriefing' => 'events#event_briefing_update'
   post 'api/events/attend' => 'events#set_attendence'
+  post 'api/events/attend/auto' => 'events#set_auto_attendance'
   get 'api/events/types' => 'events#get_types'
   get 'api/events/attendence-types' => 'events#get_attendence_types'
   get 'api/events/:event_id/certify' => 'events#certify_event_attendence'

@@ -23,9 +23,15 @@
   dormant_event_worker:
     every: 24h # Run every 24 hours
     class: DormantEventWorker
+  event_running_worker:
+    every: 1m
+    class: EventRunningWorker
   kaiden_news_announce_worker:
     every: 5m
     class: KadenNewsAnnounceWorker
   approval_bound_worker:
     every: 3m
     class: ApprovalBoundWorker
+  dormant_discord_completion_worker:
+    every: 1h
+    class: DormantDiscordCompletionWorker

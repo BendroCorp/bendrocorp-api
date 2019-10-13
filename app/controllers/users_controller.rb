@@ -72,14 +72,9 @@ class UsersController < ApplicationController
   def discord_identity
 
     if params[:code]
-      if current_user.db_user.discord_identity
-        di = current_user.db_user.discord_identity
-        di.destroy
-      end
-
       # guild_id = '123161736181317632'
       client_id = '630786822863061014'
-      client_secret = ENV['DISCORD_BOT_CLIENT_SECRET']
+      client_secret = ENV["DISCORD_BOT_CLIENT_SECRET"]
 
       body_string = "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=https%3A%2F%2Fmy.bendrocorp.com%2Fdiscord_callback&scope=guilds.join+email+identify" if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
       body_string ||= "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fdiscord_callback&scope=guilds.join+email+identify"
@@ -93,6 +88,12 @@ class UsersController < ApplicationController
       })
 
       if response.code == 200
+        # dump the old one
+        if current_user.db_user.discord_identity
+          di = current_user.db_user.discord_identity
+          di.destroy
+        end
+
         discord_access_token = response['access_token']
         discord_refresh_token = response['refresh_token']
 
@@ -108,13 +109,13 @@ class UsersController < ApplicationController
           discord_email = info_response['email'] # use this to reference the user account
           discord_username = info_response['username']
 
-          db_user = user.db_user
+          db_user = current_user.db_user
           if discord_email == db_user.email
-            db_user.discord_identity = DiscordIdentity.new(discord_username: discord_username, discord_id: discord_user_id, refresh_token: discord_refresh_token)
+            discord_identity = DiscordIdentity.new(user_id: current_user.id, discord_username: discord_username, discord_id: discord_user_id, refresh_token: discord_refresh_token)
 
-            if db_user.save
+            if discord_identity.save
               # emit the event
-              EventStreamWorker.perform_async('discord-join', { access_token: discord_access_token, identity: db_user.discord_identity })
+              EventStreamWorker.perform_async('discord-join', { access_token: discord_access_token, nickname: db_user.main_character.full_name, identity: db_user.discord_identity.as_json })
 
               # render 200
               render status: 200, json: { message: 'Discord identity registered!' }
