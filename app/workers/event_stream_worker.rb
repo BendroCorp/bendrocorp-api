@@ -1,7 +1,7 @@
 class EventStreamWorker
   include Sidekiq::Worker
 
-  def perform(type: 'default', message: 'None', object: {})
-    ActionCable.server.broadcast('event', { type: "type##{type}", message: message, object: object })
+  def perform(type = 'default', object = {})
+    ActionCable.server.broadcast('event', { type: "type##{type}", object: object })
   end
 end

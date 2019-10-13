@@ -350,6 +350,7 @@ Rails.application.routes.draw do
   get 'api/user/push' => 'users#push_self'
   post 'api/user/discord-identity' => 'users#discord_identity'
   put 'api/user/discord-identity/:discord_identity_id' => 'users#discord_identity_joined'
+  get 'api/user/event-test' => 'users#event_self'
 
   # oauth
   post 'api/oauth-client-check' => 'oauth#client_check'

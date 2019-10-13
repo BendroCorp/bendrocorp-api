@@ -29,6 +29,3 @@
   approval_bound_worker:
     every: 3m
     class: ApprovalBoundWorker
-  auto_attendance:
-    every: 1m
-    class: AutoAttendanceWorker

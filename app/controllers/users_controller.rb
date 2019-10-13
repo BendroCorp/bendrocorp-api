@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   # GET api/user
   def list
-    render status: 200, json: User.where('id <> 0').as_json(only: [:id, :username, :rsi_handle], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
+    render status: 200, json: User.where('id <> 0').as_json(only: [:id, :username, :rsi_handle], include: { discord_identity: { }, roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
   # GET api/user/me | /userinfo
@@ -72,6 +72,11 @@ class UsersController < ApplicationController
   def discord_identity
 
     if params[:code]
+      if current_user.db_user.discord_identity
+        di = current_user.db_user.discord_identity
+        di.destroy
+      end
+
       # guild_id = '123161736181317632'
       client_id = '630786822863061014'
       client_secret = ENV['DISCORD_BOT_CLIENT_SECRET']
@@ -109,7 +114,7 @@ class UsersController < ApplicationController
 
             if db_user.save
               # emit the event
-              EventStreamWorker.perform_async(type: 'discord-join', object: db_user.discord_identity)
+              EventStreamWorker.perform_async('discord-join', { access_token: discord_access_token, identity: db_user.discord_identity })
 
               # render 200
               render status: 200, json: { message: 'Discord identity registered!' }
@@ -137,7 +142,7 @@ class UsersController < ApplicationController
       id.joined = true
       if id.save
         # emit event
-        EventStreamWorker.perform_async(type: 'discord-join-complete', object: { message: "#{id.discord_id} joined to BendroCorp Discord!", discord_identity: id })
+        EventStreamWorker.perform_async('discord-join-complete', { message: "#{id.discord_id} joined to BendroCorp Discord!", discord_identity: id })
 
         render status: 200, json: { message: "#{id.discord_id} joined to BendroCorp Discord!" }
       else
@@ -173,6 +178,13 @@ class UsersController < ApplicationController
   def push_self
     send_push_notification current_user.id, "This is a test. You sent this to your devices. :)"
     render status: 200, json: { message: 'Self push succeeded!' }
+  end
+
+  # GET api/user/event-test
+  def event_self
+    EventStreamWorker.perform_async('test', { message: 'This is a test event!' })
+    # ActionCable.server.broadcast('event', { type: "type#test", message: 'bleh', object: { message: 'This is a test event!' } })
+    render status: 200, json: { message: 'Test event sent!' }
   end
 
   private

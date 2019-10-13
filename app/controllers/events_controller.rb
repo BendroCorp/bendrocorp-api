@@ -63,10 +63,13 @@ class EventsController < ApplicationController
     # @event.briefing = EventBriefing.new
     # @event.debriefing = EventDebriefing.new
 
-    @event.start_date = Time.at( params[:event][:start_date_ms] / 1000.0 )
-    @event.end_date = Time.at( params[:event][:end_date_ms] / 1000.0 )
+    @event.start_date = Time.at( params[:event][:start_date_ms] / 1000.0)
+    @event.end_date = Time.at( params[:event][:end_date_ms] / 1000.0)
 
     if @event.save
+      # emit event
+      EventStreamWorker.perform_async('event-publish', @event)
+      
       render status: 200, json: @event
     else
       render status: 500, json: { message: "Event could not be created because: #{@event.errors.full_messages.to_sentence}" }
@@ -107,16 +110,18 @@ class EventsController < ApplicationController
         @event.published_date = Time.now
         if @event.save
           # send push notifications
-          send_push_notification_to_members("New Event Posted - #{@event.name}")
+          # send_push_notification_to_members("New Event Posted - #{@event.name}")
 
           # email members about new even posting
           email_members("New Event Posted - #{@event.name}",
           "<p>A new #{@event.event_type.title.downcase} event has been posted on the BendroCorp Dashboard called <b>#{@event.name}</b> with the following description:</p><p>#{@event.description}</p>If you would like more information on this event please visit the events page on the BendroCorp Dashboard.")
 
-          # send push notifications
-          send_push_notification_to_members "Full event details for #{@event.name} have been published!"
+          # # send push notifications
+          send_push_notification_to_members("Full event details for #{@event.name} have been published!")
 
-          #
+          # emit event
+          EventStreamWorker.perform_async('event-publish', @event)
+
           render status: 200, json: @event
         else
           render status: 500, json: { message: "Error: Event could not be published...check the data you entered." }
@@ -242,7 +247,7 @@ class EventsController < ApplicationController
     if @event
       current_auto_attenders = EventAutoAttendance.where("event_id = ?", params[:event_id]).map(&:user_id) if params[:discord_user_id].count > 0
 
-      params[:discord_user_id].each do |discord_id|
+      params[:discord_user_ids].each do |discord_id|
         # check to see if there already is a record
         discord_identity = DiscordIdentity.find_by discord_id: discord_id
         if discord_identity
