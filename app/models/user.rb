@@ -22,6 +22,9 @@ class User < ActiveRecord::Base
   has_one :user_information
   accepts_nested_attributes_for :user_information
 
+  has_one :discord_identity
+  accepts_nested_attributes_for :discord_identity
+
   has_many :characters
   has_many :in_roles
   has_many :roles, through: :in_roles

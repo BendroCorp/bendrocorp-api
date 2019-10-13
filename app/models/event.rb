@@ -18,11 +18,14 @@ class Event < ActiveRecord::Base
   has_many :event_awards
   has_many :awards, through: :event_awards
 
+  has_one :event_auto_attendance
+
   accepts_nested_attributes_for :event_awards
   accepts_nested_attributes_for :briefing
   accepts_nested_attributes_for :debriefing
   accepts_nested_attributes_for :attendences
   accepts_nested_attributes_for :awards
+  accepts_nested_attributes_for :event_auto_attendance
 
   def is_user_attending user_id = nil
     #useId = 0

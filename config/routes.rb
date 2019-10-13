@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   # Authenticate a user
   post 'auth' => 'sessions#auth'
 
+  # user info
+  # get 'userinfo' => 'users#me'
+
   # account routes
   post 'api/account/change-password' => 'account#change_password'
   get 'api/account/fetch-tfa' => 'account#fetch_two_factor_auth'
@@ -64,6 +67,12 @@ Rails.application.routes.draw do
   put 'api/badge/:badge_id' => 'badge#update'
   delete 'api/badge/:badge_id' => 'badge#archive'
 
+  # Bots
+  get 'api/bot' => 'bot#list'
+  post 'api/bot' => 'bot#create'
+  delete 'api/bot/:bot_id' => 'bot#destroy'
+  get 'api/bot/check' => 'bot#bot_check'
+
   # chat
   get 'api/chat' => 'chat#list'
   post 'api/chat' => 'chat#create'
@@ -105,6 +114,7 @@ Rails.application.routes.draw do
   patch 'api/events/briefing' => 'events#event_briefing_update'
   patch 'api/events/debriefing' => 'events#event_briefing_update'
   post 'api/events/attend' => 'events#set_attendence'
+  post 'api/events/attend/auto' => 'events#set_auto_attendance'
   get 'api/events/types' => 'events#get_types'
   get 'api/events/attendence-types' => 'events#get_attendence_types'
   get 'api/events/:event_id/certify' => 'events#certify_event_attendence'
@@ -339,6 +349,9 @@ Rails.application.routes.draw do
   get 'api/user/auth-tokens' => 'users#auth_tokens'
   post 'api/user/push-token' => 'users#add_push_token'
   get 'api/user/push' => 'users#push_self'
+  post 'api/user/discord-identity' => 'users#discord_identity'
+  put 'api/user/discord-identity/:discord_identity_id' => 'users#discord_identity_joined'
+  get 'api/user/event-test' => 'users#event_self'
 
   # oauth
   post 'api/oauth-client-check' => 'oauth#client_check'

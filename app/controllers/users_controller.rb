@@ -1,3 +1,5 @@
+require 'httparty'
+
 class UsersController < ApplicationController
   before_action :require_user
   before_action :require_member
@@ -7,12 +9,12 @@ class UsersController < ApplicationController
 
   # GET api/user
   def list
-    render status: 200, json: User.where('id <> 0').as_json(only: [:id, :username, :rsi_handle], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
+    render status: 200, json: User.where('id <> 0').as_json(only: [:id, :username, :rsi_handle], include: { discord_identity: { }, roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
   # GET api/user/me | /userinfo
   def me
-    render status: 200, json: current_user.db_user.as_json(only: [:id, :email], include: { roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
+    render status: 200, json: current_user.db_user.as_json(only: [:id, :email], include: { discord_identity: { }, roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
   # GET api/user/approvals
@@ -66,6 +68,92 @@ class UsersController < ApplicationController
     render status: 200, json: UserToken.where(user_id: current_user.id).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
+  # POST api/user/discord-identity
+  def discord_identity
+
+    if params[:code]
+      # guild_id = '123161736181317632'
+      client_id = '630786822863061014'
+      client_secret = ENV["DISCORD_BOT_CLIENT_SECRET"]
+
+      body_string = "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=https%3A%2F%2Fmy.bendrocorp.com%2Fdiscord_callback&scope=guilds.join+email+identify" if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
+      body_string ||= "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fdiscord_callback&scope=guilds.join+email+identify"
+
+      response = HTTParty.post('https://discordapp.com/api/v6/oauth2/token', {
+        body: body_string,
+        headers: {
+          'Content-Type' => 'application/x-www-form-urlencoded',
+          'charset' => 'utf-8'
+        }
+      })
+
+      if response.code == 200
+        # dump the old one
+        if current_user.db_user.discord_identity
+          di = current_user.db_user.discord_identity
+          di.destroy
+        end
+
+        discord_access_token = response['access_token']
+        discord_refresh_token = response['refresh_token']
+
+        info_response = HTTParty.get('https://discordapp.com/api/users/@me', {
+          headers: {
+            'Content-Type' => 'application/json',
+            'Authorization' => "Bearer #{discord_access_token}"
+          }
+        })
+
+        if info_response.code == 200
+          discord_user_id = info_response['id']
+          discord_email = info_response['email'] # use this to reference the user account
+          discord_username = info_response['username']
+
+          db_user = current_user.db_user
+          if discord_email == db_user.email
+            discord_identity = DiscordIdentity.new(user_id: current_user.id, discord_username: discord_username, discord_id: discord_user_id, refresh_token: discord_refresh_token)
+
+            if discord_identity.save
+              # emit the event
+              EventStreamWorker.perform_async('discord-join', { access_token: discord_access_token, nickname: db_user.main_character.full_name, identity: db_user.discord_identity.as_json })
+
+              # render 200
+              render status: 200, json: { message: 'Discord identity registered!' }
+            else
+              render status: 500, json: { message: "Error occured could not save discord identity to user because: #{db_user.errors.full_messages.to_sentence}" }
+            end
+          else
+            render status: 404, json: { message: 'User not found. Your Discord email and account email must match!' }
+          end
+        else
+          render status: 500, json: { message: info_response['error_description'] }
+        end
+      else
+        render status: 500, json: { message: response['error_description'] }
+      end
+    else
+      render status: 400, json: { message: 'Code not provided' }
+    end
+  end
+
+  # PUT api/user/discord-identity/:discord_identity_id
+  def discord_identity_joined
+    id = DiscordIdentity.find_by_id(params[:discord_identity_id])
+    if id
+      id.joined = true
+      if id.save
+        # emit event
+        EventStreamWorker.perform_async('discord-join-complete', { message: "#{id.discord_id} joined to BendroCorp Discord!", discord_identity: id })
+
+        render status: 200, json: { message: "#{id.discord_id} joined to BendroCorp Discord!" }
+      else
+        render status: 500, json: { message: "Error occured could update discord identity because: #{id.errors.full_messages.to_sentence}" }
+      end
+    else
+      render status: 404, json: { message: 'Discord identity not found!' }
+    end
+  end
+
   # POST api/user/push-token
   # Must contain token, user_device_type_id, reg_data (1 = iOS, 2(TODO) = Amazon)
   def add_push_token
@@ -93,8 +181,19 @@ class UsersController < ApplicationController
     render status: 200, json: { message: 'Self push succeeded!' }
   end
 
+  # GET api/user/event-test
+  def event_self
+    EventStreamWorker.perform_async('test', { message: 'This is a test event!' })
+    # ActionCable.server.broadcast('event', { type: "type#test", message: 'bleh', object: { message: 'This is a test event!' } })
+    render status: 200, json: { message: 'Test event sent!' }
+  end
+
   private
   def push_params
     params.require(:push_token).permit(:token, :user_device_type_id, :reg_data)
+  end
+
+  def discord_identity_params
+    params.require(:discord_identity).permit(:discord_id, :discord_snowflake_id)
   end
 end

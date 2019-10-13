@@ -8,6 +8,11 @@ class EventsController < ApplicationController
     a.require_one_role([19])
   end
 
+  # bot only
+  before_action only: [:set_auto_attendance] do |a|
+    a.require_one_role([-1])
+  end
+
   # GET api/events
   def list
     render status: 200,
@@ -58,10 +63,13 @@ class EventsController < ApplicationController
     # @event.briefing = EventBriefing.new
     # @event.debriefing = EventDebriefing.new
 
-    @event.start_date = Time.at( params[:event][:start_date_ms] / 1000.0 )
-    @event.end_date = Time.at( params[:event][:end_date_ms] / 1000.0 )
+    @event.start_date = Time.at( params[:event][:start_date_ms] / 1000.0)
+    @event.end_date = Time.at( params[:event][:end_date_ms] / 1000.0)
 
     if @event.save
+      # emit event
+      EventStreamWorker.perform_async('event-publish', @event)
+      
       render status: 200, json: @event
     else
       render status: 500, json: { message: "Event could not be created because: #{@event.errors.full_messages.to_sentence}" }
@@ -102,16 +110,18 @@ class EventsController < ApplicationController
         @event.published_date = Time.now
         if @event.save
           # send push notifications
-          send_push_notification_to_members("New Event Posted - #{@event.name}")
+          # send_push_notification_to_members("New Event Posted - #{@event.name}")
 
           # email members about new even posting
           email_members("New Event Posted - #{@event.name}",
           "<p>A new #{@event.event_type.title.downcase} event has been posted on the BendroCorp Dashboard called <b>#{@event.name}</b> with the following description:</p><p>#{@event.description}</p>If you would like more information on this event please visit the events page on the BendroCorp Dashboard.")
 
-          # send push notifications
-          send_push_notification_to_members "Full event details for #{@event.name} have been published!"
+          # # send push notifications
+          send_push_notification_to_members("Full event details for #{@event.name} have been published!")
 
-          #
+          # emit event
+          EventStreamWorker.perform_async('event-publish', @event)
+
           render status: 200, json: @event
         else
           render status: 500, json: { message: "Error: Event could not be published...check the data you entered." }
@@ -230,6 +240,32 @@ class EventsController < ApplicationController
     end
   end
 
+  # POST api/events/attend/auto
+  # :event_id, :discord_user_ids [string]
+  def set_auto_attendance
+    @event = Event.find_by_id(params[:event_id].to_i)
+    if @event
+      current_auto_attenders = EventAutoAttendance.where("event_id = ?", params[:event_id]).map(&:user_id) if params[:discord_user_ids].count > 0
+      # iterate through each user
+      params[:discord_user_ids].each do |discord_id|
+        # check to see if there already is a record
+        discord_identity = DiscordIdentity.find_by discord_id: discord_id
+        if discord_identity
+          if !current_auto_attenders.include? discord_identity.user_id
+            eaa = EventAutoAttendance.new(event_id: params[:event_id], user_id: discord_identity.user_id)
+            if !eaa.save
+              raise "Could not save auto-attendance because: #{eaa.errors.full_messages.to_sentence}"
+            end
+          end
+        end
+      end
+
+      render status: 200, json: { message: 'Auto attendance completed!' }
+    else
+      render status: 404, json: { message: 'Event not found.' }
+    end
+  end
+
   # GET api/events/:event_id/certify
   # This creates negative attendence objects for all members who did not already create an attendence for the event
   # Body should contain event_id
@@ -237,16 +273,23 @@ class EventsController < ApplicationController
     @event = Event.find_by_id(params[:event_id].to_i)
     if @event != nil && !@event.submitted_for_certification
       if @event.is_expired
-        #get all the members not in event and create negative attendence entries for them
+        # fetch the auto attendance array
+        auto_attendance = EventAutoAttendance.where(event_id: 4).map(&:user_id)
+
+        # get all the members not in event and create negative attendence entries for them
         attender_ids = Attendence.where("event_id = ?", params[:event_id]).map(&:user_id)
         attender_ids << 0 unless attender_ids.count > 0
         users = User.where("is_member = ? AND id NOT IN (?) AND id <> 0", true, attender_ids)
         users.each do |user|
-          puts user.username
+          # puts user.username
+          # if the user exists in the auto attendance for the event the mark as attending
+          attendence_type_id = 1 if auto_attendance.include? user.id
+          # if they are not in the list then set to not attending
+          attendence_type_id ||= 2
           attendence = Attendence.new(event_id: params[:event_id].to_i,
                                        user_id: user.id,
                                        character_id: user.main_character.id,
-                                       attendence_type_id: 2)
+                                       attendence_type_id: attendence_type_id)
           attendence.save
         end
 

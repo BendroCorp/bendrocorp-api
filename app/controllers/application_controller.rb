@@ -74,8 +74,8 @@ class ApplicationController < ActionController::API
 
     token = JWT.encode payload, secret, 'HS256'
 
-    return { id_token: token } if !offline_access || (offline_access && !create_refresh)
-    return { id_token: token, refresh_token: make_token(75) } if offline_access && create_refresh
+    return { access_token: token, id_token: token } if !offline_access || (offline_access && !create_refresh)
+    return { access_token: token, id_token: token, refresh_token: make_token(75) } if offline_access && create_refresh
   end
 
   def current_user
@@ -88,6 +88,8 @@ class ApplicationController < ActionController::API
         # make a token user
         user = TokenUser.new(decoded_token[0])
         # return payload
+        puts 'da user:'
+        puts user
         user
       rescue JWT::ExpiredSignature
         # We will do nothing. A null return will trigger a 401 wherever current_user is required
@@ -266,6 +268,8 @@ class ApplicationController < ActionController::API
     pattern =  /^(Bearer|Basic|bearer|basic) / #
     header = request.env["HTTP_AUTHORIZATION"] #
     header ||= request.env["HTTP_X_AUTHORIZATION"] #
+    puts 'da header'
+    puts header
     header = header.gsub(pattern, '') if header && header.match(pattern)
     return header
   end
