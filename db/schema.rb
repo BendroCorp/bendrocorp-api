@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191009220853) do
+ActiveRecord::Schema.define(version: 20191014052431) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -248,7 +248,7 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.datetime "updated_at", null: false
     t.string "image_file_name"
     t.string "image_content_type"
-    t.integer "image_file_size"
+    t.bigint "image_file_size"
     t.datetime "image_updated_at"
     t.index ["create_award_request_id"], name: "index_awards_on_create_award_request_id"
   end
@@ -307,7 +307,7 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.datetime "updated_at", null: false
     t.string "avatar_file_name"
     t.string "avatar_content_type"
-    t.integer "avatar_file_size"
+    t.bigint "avatar_file_size"
     t.datetime "avatar_updated_at"
     t.index ["gender_id"], name: "index_characters_on_gender_id"
     t.index ["job_id"], name: "index_characters_on_job_id"
@@ -602,7 +602,7 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.datetime "updated_at", null: false
     t.string "image_file_name"
     t.string "image_content_type"
-    t.integer "image_file_size"
+    t.bigint "image_file_size"
     t.datetime "image_updated_at"
     t.index ["uploaded_by_id"], name: "index_image_uploads_on_uploaded_by_id"
   end
@@ -1101,7 +1101,7 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.datetime "updated_at", null: false
     t.string "avatar_file_name"
     t.string "avatar_content_type"
-    t.integer "avatar_file_size"
+    t.bigint "avatar_file_size"
     t.datetime "avatar_updated_at"
     t.index ["avatar_id"], name: "index_owned_ships_on_avatar_id"
     t.index ["character_id"], name: "index_owned_ships_on_character_id"
@@ -1415,10 +1415,11 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.string "apn_key_id"
     t.string "team_id"
     t.string "bundle_id"
+    t.boolean "feedback_enabled", default: true
   end
 
   create_table "rpush_feedback", force: :cascade do |t|
-    t.string "device_token", limit: 64, null: false
+    t.string "device_token", limit: 64
     t.datetime "failed_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1459,6 +1460,8 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.text "notification"
     t.boolean "mutable_content", default: false, null: false
     t.string "external_device_id"
+    t.string "thread_id"
+    t.boolean "dry_run", default: false, null: false
     t.index ["app_id", "delivered", "failed", "deliver_after"], name: "index_rapns_notifications_multi"
     t.index ["delivered", "failed", "processing", "deliver_after", "created_at"], name: "index_rpush_notifications_multi", where: "NOT delivered AND NOT failed"
   end
@@ -1556,7 +1559,7 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.datetime "updated_at", null: false
     t.string "image_file_name"
     t.string "image_content_type"
-    t.integer "image_file_size"
+    t.bigint "image_file_size"
     t.datetime "image_updated_at"
     t.index ["category_id"], name: "index_store_items_on_category_id"
     t.index ["creator_id"], name: "index_store_items_on_creator_id"
@@ -1674,7 +1677,7 @@ ActiveRecord::Schema.define(version: 20191009220853) do
     t.datetime "updated_at", null: false
     t.string "image_file_name"
     t.string "image_content_type"
-    t.integer "image_file_size"
+    t.bigint "image_file_size"
     t.datetime "image_updated_at"
     t.index ["created_by_id"], name: "index_system_map_images_on_created_by_id"
     t.index ["of_gravity_well_id"], name: "index_system_map_images_on_of_gravity_well_id"
