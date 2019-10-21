@@ -277,15 +277,35 @@ class EventsController < ApplicationController
         auto_attendance = EventAutoAttendance.where(event_id: 4).map(&:user_id)
 
         # get all the members not in event and create negative attendence entries for them
-        attender_ids = Attendence.where("event_id = ?", params[:event_id]).map(&:user_id)
-        attender_ids << 0 unless attender_ids.count > 0
+        attender_ids = []
+
+        # loop through the current attendances and 
+        Attendence.where("event_id = ?", params[:event_id]).each do |attendance| #.map(&:user_id)
+          # add the list to the attender_ids
+          attender_ids << attendance.user_id
+
+          # set the attendance based on the auto attendance if they have a valid discord_identity
+          if attendance.user.discord_identity
+            # are the in the attendance list?
+            if auto_attendance.include? attendance.user_id
+              attendance.attendence_type_id = 1 # attending
+            else
+              attendance.attendence_type_id = 2 # not attending
+            end
+
+            # save the modified attendance record
+            attendance.save
+          end          
+        end
+        
+        # get all of the users not in the `attendance` table id list
         users = User.where("is_member = ? AND id NOT IN (?) AND id <> 0", true, attender_ids)
+        # interate through the list and assign negative attendance unless they are present in the auto attendance table
         users.each do |user|
-          # puts user.username
           # if the user exists in the auto attendance for the event the mark as attending
-          attendence_type_id = 1 if auto_attendance.include? user.id
+          attendence_type_id = 1 if auto_attendance.include? user.id # they are attending
           # if they are not in the list then set to not attending
-          attendence_type_id ||= 2
+          attendence_type_id ||= 2 # 2 = not attending
           attendence = Attendence.new(event_id: params[:event_id].to_i,
                                        user_id: user.id,
                                        character_id: user.main_character.id,
@@ -293,7 +313,7 @@ class EventsController < ApplicationController
           attendence.save
         end
 
-        #then we reload the event to get the attendences
+        # then we reload the event to get the attendences
         @event = Event.find_by_id(params[:event_id].to_i)
         render status: 200, json: @event.attendences.as_json(include: { character: { methods: [:full_name] }})
       else
