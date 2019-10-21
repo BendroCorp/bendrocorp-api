@@ -274,13 +274,21 @@ class EventsController < ApplicationController
     if @event != nil && !@event.submitted_for_certification
       if @event.is_expired
         # fetch the auto attendance array
-        auto_attendance = EventAutoAttendance.where(event_id: params[:event_id].to_i).map(&:user_id)
+        auto_attendance = []
+        EventAutoAttendance.where('event_id = ? AND processed = ?', params[:event_id].to_i, false).each do |auto|  # .map(&:user_id)
+          # add the id to the array
+          auto_attendance << auto.user_id
+
+          # processed
+          auto.processed = true
+          auto.save
+        end
 
         # get all the members not in event and create negative attendence entries for them
         attender_ids = []
 
         # loop through the current attendances and 
-        Attendence.where("event_id = ?", params[:event_id]).each do |attendance| #.map(&:user_id)
+        Attendence.where("event_id = ?", params[:event_id]).each do |attendance| # .map(&:user_id)
           # add the list to the attender_ids
           attender_ids << attendance.user_id
 
