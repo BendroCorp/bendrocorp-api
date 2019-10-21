@@ -21,7 +21,7 @@ class DormantDiscordCompletionWorker
       if response.code == 200
         EventStreamWorker.perform_async('discord-join', { access_token: response['access_token'], nickname: discord_identity.user.main_character.full_name, identity: discord_identity.as_json })
       else
-        raise "Could not retrieve refresh_token for dit: #{dit.id}"
+        raise "Could not retrieve refresh_token for dit: #{dit.id} #{response.inspect}"
       end
     end
   end
