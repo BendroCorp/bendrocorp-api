@@ -145,7 +145,7 @@ class UsersController < ApplicationController
         # emit event
         EventStreamWorker.perform_async('discord-join-complete', { message: "#{id.discord_id} joined to BendroCorp Discord!", discord_identity: id })
 
-        render status: 200, json: { message: "#{id.discord_id} joined to BendroCorp Discord!" }
+        render status: 200, json: { discord_identity: id.as_json, message: "#{id.discord_id} joined to BendroCorp Discord!" }
       else
         render status: 500, json: { message: "Error occured could update discord identity because: #{id.errors.full_messages.to_sentence}" }
       end
