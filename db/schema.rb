@@ -422,6 +422,7 @@ ActiveRecord::Schema.define(version: 20191014052431) do
     t.text "title"
     t.text "description"
     t.integer "goal"
+    t.datetime "goal_date"
     t.integer "created_by_id"
     t.boolean "archived", default: false
     t.integer "ordinal"
