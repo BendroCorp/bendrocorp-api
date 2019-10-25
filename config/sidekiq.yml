@@ -35,3 +35,6 @@
   dormant_discord_completion_worker:
     every: 1h
     class: DormantDiscordCompletionWorker
+  discord_identity_reminder_worker:
+    every: 5m
+    class: DiscordIdentityReminderWorker
