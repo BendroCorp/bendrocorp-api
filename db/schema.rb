@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 20191014052431) do
     t.integer "approval_type_id"
     t.datetime "last_notified"
     t.boolean "required", default: true
+    t.text "decline_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_approval_approvers_on_approval_id"
@@ -1379,6 +1380,7 @@ ActiveRecord::Schema.define(version: 20191014052431) do
     t.text "name"
     t.text "description"
     t.integer "max_users", default: 0
+    t.text "discord_role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
