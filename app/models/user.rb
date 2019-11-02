@@ -118,15 +118,15 @@ class User < ActiveRecord::Base
     # fetch the base roll and nested roles four deep.. this needs to eventually go deeper
     roles = []
     self.roles.each do |role|
-      roles << { :id => role.id, :name => role.name }
+      roles << { id:role.id, name: role.name, discord_role_id: role.discord_role_id }
       role.nested_roles.each do |n_one|
-        roles << { :id => n_one.role_nested.id, :name => "#{n_one.role_nested.name} (Nested in #{role.name})" }
+        roles << { id: n_one.role_nested.id, name: "#{n_one.role_nested.name} (Nested in #{role.name})", discord_role_id: role.discord_role_id }
         n_one.role_nested.nested_roles.each do |n_two|
-          roles << { :id => n_two.role_nested.id, :name => "#{n_two.role_nested.name} (Nested in #{n_one.role_nested.name})" }
+          roles << { id: n_two.role_nested.id, name: "#{n_two.role_nested.name} (Nested in #{n_one.role_nested.name})", discord_role_id: role.discord_role_id }
           n_two.role_nested.nested_roles.each do |n_three|
-            roles << { :id => n_three.role_nested.id, :name => "#{n_three.role_nested.name} (Nested in #{n_two.role_nested.name})" }
+            roles << { id: n_three.role_nested.id, name: "#{n_three.role_nested.name} (Nested in #{n_two.role_nested.name})", discord_role_id: role.discord_role_id }
             n_three.role_nested.nested_roles.each do |n_four|
-              roles << { :id => n_four.role_nested.id, :name => "#{n_four.role_nested.name} (Nested in #{n_three.role_nested.name})" }
+              roles << { id: n_four.role_nested.id, name: "#{n_four.role_nested.name} (Nested in #{n_three.role_nested.name})", discord_role_id: role.discord_role_id }
             end
           end
         end
