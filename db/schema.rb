@@ -1383,6 +1383,7 @@ ActiveRecord::Schema.define(version: 20191026223155) do
     t.text "name"
     t.text "description"
     t.integer "max_users", default: 0
+    t.text "discord_role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

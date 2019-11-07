@@ -36,5 +36,5 @@
     every: 1h
     class: DormantDiscordCompletionWorker
   discord_identity_reminder_worker:
-    every: 24h
+    every: 72h
     class: DiscordIdentityReminderWorker

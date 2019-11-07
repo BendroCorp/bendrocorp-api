@@ -352,6 +352,7 @@ Rails.application.routes.draw do
   post 'api/user/discord-identity' => 'users#discord_identity'
   put 'api/user/discord-identity/:discord_identity_id' => 'users#discord_identity_joined'
   get 'api/user/event-test' => 'users#event_self'
+  post 'api/user/end-membership' => 'users#end_membership'
 
   # oauth
   post 'api/oauth-client-check' => 'oauth#client_check'

@@ -68,6 +68,46 @@ class UsersController < ApplicationController
     render status: 200, json: UserToken.where(user_id: current_user.id).order('created_at desc').as_json(methods: [:is_expired, :perpetual])
   end
 
+  # POST /api/user/end-membership
+  def end_membership
+    db_user = current_user.db_user
+    # is the password correct
+    if db_user.authenticate(params[:password])
+      # get all of the users roles
+      # discord_roles = []
+      # db_user.get_all_roles.each do |in_role|
+      #   discord_roles << in_role.role.discord_role_id if in_role.role.discord_role_id
+      # end
+
+      # # remove from all discord roles
+      # EventStreamWorker.perform_async('discord-remove-roles', { roles: discord_roles, identity: discord_identity.as_json }) if db_user.discord_identity
+
+      # remove all the users roles
+      db_user.in_roles.destroy_all
+
+      # email the user
+      message_body = "<p>Hey #{db_user.main_character.first_name}</p>,<p>This is a confirmation that your membership to BendroCorp has been ended. We are sad to see you go, you may re-join at any time by contacting us via Discord.</p>"
+      EmailWorker.perform_async(db_user.email, 'End of Membership Confirmation', message_body)
+
+      # email the executive staff
+      Role.where(id: 2).each do |executive|
+        message_body = "<p>#{executive.user.main_character.first_name},</p><p>#{db_user.main_character.full_name} has voluntarily terminated thier membership to BendroCorp. They have been removed from the Member role and any roles in Discord.</p>"
+        EmailWorker.perform_async(executive.user.email, 'Voluntary Membership Termination', message_body)
+      end
+
+      # notify on discord
+      EventStreamWorker.perform_async('discord-end-membership', { nickname: discord_identity.user.main_character.full_name, identity: discord_identity.as_json })
+
+      # remove the discord identity
+      db_user.discord_identity.destroy if db_user.discord_identity
+
+      render status: 200, json: { message: 'Membership termination complete!' }
+    else
+      # TODO: Add login increment
+      render status: 400, json: { message: 'Incorrect password supplied.' }
+    end
+  end
+
   # POST api/user/discord-identity
   def discord_identity
 
