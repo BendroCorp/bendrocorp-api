@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191014052431) do
+ActiveRecord::Schema.define(version: 20191026223155) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 20191014052431) do
     t.integer "approval_type_id"
     t.datetime "last_notified"
     t.boolean "required", default: true
+    t.text "decline_reason"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_id"], name: "index_approval_approvers_on_approval_id"
@@ -274,6 +275,9 @@ ActiveRecord::Schema.define(version: 20191014052431) do
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_badges_on_created_by_id"
   end
+
+# Could not dump table "bot_reminders" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
 # Could not dump table "bots" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
