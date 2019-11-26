@@ -122,6 +122,9 @@ Rails.application.routes.draw do
   get 'api/events/:event_id' => 'events#show'
   delete 'api/events/:event_id/' => 'events#archive_event'
 
+  # field
+  get 'api/fields' => 'fields#list'
+
   # flight Logs
   get 'api/flight-logs' => 'flight_logs#list'
   get 'api/flight-logs/ships' => 'flight_logs#list_ships'
@@ -231,13 +234,27 @@ Rails.application.routes.draw do
 
 
   # reports
-  get 'api/report' => 'reports#list'
-  get 'api/report/my' => 'reports#list_my'
-  post 'api/report' => 'reports#create'
-  patch 'api/report' => 'reports#update'
-  delete 'api/report/:report_id' => 'reports#delete'
-  post 'api/report/submit' => 'reports#submit_for_approval'
-  get 'api/report/types' => 'reports#fetch_types'
+  scope 'api', as: 'api' do
+    get 'reports/fields' => 'report_fields#index'
+    post 'reports/fields' => 'report_fields#create'
+    put 'reports/fields' => 'report_fields#update'
+    delete 'reports/fields/:id' => 'report_fields#destroy'
+    # resources :report_fields, path: 'reports/fields', only: [:index, :create, :update, :destroy]
+    # resources :report_templates, path: 'reports/templates', only: [:index, :show, :create, :update, :destroy]
+    get 'reports/templates/handlers' => 'report_handler#index'
+    get 'reports/templates' => 'report_templates#index'
+    get 'reports/templates/:id' => 'report_templates#show'
+    post 'reports/templates' => 'report_templates#create'
+    put 'reports/templates' => 'report_templates#update'
+    delete 'reports/templates/:id' => 'report_templates#destroy'
+    # resources :report_field_values, path: 'reports/values', only: [:update]
+    put 'reports/values' => 'report_field_values#update'
+    # resources :reports, path: 'reports', only: [:index, :create, :update, :destroy]
+    get 'reports' => 'reports#index'
+    post 'reports' => 'reports#create'
+    put 'reports' => 'reports#update'
+    delete 'reports/:id' => 'reports#destroy'
+  end
 
   # roles
   get 'api/role' => 'roles#list'

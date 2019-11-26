@@ -88,8 +88,8 @@ class ApplicationController < ActionController::API
         # make a token user
         user = TokenUser.new(decoded_token[0])
         # return payload
-        puts 'da user:'
-        puts user
+        # puts 'da user:'
+        # puts user
         user
       rescue JWT::ExpiredSignature
         # We will do nothing. A null return will trigger a 401 wherever current_user is required
@@ -157,13 +157,16 @@ class ApplicationController < ActionController::API
         # if we can't find roles then we need to get the owner object
         # somehow we need to get the ship owner user here when that object is no available yet
         # some kinds of requests might not have roles - it might be an object with an owner who gets to manage what happens
-        if owner_id != 0 && approval_group.zero? && approval_id_list.zero?
+        
+        # submit to a specific user
+        if owner_id != 0 && approval_group == 0 && approval_id_list.count == 0
           owner = User.find_by_id(owner_id.to_i)
           if !owner.nil?
             users_array << owner
           else
             raise 'Cannot create the approval request. The selected approval kind has no roles assigned to it and no valid owner user id was supplied.'
           end
+        # submit to a specific approval group
         elsif owner_id == 0 && approval_group != 0 && approval_id_list.count == 0
           role = Role.find_by_id(approval_group.to_i)
           if !role.nil?
@@ -173,6 +176,8 @@ class ApplicationController < ActionController::API
           else
             raise 'Cannot not create approval request. The selected approval kind has no assigned roles and the provided group value could not be found.'
           end
+
+        # submit to a specific list of approvers
         elsif owner_id == 0 && approval_group == 0 && approval_id_list.count != 0
           users_array.concat User.where('id IN (?) AND is_member = ?', approval_id_list, true)
         else
@@ -268,8 +273,7 @@ class ApplicationController < ActionController::API
     pattern =  /^(Bearer|Basic|bearer|basic) / #
     header = request.env["HTTP_AUTHORIZATION"] #
     header ||= request.env["HTTP_X_AUTHORIZATION"] #
-    puts 'da header'
-    puts header
+    # prep the final header
     header = header.gsub(pattern, '') if header && header.match(pattern)
     return header
   end
