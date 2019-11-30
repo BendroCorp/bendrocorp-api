@@ -9,6 +9,12 @@ SiteLogType.create([{id: 1, title: 'Authentication'}, {id: 2, title: 'General'},
 
 TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { id: 3, title: 'Video' }, { id: 4, title: 'Instructor Approval' }])
 
+ReportHandler.create([{ id: 1, name: 'Generic Approval' }])
+
+Field.create([{ name: 'Yes/No/Maybe' }])
+
+FieldDescriptor.create([{ title: 'Yes', field: Field.first }, { title: 'No', field: Field.first }, { title: 'Maybe', field: Field.first }])
+
 MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
                  { id: 3, title: 'Events', icon: 'fa-calendar', link: '/events', ordinal: 3 },
@@ -16,7 +22,7 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 5, title: 'Flight Logs', icon: 'fa-book', link: '/flight-logs', ordinal: 5 },
                  { id: 6, title: 'Reports', icon: 'fa-file-alt', link: '/reports', ordinal: 6 },
                  { id: 8, title: 'Alerts', icon: 'fa-bell', link: '/alerts', ordinal: 8 },
-                 { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
+                #  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
                  { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
                  { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 13 },
@@ -85,11 +91,6 @@ JobLevel.create([{id: 1, title: 'CEO', ordinal: 1},
                  {id: 7, title: 'Grade 2', ordinal: 7},
                  {id: 8, title: 'Grade 1', ordinal: 8},
                  {id: 9, title: 'Applicant', ordinal: 9}])
-
-ReportStatusType.create([{ id: 1, title: 'Created'},
-                         { id: 2, title: 'Submitted'},
-                         { id: 3, title: 'Returned'},
-                         { id: 4, title: 'Approved'}])
 
 StoreCurrencyType.create([{id: 1, title: 'Dollars', description: 'Good ole\' U.S.A. green backs. Used for real life items.', currency_symbol: '$' },
                           {id: 2, title: 'Operations Points', description: 'Internal BendroCorp currency. Redeemable for in-game items', currency_symbol: '(op)' }])
@@ -376,12 +377,6 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 48, name: 'Report Builder', description: '' },
                      { id: 49, name: 'Report Admin', description: '' },
                      { id: 50, name: 'Bot Master', description: '' }])
-
-ReportType.create([{ id: 1, title: 'General', description: 'A general report type for reports that do not fit into other categories.'},
-                   { id: 2, title: 'Use of Force', description: 'description here', submit_to_role_id: 2 },
-                   { id: 3, title: 'Policy Violation', description: 'description here', submit_to_role_id: 2 },
-                   { id: 4, title: 'Attendence Report', description: 'description here', submit_to_role_id: 2 },
-                   { id: 5, title: 'Training Report', description: 'description here', submit_to_role_id: 2 }])
 
 ClassificationLevel.create([{ id: 1, title: 'Unclassified', description: 'Publically available corporate information.', ordinal: 1 },
                            { id: 2, title: 'Confidential', description: 'Not publically available information. Available to all members.', ordinal: 2 },

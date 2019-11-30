@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191026223155) do
+ActiveRecord::Schema.define(version: 20191130010428) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -557,6 +557,12 @@ ActiveRecord::Schema.define(version: 20191026223155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+# Could not dump table "field_descriptors" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+# Could not dump table "fields" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
   create_table "flight_log_images", force: :cascade do |t|
     t.integer "image_upload_id"
@@ -1181,54 +1187,32 @@ ActiveRecord::Schema.define(version: 20191026223155) do
     t.index ["user_id"], name: "index_position_change_requests_on_user_id"
   end
 
-  create_table "report_approval_requests", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "approval_id"
-    t.integer "report_id"
+# Could not dump table "report_approval_requests" because of following StandardError
+#   Unknown type 'uuid' for column 'report_id'
+
+# Could not dump table "report_field_values" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+# Could not dump table "report_fields" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+# Could not dump table "report_handler_variables" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
+
+  create_table "report_handlers", force: :cascade do |t|
+    t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["approval_id"], name: "index_report_approval_requests_on_approval_id"
-    t.index ["report_id"], name: "index_report_approval_requests_on_report_id"
-    t.index ["user_id"], name: "index_report_approval_requests_on_user_id"
   end
 
-  create_table "report_status_types", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "report_template_fields" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "report_types", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.integer "submit_to_role_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["submit_to_role_id"], name: "index_report_types_on_submit_to_role_id"
-  end
+# Could not dump table "report_templates" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "reports", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "submitted"
-    t.boolean "returned", default: false
-    t.boolean "approved", default: false
-    t.integer "submitter_id"
-    t.integer "specified_submit_to_role_id"
-    t.integer "report_type_id"
-    t.integer "flight_log_id"
-    t.integer "report_approval_request_id"
-    t.integer "report_status_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["flight_log_id"], name: "index_reports_on_flight_log_id"
-    t.index ["report_approval_request_id"], name: "index_reports_on_report_approval_request_id"
-    t.index ["report_status_type_id"], name: "index_reports_on_report_status_type_id"
-    t.index ["report_type_id"], name: "index_reports_on_report_type_id"
-    t.index ["specified_submit_to_role_id"], name: "index_reports_on_specified_submit_to_role_id"
-    t.index ["submitter_id"], name: "index_reports_on_submitter_id"
-  end
+# Could not dump table "reports" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
   create_table "research_project_members", force: :cascade do |t|
     t.integer "research_project_id"

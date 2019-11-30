@@ -1,134 +1,118 @@
 class ReportsController < ApplicationController
+  before_action :set_report, only: [:show, :update, :destroy]
   before_action :require_user
   before_action :require_member
-
-  # need a report admin role?
-  #  GET api/report
-  def list
-    @reports_fetch = Report.all
-    @reports = []
-
-    @reports_fetch.each do |report|
-      @reports << report if current_user.id == report.submitter_id
-    end
-
-    render status: 200, json: @reports.as_json(methods: [:url_title_string, :report_time_ms], include: { report_status_type: {}, report_type: {}, specified_submit_to_role: {} })
+  before_action only: [] do |a|
+    # a.require_one_role([48]) # template builder
+    # a.require_one_role([49]) # reports admin
   end
 
-  # GET api/report/my
-  def list_my
-    @reports_fetch = Report.all
-    @my_reports = []
-
-    @reports_fetch.each do |report|
-      @my_reports << report if current_user.isinrole(report.specified_submit_to_role_id) && report.submitted == true
-    end
-
-    render status: 200, json: @my_reports.as_json(methods: [:url_title_string, :report_time_ms], include: { submitter: { methods: [:main_character] }, report_status_type: {}, report_type: {}, specified_submit_to_role: {} })
+  # GET /reports
+  def index
+    @reports = Report.where(archived: false) if current_user.is_in_role(49)
+    @reports ||= Report.where('created_by_id = ? OR report_for_id = ?', current_user.id, current_user.id)
+    render json: @reports.as_json(include: { handler: {}, template: {}, created_by: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
   end
 
-  #  GET /report/types
-  def fetch_types
-    render status: 200, json: ReportType.all
-  end
-
-  #  POST api/report/
+  # POST /reports
   def create
-    @report = Report.new(report_params)
-    @report.submitter_id = current_user.id
-    @report.report_status_type_id = 1
-    if @report.save
-      render status: 200, json: @report
+    # take the params
+    @report = Report.new(report_create_params)
+    
+    # valid template?
+    if @report.template
+      
+      # fill in values from template
+      @report.template_name = @report.template.name
+      @report.template_description = @report.template.description
+      
+      # set created by
+      @report.created_by_id = current_user.id
+
+      # just grab the first available handler for a draft
+      @report.handler_id = @report.template.handler_id
+
+      # save the new report
+      if @report.save
+        # add fields
+        @report.template.fields.each do |template_field|
+          @report.fields << ReportField.new(report_id: @report.id, name: template_field.name, description: template_field.description, validator: template_field.validator, field_presentation_type_id: template_field.field_presentation_type_id, field_id: template_field.field_id, required: template_field.required, ordinal: template_field.ordinal)
+        end
+
+        # save the field back
+        if @report.save
+          render json: @report, status: :created
+        else
+          render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
+        end
+      else
+        render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      end
     else
+      render status: 400, json: { message: 'Template invalid or missing' }
     end
   end
 
-  #  PATCH api/report/
+  # PATCH/PUT /reports/1
   def update
-    @report = Report.find_by_id(params[:report][:id].to_i)
-    if @report != nil
-      if @report.submitter_id == current_user.id
-        if @report.submitted == false
-          if @report.update_attributes(report_update_params)
-            render status: 200, json: @report
-          else
-            render status: 500, json: { message: "Report could not be updated." }
-          end
-        else
-          render status: 403, json: { message: "Report has already been submitted it cannot be deleted." }
-        end
-      else
-        render status: 403, json: { message: "This is not your report so you cannot submit it." }
-      end
-    else
-      render status: 404, json: { message: "Report not found." }
-    end
-  end
+    if current_user.id == @report.created_by_id
+      if @report.draft == true
+        if params[:report][:draft] == false
+          # approval_id = data[:approval_id]
 
-  #  DELETE api/report/:report_id
-  def delete
-    @report = Report.find_by_id(params[:report_id].to_i)
-    if @report != nil
-      if @report.submitter_id == current_user.id
-        if @report.submitted == false
-          if @report.destroy
-            render status: 200, json: { message: "Report deleted." }
-          else
-            render status: 500, json: { message: "Report could not be deleted." }
-          end
-        else
-          render status: 403, json: { message: "Report has already been submitted it cannot be deleted." }
-        end
-      else
-        render status: 403, json: { message: "This is not your report so you cannot delete it." }
-      end
-    else
-      render status: 404, json: { message: "Report not found." }
-    end
-  end
-
-  #  POST api/report/submit
-  #  Body should contain :report_id
-  def submit_for_approval
-    @report = Report.find_by_id(params[:report_id].to_i)
-    if @report != nil
-      if @report.submitter_id == current_user.id
-        if @report.submitted == false || @report.submitted == nil
-          #Create the new approval request
-          approvalRequest = ReportApprovalRequest.new
+          # create the new approval request
+          approval_request = ReportApprovalRequest.new
           # put the approval instance in the request
-          approvalRequest.approval_id = new_approval(21, 0, @report.specified_submit_to_role_id) # report approval
+          approval_request.approval_id = new_approval(21, @report.report_for_id) # report approval
 
           # lastly add the request to the current_user
-          approvalRequest.user_id = current_user.id
-          approvalRequest.report = @report
-          @report.report_approval_request = approvalRequest
+          approval_request.user_id = current_user.id
+          approval_request.report = @report
 
-          @report.report_status_type_id = 2
-          @report.submitted = true
+          # save back the approval request
+          approval_request.save
 
-          if @report.save
-            render status: 200, json: { message: "Report submitted for approval." }
-          else
-            render status: 500, json: { message: "Something went wrong and the report could not be submitted for approval." }
-          end
+          # mark the report as not a draft
+          @report.draft = false
+        end
+        if @report.update_attributes(report_update_params)
+          render json: @report.as_json(include: { fields: { include: { field_value: {} } } } )
         else
-          render status: 403, json: { message: "This report has already been submitted and cannot be submitted again" }
+          render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
         end
       else
-        render status: 403, json: { message: "This is not your report so you cannot submit it." }
+        render status: 403, json: { message: 'The report has already been submitted for approval and cannot be updated!' }
       end
     else
-      render status: 404, json: { message: "Report not found."}
+      render status: 404, json: { message: 'You are not authorized to edit this report!' }
+    end
+  end
+
+  # DELETE /reports/1
+  def destroy
+    if (current_user.id == @report.created_by_id && @report.draft) || current_user.is_in_role(49)
+      @report.archived = true
+      if @report.save
+        render json: { message: 'Report archived!' }
+      else
+        render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      end
     end
   end
 
   private
-  def report_params
-    params.require(:report).permit(:title, :description, :report_type_id, :specified_submit_to_role_id)
-  end
+    # Use callbacks to share common setup or constraints between actions.
+    def set_report
+      @report = Report.find(params[:report][:id]) if params[:report]
+      @report ||= Report.find(params[:id])
+    end
 
-  def report_update_params
-    params.require(:report).permit(:id, :title, :description, :report_type_id, :specified_submit_to_role_id)
-  end
+    # Only allow a trusted parameter "white list" through.
+    def report_create_params
+      params.require(:report).permit(:template_id)
+    end
+
+    def report_update_params
+      params.require(:report).permit(:report_for_id, :draft)
+    end
 end

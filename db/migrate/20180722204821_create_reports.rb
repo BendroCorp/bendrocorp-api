@@ -1,19 +1,16 @@
 class CreateReports < ActiveRecord::Migration[5.1]
   def change
-    create_table :reports do |t|
-      t.text :title
-      t.text :description
-
-      t.boolean :submitted
-      t.boolean :returned, default: 0
-      t.boolean :approved, default: 0
-
-      t.belongs_to :submitter
-      t.belongs_to :specified_submit_to_role
-      t.belongs_to :report_type
-      t.belongs_to :flight_log
-      t.belongs_to :report_approval_request
-      t.belongs_to :report_status_type
+    create_table :reports, id: :uuid do |t|
+      t.belongs_to :template, type: :uuid
+      t.text :template_name
+      t.text :template_description
+      t.belongs_to :handler
+      t.belongs_to :created_by
+      t.belongs_to :report_for
+      t.boolean :report_for_group, default: false
+      t.boolean :draft, default: true
+      t.boolean :approved, default: false
+      t.boolean :archived, default: false
       t.timestamps
     end
   end

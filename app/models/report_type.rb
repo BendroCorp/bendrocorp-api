@@ -1,2 +1,0 @@
-class ReportType < ApplicationRecord
-end

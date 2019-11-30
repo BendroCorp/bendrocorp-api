@@ -1,19 +1,14 @@
 class Report < ApplicationRecord
-  validates :submitter_id, presence: true
-  belongs_to :submitter, :class_name => 'User', :foreign_key => 'submitter_id', optional: true
-  belongs_to :specified_submit_to_role, :class_name => 'Role', :foreign_key => 'specified_submit_to_role_id'
-  belongs_to :report_type
-  belongs_to :flight_log
-  belongs_to :report_approval_request
-  belongs_to :report_status_type
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+  has_many :fields, class_name: 'ReportField', foreign_key: 'report_id'
+  accepts_nested_attributes_for :fields
 
-  accepts_nested_attributes_for :report_approval_request
+  validates :handler_id, presence: true
+  belongs_to :handler, class_name: 'ReportHandler', foreign_key: 'handler_id', optional: true
 
-  def url_title_string
-    "#{self.title.downcase.gsub(' ', '-')}-#{self.id}"
-  end
+  validates :template_id, presence: true
+  belongs_to :template, class_name: 'ReportTemplate', foreign_key: 'template_id', optional: true
 
-  def report_time_ms
-    self.created_at.to_f * 1000
-  end
+  belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
+  belongs_to :report_for, class_name: 'User', foreign_key: 'report_for_id', optional: true
 end
