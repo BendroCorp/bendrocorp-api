@@ -2351,6 +2351,7 @@ ActiveRecord::Schema.define(version: 20191130010428) do
     t.text "subscriber_subscription_id"
     t.boolean "is_online", default: false
     t.boolean "removal_warned", default: false
+    t.boolean "discord_link_required", default: true
     t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

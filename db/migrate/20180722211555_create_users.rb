@@ -27,6 +27,7 @@ class CreateUsers < ActiveRecord::Migration[5.1]
       t.text :subscriber_subscription_id
       t.boolean :is_online, default: false
       t.boolean :removal_warned, default: false
+      t.boolean :discord_link_required, default: true
       t.boolean :active, default: true
       t.timestamps
     end
