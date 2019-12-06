@@ -12,12 +12,23 @@ pool:
 steps:
 - task: UseRubyVersion@0
   inputs:
-    versionSpec: '2.6.1'
+    versionSpec: '2.6.3'
+    
+- script: |
+    sudo apt update
+
+- script: |
+    sudo apt install -y wget postgresql postgresql-contrib libpq-dev git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties libffi-dev 
 
 - script: |
     gem install bundler
     bundle install --retry=3 --jobs=4
   displayName: 'bundle install'
+  
+- script: |
+    rails db:migrate
+  displayName: 'rails db:migrate'
 
-- script: bundle exec rake
-  displayName: 'bundle exec rake'
+- script: |
+    rails db:seed
+  displayName: 'rails db:seed'
