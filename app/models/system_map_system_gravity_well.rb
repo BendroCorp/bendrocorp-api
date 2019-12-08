@@ -1,4 +1,5 @@
 class SystemMapSystemGravityWell < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
 
   belongs_to :system, :class_name => 'SystemMapSystem', :foreign_key => 'system_id'
   belongs_to :gravity_well_type, :class_name => 'SystemMapSystemGravityWellType', :foreign_key => 'gravity_well_type_id', optional: true

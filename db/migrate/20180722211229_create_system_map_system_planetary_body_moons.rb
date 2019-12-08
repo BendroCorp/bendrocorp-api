@@ -1,9 +1,9 @@
 class CreateSystemMapSystemPlanetaryBodyMoons < ActiveRecord::Migration[5.1]
   def change
-    create_table :system_map_system_planetary_body_moons do |t|
+    create_table :system_map_system_planetary_body_moons, id: :uuid do |t|
       t.text :title
       t.text :description
-      t.belongs_to :orbits_planet, index: false
+      t.belongs_to :orbits_planet, index: false, id: :uuid
       t.belongs_to :discovered_by, index: false
       t.belongs_to :faction_affiliation, index: false
       t.boolean :discovered

@@ -1,4 +1,5 @@
 class SystemMapSystem < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
 
   has_many :gravity_wells, :class_name => 'SystemMapSystemGravityWell', :foreign_key => 'system_id'
 

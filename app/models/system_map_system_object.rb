@@ -1,4 +1,5 @@
 class SystemMapSystemObject < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
 
   belongs_to :object_type, :class_name => 'SystemMapSystemObjectType', :foreign_key => 'object_type_id'
 

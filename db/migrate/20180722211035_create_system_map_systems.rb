@@ -1,6 +1,6 @@
 class CreateSystemMapSystems < ActiveRecord::Migration[5.1]
   def change
-    create_table :system_map_systems do |t|
+    create_table :system_map_systems, id: :uuid do |t|
       t.text :title
       t.text :description
       t.boolean :approved, default: true

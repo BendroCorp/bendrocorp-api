@@ -1,4 +1,6 @@
 class SystemMapSystemSettlement < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+
   has_many :locations, :class_name => 'SystemMapSystemPlanetaryBodyLocation', :foreign_key => 'on_settlement_id'
 
   belongs_to :faction_affiliation, :class_name => 'FactionAffiliation', :foreign_key => 'faction_affiliation_id', optional: true

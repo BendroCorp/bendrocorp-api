@@ -1,4 +1,6 @@
 class SystemMapImage < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+
   belongs_to :of_system, :class_name => 'SystemMapSystem', :foreign_key => 'of_system_id', optional: true
   belongs_to :of_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'of_planet_id', optional: true
   belongs_to :of_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'of_moon_id', optional: true

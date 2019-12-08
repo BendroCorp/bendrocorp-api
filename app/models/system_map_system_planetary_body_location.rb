@@ -1,4 +1,5 @@
 class SystemMapSystemPlanetaryBodyLocation < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
 
   belongs_to :location_type, :class_name => 'SystemMapSystemPlanetaryBodyLocationType', :foreign_key => 'location_type_id', optional: true
 

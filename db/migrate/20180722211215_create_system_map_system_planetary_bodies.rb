@@ -1,9 +1,9 @@
 class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
   def change
-    create_table :system_map_system_planetary_bodies do |t|
+    create_table :system_map_system_planetary_bodies, id: :uuid do |t|
       t.text :title
       t.text :description
-      t.belongs_to :orbits_system, index: false
+      t.belongs_to :orbits_system, index: false, id: :uuid
       t.belongs_to :discovered_by
       t.belongs_to :faction_affiliation, index: false
       t.belongs_to :safety_rating
@@ -25,7 +25,7 @@ class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
       t.float :general_radiation
       t.integer :minimum_criminality_rating
 
-      # orbital characteristics - currently just a stub may never be universalSystemUpdate
+      # orbital characteristics - currently just a stub may never be used
       t.text :semi_major_axis
       t.text :apoapsis
       t.text :periapsis
@@ -38,14 +38,14 @@ class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
       t.text :synodic_orbital_period
       t.text :orbital_velocity
 
-      #physical characteristics - may not be used
+      # physical characteristics - may not be used
       t.text :surface_gravity
       t.text :escape_velocity
       t.text :mass
 
       t.belongs_to :jurisdiction, index: false
 
-      t.belongs_to :primary_image, index: false
+      t.belongs_to :primary_image, index: false, id: :uuid
       t.timestamps
     end
     add_index :system_map_system_planetary_bodies, :jurisdiction_id, name: "planet_juristiction_id"

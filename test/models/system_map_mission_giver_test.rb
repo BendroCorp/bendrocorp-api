@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SystemMapObservationTest < ActiveSupport::TestCase
+class SystemMapMissionGiverTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

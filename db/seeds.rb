@@ -791,13 +791,13 @@ Event.create([{name: 'Test Event 1', description: 'This is a test event (1)', st
               {name: 'Test Event 3', description: 'This is a test expired event (3)', start_date: Time.now - 2.days - 16.hours, end_date: Time.now - 2.days - 14.hours, event_type_id: 1, briefing: EventBriefing.new, debriefing: EventDebriefing.new }])
 
 # Create some system map data
-SystemMapSystem.create([{ id: 1, title: 'Stanton', description: 'Stanton details to be filled in...', discovered_by: user1 }])
-SystemMapSystemGravityWell.create([{id: 1, title: 'Stanton', description: 'Stanton\'s star', system: SystemMapSystem.find_by_id(1), gravity_well_type: SystemMapSystemGravityWellType.find_by_id(6), luminosity_class: SystemMapSystemGravityWellLuminosityClass.find_by_id(6), discovered_by: user1 }])
-SystemMapSystemPlanetaryBody.create([{ id: 1, orbits_system: SystemMapSystem.find_by_id(1), title: 'Crusader', description: 'A gas giant. Home to Crusader Industries and BendroCorp.', discovered_by: user1  },
-                                     { id: 2, orbits_system: SystemMapSystem.find_by_id(1), title: 'Hursten', description: 'A gas giant. Home to Crusader Industries and BendroCorp.', discovered_by: user1  }])
-SystemMapSystemPlanetaryBodyMoon.create([{ id: 1, title: 'Yela', orbits_planet: SystemMapSystemPlanetaryBody.find_by_id(1), discovered_by: user1 },
-                                         { id: 2, title: 'Daymar', orbits_planet: SystemMapSystemPlanetaryBody.find_by_id(1), discovered_by: user1 },
-                                         { id: 3, title: 'Cellin', orbits_planet: SystemMapSystemPlanetaryBody.find_by_id(1), discovered_by: user1 }])
+SystemMapSystem.create([{ title: 'Stanton', description: 'Stanton details to be filled in...', discovered_by: user1 }])
+SystemMapSystemGravityWell.create([{ title: 'Stanton', description: 'Stanton\'s star', system: SystemMapSystem.first, gravity_well_type: SystemMapSystemGravityWellType.find_by_id(6), luminosity_class: SystemMapSystemGravityWellLuminosityClass.find_by_id(6), discovered_by: user1 }])
+SystemMapSystemPlanetaryBody.create([{ orbits_system: SystemMapSystem.first, title: 'Crusader', description: 'A gas giant. Home to Crusader Industries and BendroCorp.', discovered_by: user1  },
+                                     { orbits_system: SystemMapSystem.first, title: 'Hursten', description: 'A gas giant. Home to Crusader Industries and BendroCorp.', discovered_by: user1  }])
+SystemMapSystemPlanetaryBodyMoon.create([{ title: 'Yela', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 },
+                                         { title: 'Daymar', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 },
+                                         { title: 'Cellin', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 }])
 
 # keep this at the bottom
 UserCountry.create([{ code: 'BD', title:'Bangladesh' },

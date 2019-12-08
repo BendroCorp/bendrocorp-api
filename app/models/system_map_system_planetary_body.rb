@@ -1,5 +1,5 @@
 class SystemMapSystemPlanetaryBody < ApplicationRecord
-
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
 
   belongs_to :orbits_system, :class_name => 'SystemMapSystem', :foreign_key => 'orbits_system_id'
 

@@ -1,6 +1,6 @@
 class CreateSystemMapSystemPlanetaryBodyLocations < ActiveRecord::Migration[5.1]
   def change
-    create_table :system_map_system_planetary_body_locations do |t|
+    create_table :system_map_system_planetary_body_locations, id: :uuid do |t|
       t.text :title
       t.text :description
       t.boolean :approved, default: true
@@ -10,15 +10,15 @@ class CreateSystemMapSystemPlanetaryBodyLocations < ActiveRecord::Migration[5.1]
       t.float :lat #and this
 
       t.belongs_to :location_type, index: false
-      t.belongs_to :on_moon, index: false
-      t.belongs_to :on_planet, index: false
-      t.belongs_to :on_system_object, index: false
-      t.belongs_to :on_settlement, index: false
+      t.belongs_to :on_moon, index: false, type: :uuid
+      t.belongs_to :on_planet, index: false, type: :uuid
+      t.belongs_to :on_system_object, index: false, type: :uuid
+      t.belongs_to :on_settlement, index: false, type: :uuid
       t.belongs_to :faction_affiliation, index: false
       t.integer :minimum_criminality_rating
 
       t.belongs_to :discovered_by, index: false
-      t.belongs_to :primary_image, index: false
+      t.belongs_to :primary_image, index: false, type: :uuid
       t.boolean :discovered
       t.boolean :archived
       t.timestamps
