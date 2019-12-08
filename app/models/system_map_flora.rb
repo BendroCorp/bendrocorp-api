@@ -1,6 +1,6 @@
 class SystemMapFlora < ApplicationRecord
   before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
-
+  
   belongs_to :on_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'on_moon_id'
   belongs_to :on_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'on_planet_id'
   belongs_to :on_system_object, :class_name => 'SystemMapSystemObject', :foreign_key => 'on_system_object_id'
@@ -11,6 +11,10 @@ class SystemMapFlora < ApplicationRecord
   belongs_to :primary_image, :class_name => 'SystemMapImage', :foreign_key => 'primary_image_id'
 
   accepts_nested_attributes_for :primary_image
+
+  def kind
+    "Flora"
+  end
 
   def primary_image_url
     if self.primary_image != nil

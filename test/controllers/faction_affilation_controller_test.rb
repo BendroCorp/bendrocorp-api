@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class SystemMapSystemObjectTypeTest < ActiveSupport::TestCase
+class FactionAffilationControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

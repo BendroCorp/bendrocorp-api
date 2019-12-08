@@ -3,12 +3,13 @@ class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
     create_table :system_map_system_planetary_bodies, id: :uuid do |t|
       t.text :title
       t.text :description
+      t.text :tags
       t.belongs_to :orbits_system, index: false, id: :uuid
       t.belongs_to :discovered_by
-      t.belongs_to :faction_affiliation, index: false
+      t.belongs_to :faction_affiliation, type: :uuid, index: false
       t.belongs_to :safety_rating
       t.boolean :discovered
-      t.boolean :archived
+      t.boolean :archived, default: false
       t.boolean :approved, default: true
 
       #standard known characteristics
@@ -44,6 +45,7 @@ class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
       t.text :mass
 
       t.belongs_to :jurisdiction, index: false
+      t.belongs_to :classification_level, index: false
 
       t.belongs_to :primary_image, index: false, id: :uuid
       t.timestamps

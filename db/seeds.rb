@@ -3,17 +3,74 @@ puts "Seeding things..."
 puts ""
 
 UserDeviceType.create([{ id: 1, title: 'ios_app' } ])
-ChatRoom.create([{id: 1, title: 'General'}])
+ChatRoom.create([{ id: 1, title: 'General'}])
 
-SiteLogType.create([{id: 1, title: 'Authentication'}, {id: 2, title: 'General'}, {id: 3, title: 'Error'}])
+SiteLogType.create([{ id: 1, title: 'Authentication'}, { id: 2, title: 'General'}, { id: 3, title: 'Error'}])
 
 TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { id: 3, title: 'Video' }, { id: 4, title: 'Instructor Approval' }])
 
 ReportHandler.create([{ id: 1, name: 'Generic Approval' }])
 
+# make a base field
 Field.create([{ name: 'Yes/No/Maybe' }])
-
 FieldDescriptor.create([{ title: 'Yes', field: Field.first }, { title: 'No', field: Field.first }, { title: 'Maybe', field: Field.first }])
+
+# make all the other fields
+Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Connection Size' },
+  { id: '62fdb35f-39ab-47f8-9fc0-0c690793e076', name: 'Jump Point Connection Status' },
+  { id: 'ce45fca0-80c1-4969-84d4-2449eb0f5164', name: 'Gravity Well Luminosity Class' },
+  { id: 'e5d23d1f-13bc-42b9-949f-383097773727', name: 'Gravity Well Type' },
+  { id: '9393a4e0-210b-43db-a5e7-92d7d0226066', name: 'Location Type' },
+  { id: '62ac3a07-ece3-4079-8da1-3e88617032fd', name: 'System Object Kind' }])
+
+  FieldDescriptor.create([{ id:'9886a385-414d-42fd-bf06-a7da2d3aee8d',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Small',description:'Small Jump Point',ordinal:1 }, 
+    { id:'e37a0432-57bc-4bcd-9449-5f9dfeddf271',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Medium',description:'Medium Jump Point',ordinal:2 }, 
+    { id:'8984d2db-4b37-49cb-8588-a56bf35c8ff5',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Large',description:'Large Jump Point',ordinal:3 }, 
+    { id:'550ae124-62bc-44c7-b3ac-3c336fdf5389',field_id:'62fdb35f-39ab-47f8-9fc0-0c690793e076',title:'Collapsed',description:'A collapsed jump point.',ordinal:1 }, 
+    { id:'fd17e671-6dc7-4892-a651-633a750ad66b',field_id:'62fdb35f-39ab-47f8-9fc0-0c690793e076',title:'Active',description:'An active jump point.',ordinal:2 }, 
+    { id:'122eef2b-4c15-447c-abff-1aeb167ec505',field_id:'62fdb35f-39ab-47f8-9fc0-0c690793e076',title:'Active - Not Public',description:'An active but not published jump point.',ordinal:3 }, 
+    { id:'8f8ad7dd-6d11-42f8-bd6f-43c5ffc8e835',field_id:'62fdb35f-39ab-47f8-9fc0-0c690793e076',title:'Suspected',description:'A jump point which is suspected to exist but is not confirmed.',ordinal:4 }, 
+    { id:'eec2d143-8dc7-4b9a-b3e1-e242844c9679',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Black Hole (N/A)',description:'An ultra dense concentration of matter from which nothing escapes...or does it?',ordinal:1 }, 
+    { id:'8adde7df-17b6-47aa-8986-f29a185f11fd',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (O)',description:'Blue in color. Approximate surface temperature of over 25,000 K. Singly ionized helium lines (H I) either in emission or absorption. Strong UV continuum.',ordinal:2 }, 
+    { id:'aa7149c4-8381-4ea7-91e1-c01df40285aa',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (B)',description:'Blue in color. Approximate surface temperature of 11,000 - 25,000 K. Neutral helium lines (H II) in absorption.',ordinal:3 }, 
+    { id:'0c4440f8-0326-4c0d-81d4-3a2fdd7493c2',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (A)',description:'Blue in color. Approximate surface temperature of 7,500 - 11,000 K. Hydrogen (H) lines strongest for A0 stars, decreasing for other A\'s.',ordinal:4 }, 
+    { id:'2c88b954-04ae-43b0-b2aa-6a58fe8b99b0',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (F)',description:'Blue to white in color. Approximate surface temperature of 6,000 - 7,500 K. Ca II absorption. Metallic lines become noticeable.',ordinal:5 }, 
+    { id:'c94ac19b-aa46-477c-ac66-3d717b2f43af',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (G)',description:'White to yellow in color. Approximate surface temperature of 5,000 - 6,000 K. Absorption lines of neutral metallic atoms and ions (e.g. once-ionized calcium).',ordinal:6 }, 
+    { id:'dbfeb49c-4bff-4f2d-812d-f09685ba7c96',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (K)',description:'Orange to red in color. Approximate surface temperature of 3,500 - 5,000 K. Metallic lines, some blue continuum.',ordinal:7 }, 
+    { id:'edad4f3a-71ce-4812-ab11-df0b01ef2fb8',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (M)',description:'Red in color. Approximate surface temperature of under 3,500 K. Some molecular bands of titanium oxide.',ordinal:8 }, 
+    { id:'d29c494f-3ee1-4bea-b5ac-907eb6802609',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'Ia',description:'Very luminous supergiants',ordinal:2 }, 
+    { id:'23a0cbdf-8a97-4d5b-923a-6fb24d84ccc6',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'Ib',description:'Less luminous supergiants',ordinal:3 }, 
+    { id:'0bf9a345-b711-46b3-9455-65ea82769b72',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'II',description:'Luminous giants',ordinal:4 }, 
+    { id:'af5507ba-4874-4acf-ba5b-fed9eb568357',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'III',description:'Giants',ordinal:5 }, 
+    { id:'e5bd92f8-b34a-4150-a8cc-417bc19197c2',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'IV',description:'Subgiants',ordinal:6 }, 
+    { id:'98e7673d-99f2-4e76-bf08-f4e94abc303c',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'V',description:'Main sequence stars (dwarf stars)',ordinal:7 }, 
+    { id:'6b15e11e-c7ae-4e3c-afec-f425c97790e1',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'VI',description:'Subdwarf',ordinal:8 }, 
+    { id:'cec22e41-aa1a-49ae-9ba1-3d3dffd8d125',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'VIII',description:'White Dwarf',ordinal:9 }, 
+    { id:'34890f34-096d-4670-a79e-5b1e36ea45e2',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'N/A',description:'Black hole or other like brown dwarfs.',ordinal:10 }, 
+    { id:'2add5860-c58b-4810-ae40-784a6c75c85c',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (L)',description:'Reddish in color. Slightly cooler than class M stars',ordinal:9 }, 
+    { id:'843ca017-8645-4fae-a746-cd75ac74177b',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (T)',description:'Methane dwarf. Dark red in color when viewed via spectral analysis. Surface temperatures between approximately 550 and 1,300 K',ordinal:10 }, 
+    { id:'7c6c9a7e-752e-4d57-a422-2fae94eb7d61',field_id:'e5d23d1f-13bc-42b9-949f-383097773727',title:'Star (Y)',description:'Brown in color. Non-luminous. Surface temperature typically below 500K.',ordinal:11 }, 
+    { id:'f4f36159-b6b4-4c7e-99d1-29461ba134c8',field_id:'ce45fca0-80c1-4969-84d4-2449eb0f5164',title:'0',description:'Hypergiants or extremely luminous supergiants',ordinal:1 }, 
+    { id:'41143a88-d331-4ccb-ab64-f172948b283f',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'POI',description:'A point of interest',ordinal:1 }, 
+    { id:'ffec49b2-cd5f-48d1-8607-df6d46ac65e4',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Store front',description:'A store or location that sells things',ordinal:2 }, 
+    { id:'ee351848-ef7e-417c-8781-b5999c2bf025',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Homestead',description:'A small single structure outpost',ordinal:3 }, 
+    { id:'a3e15f52-e48a-465f-8c78-eeea063568a6',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Base (Civilian)',description:'A larger collection of output structures operated by civilians.',ordinal:4 }, 
+    { id:'02d4e08a-0081-435d-a189-00db0cc801b2',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Base (Mercenary)',description:'A larger collection of output structures operated by mercenaries.',ordinal:5 }, 
+    { id:'488c3722-55bb-4d1f-a79b-41ec9fe251d3',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Base (Pirate)',description:'A larger collection of output structures operated by pirates.',ordinal:6 }, 
+    { id:'c6404a8e-abef-4b15-97c6-98ff230a2fe6',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Derelict',description:'A ship, typically crashed on the surface of a planetary body',ordinal:8 }, 
+    { id:'1468dfcf-e848-491c-b980-bc0d429ccb13',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Debris',description:'Debris. Generally non-descript junk.',ordinal:9 }, 
+    { id:'30464ec5-949c-4a03-9d46-d95a32411c95',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Ruins',description:'Ruins of some kind or another. Ancient or otherwise.',ordinal:10 }, 
+    { id:'3ffb2364-48c7-4995-9c35-68311c6267d4',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Base (Military)',description:'A larger collection of output structures operated by a military.',ordinal:7 }, 
+    { id:'b7968f3a-41ce-49db-9a4c-86deb9953ad0',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Station',description:'A small station that does not fall into other classifications.',ordinal:1 }, 
+    { id:'ba0577d8-1220-43e5-9072-9eda7d6a9923',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Satellite',description:'A generic satellite that does not fit into other classifications.',ordinal:2 }, 
+    { id:'a0e3f23c-70ba-4ce1-8168-cd949b3740e3',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Communications Satellite',description:'A communication satellite that is a part of the galactic communications network.',ordinal:3 }, 
+    { id:'3c5b0bad-0518-4bb4-9a11-de14601842cc',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Derelict Ship',description:'A ship abandoned and/or destroyed in space. ',ordinal:4 }, 
+    { id:'41ff4e5b-48b2-40ef-a0e4-c4f8e7ad5cbc',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Derelict Cargo',description:'A collection of cargo found in space. (likely a temporary fixture)',ordinal:5 }, 
+    { id:'a1d54b82-b1bb-4faf-aa48-35695476cf53',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Debris',description:'Non-specific collection of debris.',ordinal:6 }, 
+    { id:'90f1149b-b747-405d-8660-0db730e0d69f',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Rest Stop Station',description:'A \'small\' rest stop station. The stations typically provide a variety of service but lack habitation.',ordinal:7 }, 
+    { id:'bdb3c43b-c7f3-4739-a969-3e58118e8f97',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Port Station',description:'A \'large\' port station. These stations feature habitation and large collection of public services. They also typically provide docking moorings for larger classes of starship.',ordinal:8 }, 
+    { id:'0a5faa82-ae2a-424e-9d68-790a6f3ec39a',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Other',description:'Other objects which do not meet the currently defined definitions.',ordinal:99 }, 
+    { id:'53923cf1-087c-4437-a5ad-2e4549e31ce8',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Other',description:'Location types which do not fit into the current set of location classifications.',ordinal:99 }])
 
 MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
@@ -33,6 +90,7 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
                  { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
                  { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
+                 { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 6, nested_under_id: 12 }
                  ])
 # { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
@@ -71,69 +129,42 @@ SystemMapAtmoGase.create([{ id: 1, title: "Oxygen (o2)" },
                           { id: 15, title: "Ammonia"},
                           { id: 16, title: "Methane"}])
 
-JobBoardMissionCompletionCriterium.create([{id: 1, title: 'Escort', description: 'Escort a fellow employee during a non-event cargo run.'},
-                                           {id: 2, title: 'Bounty', description: 'TBA'},
-                                           {id: 3, title: 'Catalogue', description: 'TBA'},
-                                           {id: 4, title: 'Recovery', description: 'TBA'},
-                                           {id: 5, title: 'Other', description: 'See mission description'}])
+JobBoardMissionCompletionCriterium.create([{ id: 1, title: 'Escort', description: 'Escort a fellow employee during a non-event cargo run.'},
+                                           { id: 2, title: 'Bounty', description: 'TBA'},
+                                           { id: 3, title: 'Catalogue', description: 'TBA'},
+                                           { id: 4, title: 'Recovery', description: 'TBA'},
+                                           { id: 5, title: 'Other', description: 'See mission description'}])
 
-JobBoardMissionStatus.create([{id: 1, title: 'Open', description: 'A mission that is open for acceptance.'},
-                              {id: 2, title: 'Closed', description: 'A mission that has been closed.'},
-                              {id: 3, title: 'Success', description: 'A mission where the objective(s) were met.'},
-                              {id: 4, title: 'Failed', description: 'A mission where the objective(s) could not be met.'}])
+JobBoardMissionStatus.create([{ id: 1, title: 'Open', description: 'A mission that is open for acceptance.'},
+                              { id: 2, title: 'Closed', description: 'A mission that has been closed.'},
+                              { id: 3, title: 'Success', description: 'A mission where the objective(s) were met.'},
+                              { id: 4, title: 'Failed', description: 'A mission where the objective(s) could not be met.'}])
 
-JobLevel.create([{id: 1, title: 'CEO', ordinal: 1},
-                 {id: 2, title: 'Executive', ordinal: 2},
-                 {id: 3, title: 'Director', ordinal: 3},
-                 {id: 4, title: 'Manager', ordinal: 4},
-                 {id: 5, title: 'Grade 4', ordinal: 5},
-                 {id: 6, title: 'Grade 3', ordinal: 6},
-                 {id: 7, title: 'Grade 2', ordinal: 7},
-                 {id: 8, title: 'Grade 1', ordinal: 8},
-                 {id: 9, title: 'Applicant', ordinal: 9}])
+JobLevel.create([{ id: 1, title: 'CEO', ordinal: 1},
+                 { id: 2, title: 'Executive', ordinal: 2},
+                 { id: 3, title: 'Director', ordinal: 3},
+                 { id: 4, title: 'Manager', ordinal: 4},
+                 { id: 5, title: 'Grade 4', ordinal: 5},
+                 { id: 6, title: 'Grade 3', ordinal: 6},
+                 { id: 7, title: 'Grade 2', ordinal: 7},
+                 { id: 8, title: 'Grade 1', ordinal: 8},
+                 { id: 9, title: 'Applicant', ordinal: 9}])
 
-StoreCurrencyType.create([{id: 1, title: 'Dollars', description: 'Good ole\' U.S.A. green backs. Used for real life items.', currency_symbol: '$' },
-                          {id: 2, title: 'Operations Points', description: 'Internal BendroCorp currency. Redeemable for in-game items', currency_symbol: '(op)' }])
+StoreCurrencyType.create([{ id: 1, title: 'Dollars', description: 'Good ole\' U.S.A. green backs. Used for real life items.', currency_symbol: '$' },
+                          { id: 2, title: 'Operations Points', description: 'Internal BendroCorp currency. Redeemable for in-game items', currency_symbol: '(op)' }])
 
 # Open, Processing, Shipped|Fulfilled, Cancelled, Refunded
-StoreOrderStatus.create([{id: 1, title: 'Open', description: 'Order is complete and awaiting intial processing. For real life items international shipping will be calculated during this time and you may be asked to pay additional shipping if you do not live in the continental U.S.A.'},
-                         {id: 2, title: 'Processing', description: 'Your order is being processed by a real person.'},
-                         {id: 3, title: 'Shipped/Fulfilled', description: 'Your order has been shipped and/or fulfilled.'},
-                         {id: 4, title: 'Cancelled', description: 'This order has been cancelled and is awaiting refund.'},
-                         {id: 5, title: 'Refunded', description: 'This order has been refunded.', can_select: false }])
+StoreOrderStatus.create([{ id: 1, title: 'Open', description: 'Order is complete and awaiting intial processing. For real life items international shipping will be calculated during this time and you may be asked to pay additional shipping if you do not live in the continental U.S.A.'},
+                         { id: 2, title: 'Processing', description: 'Your order is being processed by a real person.'},
+                         { id: 3, title: 'Shipped/Fulfilled', description: 'Your order has been shipped and/or fulfilled.'},
+                         { id: 4, title: 'Cancelled', description: 'This order has been cancelled and is awaiting refund.'},
+                         { id: 5, title: 'Refunded', description: 'This order has been refunded.', can_select: false }])
 
-alert_types = AlertType.create([{id: 1, title: 'Notice', sub_title: '', description: 'Informational alerts for employees', selectable:true },
-                                {id: 2, title: 'Travel Advisory', sub_title: 'Short-Term', description: 'Typically issued if an offender report was recently logged in the system. Has an expiration.'},
-                                {id: 3, title: 'Travel Advisory', sub_title: 'Long-Term', description: 'Indicates that employees should exercise extreme caution when entering the system, planet (eventually moon or system object)'},
-                                {id: 4, title: 'Travel Ban', sub_title: 'Long-Term', description: 'Indicates that employees are not allowed to operate in the system in an official capacity without an escort or Executive approval'},
-                                {id: 5, title: 'CSAR', sub_title: 'Rescue Request', description: 'An employee is requesting emergency assistance.', selectable:true }])
-
-connectionsizes = SystemMapSystemConnectionSize.create([{ id: 1, size: "Small Jump Point", size_short: "Small", description: "A jump point capable of supporting a small ship."},
-                                                        { id: 2, size: "Medium Jump Point", size_short: "Medium", description: "A jump point capable of supporting medium size and smaller ships."},
-                                                        { id: 3, size: "Large Jump Point", size_short: "Large", description: "A jump point capable of supporting large size and smaller ships."}])
-
-connectionstatuses = SystemMapSystemConnectionStatus.create([{ id: 1, title: "Collapsed", description: "A collapsed jump point."},
-                                                             { id: 2, title: "Active", description: "An active jump point."},
-                                                             { id: 3, title: "Active - Not Public", description: "An active but not published jump point."},
-                                                             { id: 4, title: "Suspected", description: "A jump point which is suspected to exist but is not confirmed."}])
-
-systemmapobjecttypes1 = SystemMapSystemObjectType.create([{ id: 1, title: "Station", description: ""},
-                                                       { id: 2, title: "Satelite", description: ""},
-                                                       { id: 3, title: "Communications Satelite", description: ""},
-                                                       { id: 4, title: "Derelict Ship", description: ""},
-                                                       { id: 5, title: "Derelict Cargo", description: ""},
-                                                       { id: 6, title: "Debris", description: ""},
-                                                       { id: 7, title: "Other", description: ""}])
-
-systemmapobjecttypes1 = SystemMapSystemPlanetaryBodyLocationType.create([{ id: 1, title: "Homestead", description: ""},
-                                                      { id: 2, title: "Base (Mercenary)", description: ""},
-                                                      { id: 3, title: "Base (UEE)", description: ""},
-                                                      { id: 4, title: "City", description: ""},
-                                                      { id: 5, title: "Derelict", description: ""},
-                                                      { id: 6, title: "Debris", description: ""},
-                                                      { id: 7, title: "Ruins", description: ""},
-                                                      { id: 8, title: "Other", description: ""},
-                                                      { id: 9, title: "Base (Pirate)", description: ""}])
+alert_types = AlertType.create([{ id: 1, title: 'Notice', sub_title: '', description: 'Informational alerts for employees', selectable:true },
+                                { id: 2, title: 'Travel Advisory', sub_title: 'Short-Term', description: 'Typically issued if an offender report was recently logged in the system. Has an expiration.'},
+                                { id: 3, title: 'Travel Advisory', sub_title: 'Long-Term', description: 'Indicates that employees should exercise extreme caution when entering the system, planet (eventually moon or system object)'},
+                                { id: 4, title: 'Travel Ban', sub_title: 'Long-Term', description: 'Indicates that employees are not allowed to operate in the system in an official capacity without an escort or Executive approval'},
+                                { id: 5, title: 'CSAR', sub_title: 'Rescue Request', description: 'An employee is requesting emergency assistance.', selectable:true }])
 
 systemmapobjecttypes2 = SystemMapSystemPlanetaryBodyType.create([{ id: 1, title: "Temperate", description: ""},
                                                                 { id: 2, title: "Rocky/Barren", description: ""},
@@ -156,33 +187,17 @@ systemmapobjecttypes3 = SystemMapSystemPlanetaryBodyMoonType.create([{ id: 1, ti
                                                                 { id: 8, title: "Artificial", description: ""},
                                                                 { id: 9, title: "Asteroid Belt/Planetary Ring", description: ""}])
 
-gravitywelltypes = SystemMapSystemGravityWellType.create([{ id: 1, title: "Black Hole", well_type: "N/A", approx_surface_temperature: "???", color: "None", main_characteristics: "Black hole quote here"},
-                                                          { id: 2, title: "Star", well_type: "O", approx_surface_temperature: "Over 25,000 K", color: "Blue", main_characteristics: "Singly ionized helium lines (H I) either in emission or absorption. Strong UV continuum."},
-                                                          { id: 3, title: "Star", well_type: "B", approx_surface_temperature: "11,000 - 25,000 K", color: "Blue", main_characteristics: "Neutral helium lines (H II) in absorption."},
-                                                          { id: 4, title: "Star", well_type: "A", approx_surface_temperature: "7,500 - 11,000 K", color: "Blue", main_characteristics: "Hydrogen (H) lines strongest for A0 stars, decreasing for other A's."},
-                                                          { id: 5, title: "Star", well_type: "F", approx_surface_temperature: "6,000 - 7,500 K", color: "Blue to White", main_characteristics: "Ca II absorption. Metallic lines become noticeable."},
-                                                          { id: 6, title: "Star", well_type: "G", approx_surface_temperature: "5,000 - 6,000 K", color: "White to Yellow", main_characteristics: "Absorption lines of neutral metallic atoms and ions (e.g. once-ionized calcium)."},
-                                                          { id: 7, title: "Star", well_type: "K", approx_surface_temperature: "3,500 - 5,000 K", color: "Orange to Red", main_characteristics: "Metallic lines, some blue continuum."},
-                                                          { id: 8, title: "Star", well_type: "M", approx_surface_temperature: "under 3,500 K", color: "Red", main_characteristics: "Some molecular bands of titanium oxide."}])
+factions = FactionAffiliation.create([{ title: 'UEE', description: 'To be added', color: '#48BBD5' },
+                                      { title: 'Banu', description: 'To be added', color: '#FFCE17' },
+                                      { title: 'Vanduul', description: 'To be added', color: '#BD002D' },
+                                      { title: 'Xi\'an', description: 'To be added', color: '#52C231' },
+                                      { title: 'Developing', description: 'To be added', color: '#CA922D' },
+                                      { title: 'Unclaimed', description: 'To be added', color: '#F68520' },
+                                      { title: 'Hurston', description: 'To be added' },
+                                      { title: 'ArcCorp', description: 'To be added' }])
 
-gravitywelllums = SystemMapSystemGravityWellLuminosityClass.create([{ id: 1, title: "Ia", description: "Very luminous supergiants"},
-                                                                    { id: 2, title: "Ib", description: "Less luminous supergiants" },
-                                                                    { id: 3, title: "II", description: "Luminous giants" },
-                                                                    { id: 4, title: "III", description: "Giants" },
-                                                                    { id: 5, title: "IV", description: "Subgiants" },
-                                                                    { id: 6, title: "V", description: "Main sequence stars (dwarf stars)" },
-                                                                    { id: 7, title: "VI", description: "Subdwarf" },
-                                                                    { id: 8, title: "VII", description: "White Dwarf" }])
-
-factions = FactionAffiliation.create([{ id: 1, title: "UEE" },
-                                      { id: 2, title: "Banu" },
-                                      { id: 3, title: "Vanduul" },
-                                      { id: 4, title: "Xi'an" },
-                                      { id: 5, title: "Developing" },
-                                      { id: 6, title: "Unclaimed" }])
-
-CharacterGender.create([{ id: 1, title: 'Male'},
-                        { id: 2, title: 'Female'}])
+CharacterGender.create([{ id: 1, title: 'Male' },
+                        { id: 2, title: 'Female' }])
 
 CharacterSpecy.create([{ id: 1, title: 'Human', description: 'Humans of Earth, Sol System'}])
 
@@ -210,16 +225,16 @@ SystemMapSystemSafetyRating.create([{ id: 1, title: "No Threat", description: "T
                                    { id: 2, title: "Threat Exists", description: "There have been recent but non-frequent reports of BendroCorp ships being fired on this area or along this flight path. Exercise caution.", color:"yellow" },
                                    { id: 3, title: "Escort Required", description: "There have been recent and frequent reports of BendroCorp ships being attacked in this area or along this flight path. Corporate freighters and medium-large ships on sanctioned missions are required to have an escort in this area.", color:"red" }])
 
-SystemMapObjectKind.create([{ id: 1, title: "System", class_name: "SystemMapSystem"},
-                            { id: 2, title: "Gravity Well", class_name: "SystemMapSystemGravityWell"},
-                            { id: 3, title: "Planet", class_name: "SystemMapSystemPlanetaryBody"},
-                            { id: 4, title: "Moon", class_name: "SystemMapSystemPlanetaryBodyMoon"},
-                            { id: 5, title: "System Object", class_name: "SystemMapSystemObject"},
-                            { id: 6, title: "Settlement", class_name: "SystemMapSystemSettlement"},
-                            { id: 7, title: "Location", class_name: "SystemMapSystemPlanetaryBodyLocation"},
-                            { id: 8, title: "Fauna", class_name: "SystemMapFauna"},
-                            { id: 9, title: "Flora", class_name: "SystemMapFlora"},
-                            { id: 10, title: "Jump Point", class_name: "SystemMapSystemConnection"}])
+# SystemMapObjectKind.create([{ id: 1, title: "System", class_name: "SystemMapSystem"},
+#                             { id: 2, title: "Gravity Well", class_name: "SystemMapSystemGravityWell"},
+#                             { id: 3, title: "Planet", class_name: "SystemMapSystemPlanetaryBody"},
+#                             { id: 4, title: "Moon", class_name: "SystemMapSystemPlanetaryBodyMoon"},
+#                             { id: 5, title: "System Object", class_name: "SystemMapSystemObject"},
+#                             { id: 6, title: "Settlement", class_name: "SystemMapSystemSettlement"},
+#                             { id: 7, title: "Location", class_name: "SystemMapSystemPlanetaryBodyLocation"},
+#                             { id: 8, title: "Fauna", class_name: "SystemMapFauna"},
+#                             { id: 9, title: "Flora", class_name: "SystemMapFlora"},
+#                             { id: 10, title: "Jump Point", class_name: "SystemMapSystemConnection"}])
 
 ships = Ship.create([{ name: 'M50 Intercepter', manufacturer: 'ORIG'},
                       { name: 'Mustang Beta', manufacturer: 'CNOU'},
@@ -300,19 +315,19 @@ page_categories = PageCategory.create([{ title: 'General' },
                                        { title: 'Ships' },
                                        { title: 'Training' }])
 
-event_types = EventType.create([{id: 1, title: 'Operation'},
-                                {id: 2, title: 'Livestream'}])
+event_types = EventType.create([{ id: 1, title: 'Operation'},
+                                { id: 2, title: 'Livestream'}])
 
-attendence_types = AttendenceType.create([{id: 1, title: "Attending"},
-                                          {id: 2, title: 'Not Attending'},
-                                          {id: 3, title: 'No Response'}])
+attendence_types = AttendenceType.create([{ id: 1, title: "Attending"},
+                                          { id: 2, title: 'Not Attending'},
+                                          { id: 3, title: 'No Response'}])
 
-approval_types = ApprovalType.create([{id: 1, title: 'Pending', description: 'Not yet approved or declined request.'},
-                                      {id: 2, title: 'Pending (Unseen)', description: 'Not yet approved or declined request and not viewed.'},
-                                      {id: 3, title: 'Pending (Seen)', description: 'Not yet approved or declined request and viewed.'},
-                                      {id: 4, title: 'Approved', description: 'Approved request'},
-                                      {id: 5, title: 'Declined', description: 'Declined request'},
-                                      {id: 6, title: 'Feedback not needed', description: 'Feedback not needed.'}])
+approval_types = ApprovalType.create([{ id: 1, title: 'Pending', description: 'Not yet approved or declined request.'},
+                                      { id: 2, title: 'Pending (Unseen)', description: 'Not yet approved or declined request and not viewed.'},
+                                      { id: 3, title: 'Pending (Seen)', description: 'Not yet approved or declined request and viewed.'},
+                                      { id: 4, title: 'Approved', description: 'Approved request'},
+                                      { id: 5, title: 'Declined', description: 'Declined request'},
+                                      { id: 6, title: 'Feedback not needed', description: 'Feedback not needed.'}])
 
 ApprovalWorkflow.create([{ id: 1, title: 'Standard', description: 'Standard all or nothing approval workflow'},
                          { id: 2, title: 'Standard - Applicant', description: 'This approval is similiar to standard except that it is meant to exclusively handle applicant approvals' },
@@ -376,7 +391,8 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 47, name: 'Assistant to the CEO', description: '' },
                      { id: 48, name: 'Report Builder', description: '' },
                      { id: 49, name: 'Report Admin', description: '' },
-                     { id: 50, name: 'Bot Master', description: '' }])
+                     { id: 50, name: 'Bot Master', description: '' },
+                     { id: 51, name: 'Faction Administrator', description: '' }])
 
 ClassificationLevel.create([{ id: 1, title: 'Unclassified', description: 'Publically available corporate information.', ordinal: 1 },
                            { id: 2, title: 'Confidential', description: 'Not publically available information. Available to all members.', ordinal: 2 },
@@ -524,65 +540,65 @@ nested_roles = NestedRole.create([{role_id: 9, role_nested_id:2}, #CEO roles
                                   {role_id: 35, role_nested_id:36}, #research division
                                   ])
 
-approval_kinds = ApprovalKind.create([{id: 1, title: 'Role Request'},
-                                     {id: 2, title: 'Application Approval Request'},
-                                     {id: 3, title: 'Award Approval'},
-                                     {id: 4, title: 'Role Removal'},
-                                     {id: 5, title: 'Claim Request'},
-                                     {id: 6, title: 'Event Certification'},
-                                     {id: 7, title: 'Offender Report'},
-                                     {id: 8, title: 'Training Report'},
-                                     {id: 9, title: 'Flight Log Entry'}, #only if event related - may not use
-                                     {id: 10, title: 'System Map Entry'},
-                                     {id: 11, title: 'Organization Ship Request'},
-                                     {id: 12, title: 'Role Removal Request'},
-                                     {id: 13, title: 'Research Project Approval Request'},
-                                     {id: 14, title: 'Research Project Change Lead Request'},
-                                     {id: 15, title: 'Offender Bounty Approval Request'},
-                                     {id: 16, title: 'Organization Ship Crew Request'},
-                                     {id: 17, title: 'Job Change Request'},
-                                     {id: 18, title: 'Job Board Completion Request'},
-                                     {id: 19, title: 'Job Board Creation Request'},
-                                     {id: 20, title: 'Add System Map Item Request'},
-                                     {id: 21, title: 'Report Approval Request'},
-                                     {id: 22, title: 'Position Change Request'},
-                                     {id: 23, title: 'Applicant Approval Request'},
-                                     {id: 24, title: 'Training Item Completion Request'}])
+approval_kinds = ApprovalKind.create([{ id: 1, title: 'Role Request'},
+                                     { id: 2, title: 'Application Approval Request'},
+                                     { id: 3, title: 'Award Approval'},
+                                     { id: 4, title: 'Role Removal'},
+                                     { id: 5, title: 'Claim Request'},
+                                     { id: 6, title: 'Event Certification'},
+                                     { id: 7, title: 'Offender Report'},
+                                     { id: 8, title: 'Training Report'},
+                                     { id: 9, title: 'Flight Log Entry'}, #only if event related - may not use
+                                     { id: 10, title: 'System Map Entry'},
+                                     { id: 11, title: 'Organization Ship Request'},
+                                     { id: 12, title: 'Role Removal Request'},
+                                     { id: 13, title: 'Research Project Approval Request'},
+                                     { id: 14, title: 'Research Project Change Lead Request'},
+                                     { id: 15, title: 'Offender Bounty Approval Request'},
+                                     { id: 16, title: 'Organization Ship Crew Request'},
+                                     { id: 17, title: 'Job Change Request'},
+                                     { id: 18, title: 'Job Board Completion Request'},
+                                     { id: 19, title: 'Job Board Creation Request'},
+                                     { id: 20, title: 'Add System Map Item Request'},
+                                     { id: 21, title: 'Report Approval Request'},
+                                     { id: 22, title: 'Position Change Request'},
+                                     { id: 23, title: 'Applicant Approval Request'},
+                                     { id: 24, title: 'Training Item Completion Request'}])
 
-ResearchProjectStatus.create([{id: 1, title: 'Created/Approval Pending'},
-                              {id: 2, title: 'Project Not Approved/Request Denied'},
-                              {id: 3, title: 'In-Progress'},
-                              {id: 4, title: 'Completed'},
-                              {id: 5, title: 'Cancelled'}])
+ResearchProjectStatus.create([{ id: 1, title: 'Created/Approval Pending'},
+                              { id: 2, title: 'Project Not Approved/Request Denied'},
+                              { id: 3, title: 'In-Progress'},
+                              { id: 4, title: 'Completed'},
+                              { id: 5, title: 'Cancelled'}])
 
-ResearchProjectTaskStatus.create([{id: 1, title: 'In-Progress'},
-                                  {id: 2, title: 'Completed'},
-                                  {id: 3, title: 'Cancelled'}])
+ResearchProjectTaskStatus.create([{ id: 1, title: 'In-Progress'},
+                                  { id: 2, title: 'Completed'},
+                                  { id: 3, title: 'Cancelled'}])
 
-TradeItemType.create([{id: 1, title: 'Resource Mineral'},
-                      {id: 2, title: 'Resource Liquid'},
-                      {id: 3, title: 'Resource Gas'},
-                      {id: 4, title: 'Organic Other'},
-                      {id: 5, title: 'Waste'},
-                      {id: 6, title: 'Foodstuff'},
-                      {id: 7, title: 'Technology'},
-                      {id: 8, title: 'Component'},
-                      {id: 9, title: 'Passenger'},
-                      {id: 10, title: 'Metal'},
-                      {id: 11, title: 'Salvage'},
-                      {id: 12, title: 'Industrial'},
-                      {id: 13, title: 'Vehicle'},
-                      {id: 14, title: 'Pharma'},
-                      {id: 15, title: 'Consumer Item'},
-                      {id: 16, title: 'Other Item'},
-                      {id: 17, title: 'Other'},
-                      {id: 18, title: 'Rare'}])
+TradeItemType.create([{ id: 1, title: 'Resource Mineral'},
+                      { id: 2, title: 'Resource Liquid'},
+                      { id: 3, title: 'Resource Gas'},
+                      { id: 4, title: 'Organic Other'},
+                      { id: 5, title: 'Waste'},
+                      { id: 6, title: 'Foodstuff'},
+                      { id: 7, title: 'Technology'},
+                      { id: 8, title: 'Component'},
+                      { id: 9, title: 'Passenger'},
+                      { id: 10, title: 'Metal'},
+                      { id: 11, title: 'Salvage'},
+                      { id: 12, title: 'Industrial'},
+                      { id: 13, title: 'Vehicle'},
+                      { id: 14, title: 'Pharma'},
+                      { id: 15, title: 'Consumer Item'},
+                      { id: 16, title: 'Other Item'},
+                      { id: 17, title: 'Other'},
+                      { id: 18, title: 'Rare'}])
 
 approval_kinds[0].roles << roles[1] #execs - Role Request
 approval_kinds[1].roles << roles[1] #execs - Application Approval Request
 approval_kinds[2].roles << roles[1] #execs - Award Approval
 approval_kinds[3].roles << roles[1] #execs - Role Removal
-approval_kinds[4].roles << roles[10] #CFO {id: 5, title: 'Claim Request'}
+approval_kinds[4].roles << roles[10] #CFO { id: 5, title: 'Claim Request'}
 approval_kinds[5].roles << roles[9] #COO - Event Certification
 approval_kinds[5].roles << roles[8] #CEO - Event Certification
 approval_kinds[6].roles << roles[11]# hr director - Offender Report
@@ -682,54 +698,54 @@ divisions = Division.create([{ id: 1,
                                can_have_ships: false,
                                ordinal: 5 } ])
 
-jobs = Job.create([{id:1,title:"Chief Executive Officer",description:"The Chief Executive Officer is in no small terms the leader of BendroCorp. The CEO presides over the Executive Board and sets the strategic direction of BendroCorp. All Directors report to the CEO.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:1,max:1,hiring_description:nil,read_only:true,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:2,title:"Chief Operations Officer",description:"The Chief Operations Officer sees to the day to day 'tactical' operations of BendroCorp ensuring that the organization is running smoothly. All Directors report to the COO (and the CEO).",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:2,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:3,title:"Chief Financial Officer",description:"The boss",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:2,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:4,title:"Director of Human Resources",description:"The boss",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:5,title:"Customer Service Manager",description:"The Customer Service manager helps oversee various relationships with other corporation as well as researching avenues for better galactic engagement.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:4,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:6,title:"Director of Colonial Affairs",description:"The Director of Colonial Affairs oversees and leads the Colonial & Logistics division. They oversee all of BendroCorp logistical operations including shipping and mining along with the construction of outposts and colonies.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:7,title:"Director of Security",description:"The Director of Security is the leader of the Security & Safety Division and is directly responsible for ensuring the security of BendroCorp operations, assets and personnel from outside threats.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:8,title:"Director of Research",description:"Oversees the day-to-day operations of the Research Division. Maintains an active exploration plan which facilitates the diligent search for new jump points and star systems. Oversees the training for all personnel under their command and ensure that all of their subordinate have the units required to maintain their certifications. Reports to the Chief Operations Officer.",recruit_job_id:nil,next_job_id:nil,division_id:4,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:9,title:"Junior Merchant Captain",description:"Entry level position into the logistics side of the Colonial & Logistics Division.",recruit_job_id:nil,next_job_id:13,division_id:2,hiring:true,job_level_id:9,max:0,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:13},
-                    {id:10,title:"Junior Security Officer",description:"Entry-level security officer position. The 'beat cops' of BendroCorp. Security officers are what keep BendroCorp members safe. Security Officers are highly skilled operators who are highly effective in both space and ground combat.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:true,job_level_id:9,max:0,hiring_description:"Entry-level security officer position. The 'beat cops' of BendroCorp. Security officers are what keep BendroCorp members safe. Security Officers are highly skilled operators who are highly effective in both space and ground combat.",read_only:false,op_eligible:false,checks_max_headcount_from_id:14},
-                    {id:12,title:"Merchant Commander",description:"Manages a fleet of Merchant Captains.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:7,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:13,title:"Merchant Captain",description:"Merchant Captain are purveyors of economic opportunity for BendroCorp. Whether operating trade vessels hauling goods to and fro or operating a mining vessel to extract required resources for Engineers Merchant Captains are the economic backbone of BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:8,max:6,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:14,title:"Security Officer",description:"The 'beat cops' of BendroCorp. Security officers are what keep BendroCorp members safe. Security Officers are highly skilled operators who are highly effective in both space and ground combat.",recruit_job_id:nil,next_job_id:15,division_id:3,hiring:false,job_level_id:8,max:8,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:15,title:"Security Sergeant",description:"Supervises a wing of security officers. Responsible for the individual training of Security Officers under their supervision.",recruit_job_id:nil,next_job_id:16,division_id:3,hiring:false,job_level_id:7,max:2,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:16,title:"Security Lieutenant",description:"Not currently in use. Supervises up to three squads of security officers",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:5,max:0,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:17,title:"Senior Research Technician",description:"Overseas a team of technician dedicated to scientific research.",recruit_job_id:nil,next_job_id:17,division_id:4,hiring:false,job_level_id:9,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:18,title:"Junior Technician",description:"Entry level position into the Research Division. A researcher and scientist within the research division. A technician conducts various research projects at the direction of their Senior Technician and the Director of Research.",recruit_job_id:nil,next_job_id:19,division_id:4,hiring:true,job_level_id:8,max:0,hiring_description:"Entry level position into the Research Division. A researcher and scientist within the research division. A technician conducts various research projects at the direction of their Senior Technician and the Director of Research.",read_only:false,op_eligible:false,checks_max_headcount_from_id:19},
-                    {id:19,title:"Technician",description:"A researcher and scientist within the research division. A technician conducts various research projects at the direction of their Senior Technician and the Director of Research.",recruit_job_id:nil,next_job_id:20,division_id:4,hiring:false,job_level_id:7,max:6,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:20,title:"Senior Engineering Technician",description:"Overseas a team of technician dedicated to engineering research and asset recovery.",recruit_job_id:nil,next_job_id:nil,division_id:4,hiring:false,job_level_id:6,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:21,title:"Applicant",description:"An individual who has applied to BendroCorp",recruit_job_id:nil,next_job_id:nil,division_id:5,hiring:false,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:22,title:"Retired",description:"A person who has voluntarily left BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:6,hiring:nil,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:23,title:"Discharged",description:"A person who has involuntarily been removed from BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:6,hiring:false,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:24,title:"Withdrawn",description:"An individual who has withdrawn their application to BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:6,hiring:false,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:25,title:"Director of Medicine",description:"Is the senior physician within BendroCorp and directly responsible for the execution of proper medical care within BendroCorp. Responsible for developing the policies defined by the purpose for this division with input from other Directors and Executives. Develops training curriculum to train medical division staff in proper medical and patient care. Supervises, directs and is responsible for the day-to-day activities of the medical division. The Director of Medicine reports to the Chief Operations Officer.",recruit_job_id:nil,next_job_id:nil,division_id:7,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:26,title:"Physician",description:"Provides Tier 1 and Tier 2 medical care. Manages clinical teams as required. Assists the Chief Medical Officer as required in their duties.",recruit_job_id:nil,next_job_id:nil,division_id:7,hiring:false,job_level_id:4,max:2,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:27,title:"First Responder",description:"Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.",recruit_job_id:nil,next_job_id:26,division_id:7,hiring:false,job_level_id:7,max:4,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:28,title:"Junior First Responder",description:"Entry level position into the Medical Division. Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.",recruit_job_id:nil,next_job_id:27,division_id:7,hiring:false,job_level_id:8,max:0,hiring_description:"Entry level position into the Medical Division. Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.",read_only:false,op_eligible:true,checks_max_headcount_from_id:27},
-                    {id:29,title:"Security Captain",description:"The Security Captain is the second in command of the security division and reports to the Director of Security.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:4,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:31,title:"Senior Colonial Engineer",description:"The Senior Colonial Engineer acts as the primary operator supervisor of a BendroCorp Pioneer vessel. This will versed engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:nil,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:32,title:"Colonial Engineer",description:"The Colonial Engineer works under a Senior Colonial Engineer to execute on the safe operation of a BendroCorp Pioneer vessel. Engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:nil,max:4,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:33,title:"Junior Colonial Engineer",description:"The entry-level position into the Colonial side of the Colonial The Colonial Engineer works under a Senior Colonial Engineer to execute on the safe operation of a BendroCorp Pioneer vessel. Engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",recruit_job_id:nil,next_job_id:32,division_id:2,hiring:false,job_level_id:nil,max:0,hiring_description:"The entry-level position into the Colonial side of the Colonial The Colonial Engineer works under a Senior Colonial Engineer to execute on the safe operation of a BendroCorp Pioneer vessel. Engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",read_only:false,op_eligible:true,checks_max_headcount_from_id:32},
-                    {id:34,title:"Colonial Division (Inactive)",description:"An inactive member of the Colonial Division.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:35,title:"Security Division (Inactive)",description:"An inactive member of the Security Division.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:36,title:"Research Division (Inactive)",description:"An inactive member of the Research Division.",recruit_job_id:nil,next_job_id:nil,division_id:4,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
-                    {id:37,title:"Medical Division (Inactive)",description:"An inactive member of the Medical Division.",recruit_job_id:nil,next_job_id:nil,division_id:7,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:39,title:"Assistant to the CEO",description:"The administrative right hand of the CEO. Responsible for supporting the CEO in their duties. Performs all duties and tasks assigned by the CEO and reports only to the CEO.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:5,max:1,hiring_description:"The administrative right hand of the CEO. Responsible for supporting the CEO in their duties. Performs all duties and tasks assigned by the CEO and reports only to the CEO.",read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
-                    {id:40,title:"Assistant to the COO",description:"The administrative right hand of the COO. Responsible for supporting the COO in their duties. Performs all duties and tasks assigned by the COO and reports only to the COO.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:5,max:1,hiring_description:"The administrative right hand of the COO. Responsible for supporting the COO in their duties. Performs all duties and tasks assigned by the COO and reports only to the COO.",read_only:false,op_eligible:true,checks_max_headcount_from_id:nil}])
+jobs = Job.create([{ id:1,title:"Chief Executive Officer",description:"The Chief Executive Officer is in no small terms the leader of BendroCorp. The CEO presides over the Executive Board and sets the strategic direction of BendroCorp. All Directors report to the CEO.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:1,max:1,hiring_description:nil,read_only:true,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:2,title:"Chief Operations Officer",description:"The Chief Operations Officer sees to the day to day 'tactical' operations of BendroCorp ensuring that the organization is running smoothly. All Directors report to the COO (and the CEO).",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:2,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:3,title:"Chief Financial Officer",description:"The boss",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:2,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:4,title:"Director of Human Resources",description:"The boss",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:5,title:"Customer Service Manager",description:"The Customer Service manager helps oversee various relationships with other corporation as well as researching avenues for better galactic engagement.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:4,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:6,title:"Director of Colonial Affairs",description:"The Director of Colonial Affairs oversees and leads the Colonial & Logistics division. They oversee all of BendroCorp logistical operations including shipping and mining along with the construction of outposts and colonies.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:7,title:"Director of Security",description:"The Director of Security is the leader of the Security & Safety Division and is directly responsible for ensuring the security of BendroCorp operations, assets and personnel from outside threats.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:8,title:"Director of Research",description:"Oversees the day-to-day operations of the Research Division. Maintains an active exploration plan which facilitates the diligent search for new jump points and star systems. Oversees the training for all personnel under their command and ensure that all of their subordinate have the units required to maintain their certifications. Reports to the Chief Operations Officer.",recruit_job_id:nil,next_job_id:nil,division_id:4,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:9,title:"Junior Merchant Captain",description:"Entry level position into the logistics side of the Colonial & Logistics Division.",recruit_job_id:nil,next_job_id:13,division_id:2,hiring:true,job_level_id:9,max:0,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:13},
+                    { id:10,title:"Junior Security Officer",description:"Entry-level security officer position. The 'beat cops' of BendroCorp. Security officers are what keep BendroCorp members safe. Security Officers are highly skilled operators who are highly effective in both space and ground combat.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:true,job_level_id:9,max:0,hiring_description:"Entry-level security officer position. The 'beat cops' of BendroCorp. Security officers are what keep BendroCorp members safe. Security Officers are highly skilled operators who are highly effective in both space and ground combat.",read_only:false,op_eligible:false,checks_max_headcount_from_id:14},
+                    { id:12,title:"Merchant Commander",description:"Manages a fleet of Merchant Captains.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:7,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:13,title:"Merchant Captain",description:"Merchant Captain are purveyors of economic opportunity for BendroCorp. Whether operating trade vessels hauling goods to and fro or operating a mining vessel to extract required resources for Engineers Merchant Captains are the economic backbone of BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:8,max:6,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:14,title:"Security Officer",description:"The 'beat cops' of BendroCorp. Security officers are what keep BendroCorp members safe. Security Officers are highly skilled operators who are highly effective in both space and ground combat.",recruit_job_id:nil,next_job_id:15,division_id:3,hiring:false,job_level_id:8,max:8,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:15,title:"Security Sergeant",description:"Supervises a wing of security officers. Responsible for the individual training of Security Officers under their supervision.",recruit_job_id:nil,next_job_id:16,division_id:3,hiring:false,job_level_id:7,max:2,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:16,title:"Security Lieutenant",description:"Not currently in use. Supervises up to three squads of security officers",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:5,max:0,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:17,title:"Senior Research Technician",description:"Overseas a team of technician dedicated to scientific research.",recruit_job_id:nil,next_job_id:17,division_id:4,hiring:false,job_level_id:9,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:18,title:"Junior Technician",description:"Entry level position into the Research Division. A researcher and scientist within the research division. A technician conducts various research projects at the direction of their Senior Technician and the Director of Research.",recruit_job_id:nil,next_job_id:19,division_id:4,hiring:true,job_level_id:8,max:0,hiring_description:"Entry level position into the Research Division. A researcher and scientist within the research division. A technician conducts various research projects at the direction of their Senior Technician and the Director of Research.",read_only:false,op_eligible:false,checks_max_headcount_from_id:19},
+                    { id:19,title:"Technician",description:"A researcher and scientist within the research division. A technician conducts various research projects at the direction of their Senior Technician and the Director of Research.",recruit_job_id:nil,next_job_id:20,division_id:4,hiring:false,job_level_id:7,max:6,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:20,title:"Senior Engineering Technician",description:"Overseas a team of technician dedicated to engineering research and asset recovery.",recruit_job_id:nil,next_job_id:nil,division_id:4,hiring:false,job_level_id:6,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:21,title:"Applicant",description:"An individual who has applied to BendroCorp",recruit_job_id:nil,next_job_id:nil,division_id:5,hiring:false,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:22,title:"Retired",description:"A person who has voluntarily left BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:6,hiring:nil,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:23,title:"Discharged",description:"A person who has involuntarily been removed from BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:6,hiring:false,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:24,title:"Withdrawn",description:"An individual who has withdrawn their application to BendroCorp.",recruit_job_id:nil,next_job_id:nil,division_id:6,hiring:false,job_level_id:9,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:25,title:"Director of Medicine",description:"Is the senior physician within BendroCorp and directly responsible for the execution of proper medical care within BendroCorp. Responsible for developing the policies defined by the purpose for this division with input from other Directors and Executives. Develops training curriculum to train medical division staff in proper medical and patient care. Supervises, directs and is responsible for the day-to-day activities of the medical division. The Director of Medicine reports to the Chief Operations Officer.",recruit_job_id:nil,next_job_id:nil,division_id:7,hiring:false,job_level_id:3,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:26,title:"Physician",description:"Provides Tier 1 and Tier 2 medical care. Manages clinical teams as required. Assists the Chief Medical Officer as required in their duties.",recruit_job_id:nil,next_job_id:nil,division_id:7,hiring:false,job_level_id:4,max:2,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:27,title:"First Responder",description:"Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.",recruit_job_id:nil,next_job_id:26,division_id:7,hiring:false,job_level_id:7,max:4,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:28,title:"Junior First Responder",description:"Entry level position into the Medical Division. Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.",recruit_job_id:nil,next_job_id:27,division_id:7,hiring:false,job_level_id:8,max:0,hiring_description:"Entry level position into the Medical Division. Provides Tier 3 medical care. Assists in the stabilization of patients for Tier 1 and Tier 2 medical care. Participates in rescue and recovery operations. Performs other duties as directed by BendroCorp executives, Chief Medical Officer and medical division physicians.",read_only:false,op_eligible:true,checks_max_headcount_from_id:27},
+                    { id:29,title:"Security Captain",description:"The Security Captain is the second in command of the security division and reports to the Director of Security.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:4,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:31,title:"Senior Colonial Engineer",description:"The Senior Colonial Engineer acts as the primary operator supervisor of a BendroCorp Pioneer vessel. This will versed engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:nil,max:1,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:32,title:"Colonial Engineer",description:"The Colonial Engineer works under a Senior Colonial Engineer to execute on the safe operation of a BendroCorp Pioneer vessel. Engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:nil,max:4,hiring_description:nil,read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:33,title:"Junior Colonial Engineer",description:"The entry-level position into the Colonial side of the Colonial The Colonial Engineer works under a Senior Colonial Engineer to execute on the safe operation of a BendroCorp Pioneer vessel. Engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",recruit_job_id:nil,next_job_id:32,division_id:2,hiring:false,job_level_id:nil,max:0,hiring_description:"The entry-level position into the Colonial side of the Colonial The Colonial Engineer works under a Senior Colonial Engineer to execute on the safe operation of a BendroCorp Pioneer vessel. Engineers are responsible for ensuring the safe construction for homesteads, outposts, and colonies. ",read_only:false,op_eligible:true,checks_max_headcount_from_id:32},
+                    { id:34,title:"Colonial Division (Inactive)",description:"An inactive member of the Colonial Division.",recruit_job_id:nil,next_job_id:nil,division_id:2,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:35,title:"Security Division (Inactive)",description:"An inactive member of the Security Division.",recruit_job_id:nil,next_job_id:nil,division_id:3,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:36,title:"Research Division (Inactive)",description:"An inactive member of the Research Division.",recruit_job_id:nil,next_job_id:nil,division_id:4,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:false,checks_max_headcount_from_id:nil},
+                    { id:37,title:"Medical Division (Inactive)",description:"An inactive member of the Medical Division.",recruit_job_id:nil,next_job_id:nil,division_id:7,hiring:false,job_level_id:-1,max:-1,hiring_description:nil,read_only:true,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:39,title:"Assistant to the CEO",description:"The administrative right hand of the CEO. Responsible for supporting the CEO in their duties. Performs all duties and tasks assigned by the CEO and reports only to the CEO.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:5,max:1,hiring_description:"The administrative right hand of the CEO. Responsible for supporting the CEO in their duties. Performs all duties and tasks assigned by the CEO and reports only to the CEO.",read_only:false,op_eligible:true,checks_max_headcount_from_id:nil},
+                    { id:40,title:"Assistant to the COO",description:"The administrative right hand of the COO. Responsible for supporting the COO in their duties. Performs all duties and tasks assigned by the COO and reports only to the COO.",recruit_job_id:nil,next_job_id:nil,division_id:1,hiring:false,job_level_id:5,max:1,hiring_description:"The administrative right hand of the COO. Responsible for supporting the COO in their duties. Performs all duties and tasks assigned by the COO and reports only to the COO.",read_only:false,op_eligible:true,checks_max_headcount_from_id:nil}])
 
-acttype = UserAccountType.create([{id: 1, title: 'Membership', ordinal: 1}, {id: 2, title: 'Diplomat', ordinal: 2}, {id: 3, title: 'Customer', ordinal: 3}])
+acttype = UserAccountType.create([{ id: 1, title: 'Membership', ordinal: 1}, { id: 2, title: 'Diplomat', ordinal: 2}, { id: 3, title: 'Customer', ordinal: 3}])
 
-apptypes = ApplicationStatus.create([{id: 1, title: 'Submitted', description: 'Your application has been submitted and is undergoing initial checks before being made available for initial review.', ordinal: 1},
-                                    {id: 2, title: '360 Review', description: 'Your application is currently undergoing a 360 review by our membership. During this period all of the current membership has the opportunity to comment on your application.', ordinal: 2},
-                                    {id: 3, title: 'Referred for Interview', description: 'Your application has been referred for an interview. You should be contacted within 1-2 days via email to schedule an interview.', ordinal: 3},
-                                    {id: 4, title: 'Executive Review', description: 'Your application is currently under review by the Executive Board for a near final review of all application materials. The Executive Board makes the final recomendation on who is and is not accepted as a member into BendroCorp.', ordinal: 4},
-                                    {id: 5, title: 'CEO Review', description: 'Your application is currently under review of the Chief Executive Officer of BendroCorp. The CEO reviews all previous reccomendations from employees and the Executive Board to make a final determination on who is and is not accepted as a member into BendroCorp.', ordinal: 5},
-                                    {id: 6, title: 'Accepted', description: 'Your application has been accepted. You will be contacted by the Director of Human Resources and your respective division Director shortly.', ordinal: 6},
-                                    {id: 7, title: 'Declined', description: 'Your application to BendroCorp has been declined. A member of our HR team will be following up with you to explain the reasoning.', ordinal: 7},
-                                    {id: 8, title: 'Withdrawn', description: 'You have withdrawn your application.', ordinal:8}])
+apptypes = ApplicationStatus.create([{ id: 1, title: 'Submitted', description: 'Your application has been submitted and is undergoing initial checks before being made available for initial review.', ordinal: 1},
+                                    { id: 2, title: '360 Review', description: 'Your application is currently undergoing a 360 review by our membership. During this period all of the current membership has the opportunity to comment on your application.', ordinal: 2},
+                                    { id: 3, title: 'Referred for Interview', description: 'Your application has been referred for an interview. You should be contacted within 1-2 days via email to schedule an interview.', ordinal: 3},
+                                    { id: 4, title: 'Executive Review', description: 'Your application is currently under review by the Executive Board for a near final review of all application materials. The Executive Board makes the final recomendation on who is and is not accepted as a member into BendroCorp.', ordinal: 4},
+                                    { id: 5, title: 'CEO Review', description: 'Your application is currently under review of the Chief Executive Officer of BendroCorp. The CEO reviews all previous reccomendations from employees and the Executive Board to make a final determination on who is and is not accepted as a member into BendroCorp.', ordinal: 5},
+                                    { id: 6, title: 'Accepted', description: 'Your application has been accepted. You will be contacted by the Director of Human Resources and your respective division Director shortly.', ordinal: 6},
+                                    { id: 7, title: 'Declined', description: 'Your application to BendroCorp has been declined. A member of our HR team will be following up with you to explain the reasoning.', ordinal: 7},
+                                    { id: 8, title: 'Withdrawn', description: 'You have withdrawn your application.', ordinal:8}])
 
 user_sys = User.create(id: 0, username: 'System', email: 'no-reply@bendrocorp.com', password: 'gqsUIhu2uUhghJiMIdNr', password_confirmation: 'gqsUIsdfgdsfghu2uUhghJiMIdNrdsfg45', is_member: true, is_admin: true, email_verified: true, locked: true, login_allowed: false)
 user2 = User.create(id: 2, username: 'Stevo', email: 'dale@daleslab.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
@@ -792,9 +808,9 @@ Event.create([{name: 'Test Event 1', description: 'This is a test event (1)', st
 
 # Create some system map data
 SystemMapSystem.create([{ title: 'Stanton', description: 'Stanton details to be filled in...', discovered_by: user1 }])
-SystemMapSystemGravityWell.create([{ title: 'Stanton', description: 'Stanton\'s star', system: SystemMapSystem.first, gravity_well_type: SystemMapSystemGravityWellType.find_by_id(6), luminosity_class: SystemMapSystemGravityWellLuminosityClass.find_by_id(6), discovered_by: user1 }])
+SystemMapSystemGravityWell.create([{ title: 'Stanton', description: 'Stanton\'s star', system: SystemMapSystem.first, gravity_well_type: FieldDescriptor.find_by_id('98e7673d-99f2-4e76-bf08-f4e94abc303c'), luminosity_class: FieldDescriptor.find_by_id('dbfeb49c-4bff-4f2d-812d-f09685ba7c96'), discovered_by: user1 }])
 SystemMapSystemPlanetaryBody.create([{ orbits_system: SystemMapSystem.first, title: 'Crusader', description: 'A gas giant. Home to Crusader Industries and BendroCorp.', discovered_by: user1  },
-                                     { orbits_system: SystemMapSystem.first, title: 'Hursten', description: 'A gas giant. Home to Crusader Industries and BendroCorp.', discovered_by: user1  }])
+                                     { orbits_system: SystemMapSystem.first, title: 'Hurston', description: 'Home to Hurston Dynamics.', discovered_by: user1  }])
 SystemMapSystemPlanetaryBodyMoon.create([{ title: 'Yela', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 },
                                          { title: 'Daymar', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 },
                                          { title: 'Cellin', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 }])

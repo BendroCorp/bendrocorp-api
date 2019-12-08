@@ -8,16 +8,16 @@ class CreateOffenderReports < ActiveRecord::Migration[5.1]
 
       t.datetime :occured_when
 
-      #refs
+      # refs
       t.belongs_to :violence_rating
       t.belongs_to :offender
       t.belongs_to :ship
-      t.belongs_to :system
-      t.belongs_to :planet
-      t.belongs_to :moon
-      t.belongs_to :system_object
-      t.belongs_to :settlement
-      t.belongs_to :location
+      t.belongs_to :system, type: :uuid
+      t.belongs_to :planet, type: :uuid
+      t.belongs_to :moon, type: :uuid
+      t.belongs_to :system_object, type: :uuid
+      t.belongs_to :settlement, type: :uuid
+      t.belongs_to :location, type: :uuid
       t.belongs_to :offender_report_approval_request
 
       t.belongs_to :force_level_applied

@@ -3,11 +3,12 @@ class CreateSystemMapSystemPlanetaryBodyMoons < ActiveRecord::Migration[5.1]
     create_table :system_map_system_planetary_body_moons, id: :uuid do |t|
       t.text :title
       t.text :description
+      t.text :tags
       t.belongs_to :orbits_planet, index: false, id: :uuid
       t.belongs_to :discovered_by, index: false
-      t.belongs_to :faction_affiliation, index: false
+      t.belongs_to :faction_affiliation, type: :uuid, index: false
       t.boolean :discovered
-      t.boolean :archived
+      t.boolean :archived, default: false
       t.boolean :approved, default: true
 
       #standard known characteristics
@@ -43,6 +44,7 @@ class CreateSystemMapSystemPlanetaryBodyMoons < ActiveRecord::Migration[5.1]
       t.text :mass
 
       t.belongs_to :jurisdiction, index: false
+      t.belongs_to :classification_level, index: false
 
       t.belongs_to :primary_image, index: false
       t.timestamps

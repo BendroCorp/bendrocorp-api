@@ -5,6 +5,7 @@ class CreateFieldDescriptors < ActiveRecord::Migration[5.1]
       t.text :title
       t.text :description
       t.text :ordinal
+      t.boolean :read_only, default: false
       t.timestamps
     end
   end

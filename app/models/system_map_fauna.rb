@@ -12,6 +12,10 @@ class SystemMapFauna < ApplicationRecord
 
   accepts_nested_attributes_for :primary_image
 
+  def kind
+    "Fauna"
+  end
+
   def primary_image_url
     if self.primary_image != nil
       self.primary_image.image_url_thumbnail

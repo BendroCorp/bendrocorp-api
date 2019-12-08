@@ -14,6 +14,8 @@ class CreateSystemMapImages < ActiveRecord::Migration[5.1]
       t.belongs_to :of_location, type: :uuid
       t.belongs_to :of_settlement, type: :uuid
       t.belongs_to :of_gravity_well, type: :uuid
+      t.belongs_to :of_mission_giver, type: :uuid
+      t.belongs_to :of_connection, type: :uuid
       t.timestamps
     end
   end

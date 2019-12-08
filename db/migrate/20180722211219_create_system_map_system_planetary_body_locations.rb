@@ -3,6 +3,7 @@ class CreateSystemMapSystemPlanetaryBodyLocations < ActiveRecord::Migration[5.1]
     create_table :system_map_system_planetary_body_locations, id: :uuid do |t|
       t.text :title
       t.text :description
+      t.text :tags
       t.boolean :approved, default: true
 
       t.text :coordinates #we will probably only get this
@@ -14,13 +15,14 @@ class CreateSystemMapSystemPlanetaryBodyLocations < ActiveRecord::Migration[5.1]
       t.belongs_to :on_planet, index: false, type: :uuid
       t.belongs_to :on_system_object, index: false, type: :uuid
       t.belongs_to :on_settlement, index: false, type: :uuid
-      t.belongs_to :faction_affiliation, index: false
+      t.belongs_to :faction_affiliation, type: :uuid, index: false
       t.integer :minimum_criminality_rating
 
       t.belongs_to :discovered_by, index: false
+      t.belongs_to :classification_level, index: false
       t.belongs_to :primary_image, index: false, type: :uuid
       t.boolean :discovered
-      t.boolean :archived
+      t.boolean :archived, default: false
       t.timestamps
     end
     add_index :system_map_system_planetary_body_locations, :location_type_id, name: "location_type_id"
