@@ -219,9 +219,9 @@ class ApprovalsController < ApplicationController
       if approval.save
         # #
         if approval.approved && !approval.denied
-          SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{@approval.id} has been approved!", site_log_type_id: 2)
+          SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{approval.id} has been approved!", site_log_type_id: 2)
         elsif !approval.approved && approval.denied
-          SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{@approval.id} has been denied!", site_log_type_id: 2)
+          SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{approval.id} has been denied!", site_log_type_id: 2)
         end
 
         # run final workflow
