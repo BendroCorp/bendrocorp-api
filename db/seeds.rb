@@ -166,27 +166,6 @@ alert_types = AlertType.create([{ id: 1, title: 'Notice', sub_title: '', descrip
                                 { id: 4, title: 'Travel Ban', sub_title: 'Long-Term', description: 'Indicates that employees are not allowed to operate in the system in an official capacity without an escort or Executive approval'},
                                 { id: 5, title: 'CSAR', sub_title: 'Rescue Request', description: 'An employee is requesting emergency assistance.', selectable:true }])
 
-systemmapobjecttypes2 = SystemMapSystemPlanetaryBodyType.create([{ id: 1, title: "Temperate", description: ""},
-                                                                { id: 2, title: "Rocky/Barren", description: ""},
-                                                                { id: 3, title: "Toxic", description: ""},
-                                                                { id: 4, title: "Ocean", description: ""},
-                                                                { id: 5, title: "Ice", description: ""},
-                                                                { id: 6, title: "Lava/Proto", description: ""},
-                                                                { id: 7, title: "City", description: ""},
-                                                                { id: 8, title: "Artificial", description: ""},
-                                                                { id: 9, title: "Asteroid Cluster", description: ""},
-                                                                { id: 10, title: "Gas Giant", description:""}])
-
-systemmapobjecttypes3 = SystemMapSystemPlanetaryBodyMoonType.create([{ id: 1, title: "Temperate", description: ""},
-                                                                { id: 2, title: "Rocky/Barren", description: ""},
-                                                                { id: 3, title: "Toxic", description: ""},
-                                                                { id: 4, title: "Ocean", description: ""},
-                                                                { id: 5, title: "Ice", description: ""},
-                                                                { id: 6, title: "Lava/Proto", description: ""},
-                                                                { id: 7, title: "City", description: ""},
-                                                                { id: 8, title: "Artificial", description: ""},
-                                                                { id: 9, title: "Asteroid Belt/Planetary Ring", description: ""}])
-
 factions = FactionAffiliation.create([{ title: 'UEE', description: 'To be added', color: '#48BBD5' },
                                       { title: 'Banu', description: 'To be added', color: '#FFCE17' },
                                       { title: 'Vanduul', description: 'To be added', color: '#BD002D' },
