@@ -7,7 +7,7 @@ class CreateSystemMapSystemPlanetaryBodies < ActiveRecord::Migration[5.1]
       t.belongs_to :orbits_system, index: false, id: :uuid
       t.belongs_to :discovered_by
       t.belongs_to :faction_affiliation, type: :uuid, index: false
-      t.belongs_to :safety_rating
+      t.belongs_to :safety_rating, type: :uuid
       t.boolean :discovered
       t.boolean :archived, default: false
       t.boolean :approved, default: true

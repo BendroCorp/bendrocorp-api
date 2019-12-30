@@ -1571,14 +1571,6 @@ ActiveRecord::Schema.define(version: 20191207225348) do
 # Could not dump table "system_map_system_planetary_body_moons" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_safety_ratings", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.string "color"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
 # Could not dump table "system_map_system_settlements" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
 

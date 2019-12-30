@@ -200,9 +200,9 @@ OffenderReportForceLevel.create([{ id: 1, title: "None", description: "No force 
                                  { id: 4, title: "Lethal", description: "Lethal force was used to stop the offender", ordinal: 4 },
                                  { id: 5, title: "None (Unable)", description: "Force could not be used to stop the offender (explain)", ordinal: 5 }])
 
-SystemMapSystemSafetyRating.create([{ id: 1, title: "No Threat", description: "There have been no recent reports of BendroCorp ships being attacked here.", color:"green" },
-                                   { id: 2, title: "Threat Exists", description: "There have been recent but non-frequent reports of BendroCorp ships being fired on this area or along this flight path. Exercise caution.", color:"yellow" },
-                                   { id: 3, title: "Escort Required", description: "There have been recent and frequent reports of BendroCorp ships being attacked in this area or along this flight path. Corporate freighters and medium-large ships on sanctioned missions are required to have an escort in this area.", color:"red" }])
+# SystemMapSystemSafetyRating.create([{ id: 1, title: "No Threat", description: "There have been no recent reports of BendroCorp ships being attacked here.", color:"green" },
+#                                    { id: 2, title: "Threat Exists", description: "There have been recent but non-frequent reports of BendroCorp ships being fired on this area or along this flight path. Exercise caution.", color:"yellow" },
+#                                    { id: 3, title: "Escort Required", description: "There have been recent and frequent reports of BendroCorp ships being attacked in this area or along this flight path. Corporate freighters and medium-large ships on sanctioned missions are required to have an escort in this area.", color:"red" }])
 
 # SystemMapObjectKind.create([{ id: 1, title: "System", class_name: "SystemMapSystem"},
 #                             { id: 2, title: "Gravity Well", class_name: "SystemMapSystemGravityWell"},
