@@ -15,6 +15,7 @@ class CreateSystemMapSystemConnections < ActiveRecord::Migration[5.1]
       t.belongs_to :classification_level, index: false
 
       t.belongs_to :discovered_by
+      t.boolean :approved, default: true
       t.boolean :archived, default: false
       t.timestamps
     end
