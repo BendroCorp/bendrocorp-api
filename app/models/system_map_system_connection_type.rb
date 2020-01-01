@@ -1,2 +1,0 @@
-class SystemMapSystemConnectionType < ApplicationRecord
-end

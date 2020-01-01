@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191130010428) do
+ActiveRecord::Schema.define(version: 20191207225348) do
 
   create_table "activities", force: :cascade do |t|
     t.text "text"
@@ -550,13 +550,8 @@ ActiveRecord::Schema.define(version: 20191130010428) do
     t.index ["event_type_id"], name: "index_events_on_event_type_id"
   end
 
-  create_table "faction_affiliations", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.text "icon"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "faction_affiliations" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
 # Could not dump table "field_descriptors" because of following StandardError
 #   Unknown type 'uuid' for column 'id'
@@ -573,37 +568,8 @@ ActiveRecord::Schema.define(version: 20191130010428) do
     t.index ["image_upload_id"], name: "index_flight_log_images_on_image_upload_id"
   end
 
-  create_table "flight_logs", force: :cascade do |t|
-    t.text "title"
-    t.text "text"
-    t.boolean "public", default: false
-    t.boolean "privacy_changes_allowed", default: true
-    t.boolean "locked", default: false
-    t.boolean "finalized", default: false
-    t.integer "owned_ship_id"
-    t.integer "system_id"
-    t.integer "planet_id"
-    t.integer "moon_id"
-    t.integer "system_object_id"
-    t.integer "settlement_id"
-    t.integer "location_id"
-    t.integer "offender_report_id"
-    t.integer "trade_calculation_id"
-    t.integer "log_owner_id"
-    t.boolean "archived", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["location_id"], name: "index_flight_logs_on_location_id"
-    t.index ["log_owner_id"], name: "index_flight_logs_on_log_owner_id"
-    t.index ["moon_id"], name: "index_flight_logs_on_moon_id"
-    t.index ["offender_report_id"], name: "index_flight_logs_on_offender_report_id"
-    t.index ["owned_ship_id"], name: "index_flight_logs_on_owned_ship_id"
-    t.index ["planet_id"], name: "index_flight_logs_on_planet_id"
-    t.index ["settlement_id"], name: "index_flight_logs_on_settlement_id"
-    t.index ["system_id"], name: "index_flight_logs_on_system_id"
-    t.index ["system_object_id"], name: "index_flight_logs_on_system_object_id"
-    t.index ["trade_calculation_id"], name: "index_flight_logs_on_trade_calculation_id"
-  end
+# Could not dump table "flight_logs" because of following StandardError
+#   Unknown type 'uuid' for column 'system_id'
 
   create_table "image_uploads", force: :cascade do |t|
     t.text "title"
@@ -1011,41 +977,8 @@ ActiveRecord::Schema.define(version: 20191130010428) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "offender_reports", force: :cascade do |t|
-    t.text "description"
-    t.boolean "report_approved"
-    t.boolean "submitted_for_approval", default: false
-    t.integer "created_by_id"
-    t.datetime "occured_when"
-    t.integer "violence_rating_id"
-    t.integer "offender_id"
-    t.integer "ship_id"
-    t.integer "system_id"
-    t.integer "planet_id"
-    t.integer "moon_id"
-    t.integer "system_object_id"
-    t.integer "settlement_id"
-    t.integer "location_id"
-    t.integer "offender_report_approval_request_id"
-    t.integer "force_level_applied_id"
-    t.boolean "archived", default: false
-    t.integer "classification_level_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["classification_level_id"], name: "index_offender_reports_on_classification_level_id"
-    t.index ["created_by_id"], name: "index_offender_reports_on_created_by_id"
-    t.index ["force_level_applied_id"], name: "index_offender_reports_on_force_level_applied_id"
-    t.index ["location_id"], name: "index_offender_reports_on_location_id"
-    t.index ["moon_id"], name: "index_offender_reports_on_moon_id"
-    t.index ["offender_id"], name: "index_offender_reports_on_offender_id"
-    t.index ["offender_report_approval_request_id"], name: "index_offender_reports_on_offender_report_approval_request_id"
-    t.index ["planet_id"], name: "index_offender_reports_on_planet_id"
-    t.index ["settlement_id"], name: "index_offender_reports_on_settlement_id"
-    t.index ["ship_id"], name: "index_offender_reports_on_ship_id"
-    t.index ["system_id"], name: "index_offender_reports_on_system_id"
-    t.index ["system_object_id"], name: "index_offender_reports_on_system_object_id"
-    t.index ["violence_rating_id"], name: "index_offender_reports_on_violence_rating_id"
-  end
+# Could not dump table "offender_reports" because of following StandardError
+#   Unknown type 'uuid' for column 'system_id'
 
   create_table "organization_ship_requests", force: :cascade do |t|
     t.integer "user_id"
@@ -1608,435 +1541,41 @@ ActiveRecord::Schema.define(version: 20191130010428) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "system_map_faunas", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "is_predator"
-    t.boolean "is_sentient"
-    t.integer "density", limit: 10
-    t.integer "on_moon_id"
-    t.integer "on_planet_id"
-    t.integer "on_system_object_id"
-    t.integer "discovered_by_id"
-    t.integer "primary_image_id"
-    t.boolean "approved", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_faunas_on_discovered_by_id"
-    t.index ["on_moon_id"], name: "index_system_map_faunas_on_on_moon_id"
-    t.index ["on_planet_id"], name: "index_system_map_faunas_on_on_planet_id"
-    t.index ["on_system_object_id"], name: "index_system_map_faunas_on_on_system_object_id"
-    t.index ["primary_image_id"], name: "index_system_map_faunas_on_primary_image_id"
-  end
+# Could not dump table "system_map_faunas" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_floras", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "is_predator"
-    t.boolean "is_toxic"
-    t.boolean "is_sentient"
-    t.integer "density", limit: 10
-    t.integer "on_moon_id"
-    t.integer "on_planet_id"
-    t.integer "on_system_object_id"
-    t.integer "discovered_by_id"
-    t.integer "primary_image_id"
-    t.boolean "approved", default: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_floras_on_discovered_by_id"
-    t.index ["on_moon_id"], name: "index_system_map_floras_on_on_moon_id"
-    t.index ["on_planet_id"], name: "index_system_map_floras_on_on_planet_id"
-    t.index ["on_system_object_id"], name: "index_system_map_floras_on_on_system_object_id"
-    t.index ["primary_image_id"], name: "index_system_map_floras_on_primary_image_id"
-  end
+# Could not dump table "system_map_floras" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_images", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.integer "created_by_id"
-    t.boolean "is_default_image", default: false
-    t.integer "of_system_id"
-    t.integer "of_planet_id"
-    t.integer "of_moon_id"
-    t.integer "of_system_object_id"
-    t.integer "of_location_id"
-    t.integer "of_settlement_id"
-    t.integer "of_gravity_well_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "image_file_name"
-    t.string "image_content_type"
-    t.bigint "image_file_size"
-    t.datetime "image_updated_at"
-    t.index ["created_by_id"], name: "index_system_map_images_on_created_by_id"
-    t.index ["of_gravity_well_id"], name: "index_system_map_images_on_of_gravity_well_id"
-    t.index ["of_location_id"], name: "index_system_map_images_on_of_location_id"
-    t.index ["of_moon_id"], name: "index_system_map_images_on_of_moon_id"
-    t.index ["of_planet_id"], name: "index_system_map_images_on_of_planet_id"
-    t.index ["of_settlement_id"], name: "index_system_map_images_on_of_settlement_id"
-    t.index ["of_system_id"], name: "index_system_map_images_on_of_system_id"
-    t.index ["of_system_object_id"], name: "index_system_map_images_on_of_system_object_id"
-  end
+# Could not dump table "system_map_images" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_object_kinds", force: :cascade do |t|
-    t.text "title"
-    t.text "class_name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "system_map_mission_givers" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_observations", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.integer "of_system_id"
-    t.integer "of_planet_id"
-    t.integer "of_moon_id"
-    t.integer "of_system_object_id"
-    t.integer "of_location_id"
-    t.integer "of_gravity_well_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["of_gravity_well_id"], name: "index_system_map_observations_on_of_gravity_well_id"
-    t.index ["of_location_id"], name: "index_system_map_observations_on_of_location_id"
-    t.index ["of_moon_id"], name: "index_system_map_observations_on_of_moon_id"
-    t.index ["of_planet_id"], name: "index_system_map_observations_on_of_planet_id"
-    t.index ["of_system_id"], name: "index_system_map_observations_on_of_system_id"
-    t.index ["of_system_object_id"], name: "index_system_map_observations_on_of_system_object_id"
-  end
+# Could not dump table "system_map_system_connections" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_connection_sizes", force: :cascade do |t|
-    t.string "size"
-    t.string "size_short"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "system_map_system_gravity_wells" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_connection_statuses", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "system_map_system_objects" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_connection_types", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "system_map_system_planetary_bodies" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_connections", force: :cascade do |t|
-    t.integer "system_map_system_connection_size_id"
-    t.integer "system_map_system_connection_status_id"
-    t.integer "system_one_id"
-    t.integer "system_two_id"
-    t.integer "discovered_by_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.boolean "collapsed"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_system_connections_on_discovered_by_id"
-    t.index ["system_map_system_connection_size_id"], name: "conn_size_id"
-    t.index ["system_map_system_connection_status_id"], name: "conn_size_status"
-    t.index ["system_one_id"], name: "index_system_map_system_connections_on_system_one_id"
-    t.index ["system_two_id"], name: "index_system_map_system_connections_on_system_two_id"
-  end
+# Could not dump table "system_map_system_planetary_body_locations" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_gravity_well_luminosity_classes", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "system_map_system_planetary_body_moons" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_gravity_well_types", force: :cascade do |t|
-    t.string "title"
-    t.string "well_type"
-    t.string "color"
-    t.string "approx_surface_temperature"
-    t.text "main_characteristics"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
+# Could not dump table "system_map_system_settlements" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
-  create_table "system_map_system_gravity_wells", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "approved", default: true
-    t.integer "system_id"
-    t.integer "gravity_well_type_id"
-    t.integer "luminosity_class_id"
-    t.integer "discovered_by_id"
-    t.integer "primary_image_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_system_gravity_wells_on_discovered_by_id"
-    t.index ["gravity_well_type_id"], name: "index_system_map_system_gravity_wells_on_gravity_well_type_id"
-    t.index ["luminosity_class_id"], name: "index_system_map_system_gravity_wells_on_luminosity_class_id"
-    t.index ["primary_image_id"], name: "index_system_map_system_gravity_wells_on_primary_image_id"
-    t.index ["system_id"], name: "index_system_map_system_gravity_wells_on_system_id"
-  end
-
-  create_table "system_map_system_object_types", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "system_map_system_objects", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "approved", default: true
-    t.integer "object_type_id"
-    t.integer "orbits_system_id"
-    t.integer "orbits_planet_id"
-    t.integer "orbits_moon_id"
-    t.integer "discovered_by_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.boolean "atmosphere_present"
-    t.boolean "atmosphere_human_breathable"
-    t.float "atmo_pressure"
-    t.float "population_density"
-    t.float "economic_rating"
-    t.float "general_radiation"
-    t.integer "minimum_criminality_rating"
-    t.text "semi_major_axis"
-    t.text "apoapsis"
-    t.text "periapsis"
-    t.text "orbital_eccentricity"
-    t.text "orbital_inclination"
-    t.text "argument_of_periapsis"
-    t.text "longitude_of_the_ascending_node"
-    t.text "mean_anomaly"
-    t.text "sidereal_orbital_period"
-    t.text "synodic_orbital_period"
-    t.text "orbital_velocity"
-    t.integer "jurisdiction_id"
-    t.integer "primary_image_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_system_objects_on_discovered_by_id"
-    t.index ["jurisdiction_id"], name: "index_system_map_system_objects_on_jurisdiction_id"
-    t.index ["object_type_id"], name: "index_system_map_system_objects_on_object_type_id"
-    t.index ["orbits_moon_id"], name: "index_system_map_system_objects_on_orbits_moon_id"
-    t.index ["orbits_planet_id"], name: "index_system_map_system_objects_on_orbits_planet_id"
-    t.index ["orbits_system_id"], name: "index_system_map_system_objects_on_orbits_system_id"
-    t.index ["primary_image_id"], name: "index_system_map_system_objects_on_primary_image_id"
-  end
-
-  create_table "system_map_system_planetary_bodies", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.integer "orbits_system_id"
-    t.integer "discovered_by_id"
-    t.integer "faction_affiliation_id"
-    t.integer "safety_rating_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.boolean "approved", default: true
-    t.boolean "atmosphere_present"
-    t.boolean "atmosphere_human_breathable"
-    t.integer "atmospheric_height"
-    t.float "atmo_pressure"
-    t.boolean "surface_hazards"
-    t.float "tempature_max"
-    t.float "tempature_min"
-    t.float "solar_day"
-    t.float "population_density"
-    t.float "economic_rating"
-    t.float "general_radiation"
-    t.integer "minimum_criminality_rating"
-    t.text "semi_major_axis"
-    t.text "apoapsis"
-    t.text "periapsis"
-    t.text "orbital_eccentricity"
-    t.text "orbital_inclination"
-    t.text "argument_of_periapsis"
-    t.text "longitude_of_the_ascending_node"
-    t.text "mean_anomaly"
-    t.text "sidereal_orbital_period"
-    t.text "synodic_orbital_period"
-    t.text "orbital_velocity"
-    t.text "surface_gravity"
-    t.text "escape_velocity"
-    t.text "mass"
-    t.integer "jurisdiction_id"
-    t.integer "primary_image_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_system_planetary_bodies_on_discovered_by_id"
-    t.index ["faction_affiliation_id"], name: "planet_faction_id"
-    t.index ["jurisdiction_id"], name: "planet_juristiction_id"
-    t.index ["orbits_system_id"], name: "orbits_system_id"
-    t.index ["primary_image_id"], name: "planet_primary_image"
-    t.index ["safety_rating_id"], name: "index_system_map_system_planetary_bodies_on_safety_rating_id"
-  end
-
-  create_table "system_map_system_planetary_body_location_types", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "system_map_system_planetary_body_locations", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "approved", default: true
-    t.text "coordinates"
-    t.float "long"
-    t.float "lat"
-    t.integer "location_type_id"
-    t.integer "on_moon_id"
-    t.integer "on_planet_id"
-    t.integer "on_system_object_id"
-    t.integer "on_settlement_id"
-    t.integer "faction_affiliation_id"
-    t.integer "minimum_criminality_rating"
-    t.integer "discovered_by_id"
-    t.integer "primary_image_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "location_discovered_by_id"
-    t.index ["faction_affiliation_id"], name: "location_faction_id"
-    t.index ["location_type_id"], name: "location_type_id"
-    t.index ["on_moon_id"], name: "on_moon_id"
-    t.index ["on_planet_id"], name: "on_planet_id"
-    t.index ["on_system_object_id"], name: "on_system_object_in_id"
-    t.index ["primary_image_id"], name: "location_primary_image"
-  end
-
-  create_table "system_map_system_planetary_body_moon_type_ins", force: :cascade do |t|
-    t.integer "moon_id"
-    t.integer "moon_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["moon_id"], name: "moon_id"
-    t.index ["moon_id"], name: "planet_id"
-    t.index ["moon_type_id"], name: "moon_type_id"
-    t.index ["moon_type_id"], name: "planet_type_id"
-  end
-
-  create_table "system_map_system_planetary_body_moon_types", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "system_map_system_planetary_body_moons", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.integer "orbits_planet_id"
-    t.integer "discovered_by_id"
-    t.integer "faction_affiliation_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.boolean "approved", default: true
-    t.boolean "atmosphere_present"
-    t.boolean "atmosphere_human_breathable"
-    t.integer "atmospheric_height"
-    t.float "atmo_pressure"
-    t.boolean "surface_hazards"
-    t.float "tempature_max"
-    t.float "tempature_min"
-    t.float "solar_day"
-    t.float "population_density"
-    t.float "economic_rating"
-    t.float "general_radiation"
-    t.integer "minimum_criminality_rating"
-    t.text "semi_major_axis"
-    t.text "apoapsis"
-    t.text "periapsis"
-    t.text "orbital_eccentricity"
-    t.text "orbital_inclination"
-    t.text "argument_of_periapsis"
-    t.text "longitude_of_the_ascending_node"
-    t.text "mean_anomaly"
-    t.text "sidereal_orbital_period"
-    t.text "synodic_orbital_period"
-    t.text "orbital_velocity"
-    t.text "surface_gravity"
-    t.text "escape_velocity"
-    t.text "mass"
-    t.integer "jurisdiction_id"
-    t.integer "primary_image_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "moon_discovered_by_id"
-    t.index ["jurisdiction_id"], name: "moon_juristiction_id"
-    t.index ["orbits_planet_id"], name: "orbits_planet_id"
-    t.index ["primary_image_id"], name: "moon_primary_image"
-  end
-
-  create_table "system_map_system_planetary_body_type_ins", force: :cascade do |t|
-    t.integer "planet_id"
-    t.integer "planet_type_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "system_map_system_planetary_body_types", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "system_map_system_safety_ratings", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.string "color"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "system_map_system_settlements", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.text "coordinates"
-    t.boolean "approved", default: true
-    t.integer "faction_affiliation_id"
-    t.integer "safety_rating_id"
-    t.integer "on_planet_id"
-    t.integer "on_moon_id"
-    t.integer "primary_image_id"
-    t.integer "discovered_by_id"
-    t.integer "minimum_criminality_rating"
-    t.integer "jurisdiction_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_system_settlements_on_discovered_by_id"
-    t.index ["faction_affiliation_id"], name: "index_system_map_system_settlements_on_faction_affiliation_id"
-    t.index ["jurisdiction_id"], name: "index_system_map_system_settlements_on_jurisdiction_id"
-    t.index ["on_moon_id"], name: "index_system_map_system_settlements_on_on_moon_id"
-    t.index ["on_planet_id"], name: "index_system_map_system_settlements_on_on_planet_id"
-    t.index ["primary_image_id"], name: "index_system_map_system_settlements_on_primary_image_id"
-    t.index ["safety_rating_id"], name: "index_system_map_system_settlements_on_safety_rating_id"
-  end
-
-  create_table "system_map_systems", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.boolean "approved", default: true
-    t.integer "discovered_by_id"
-    t.integer "faction_affiliation_id"
-    t.boolean "discovered"
-    t.boolean "archived"
-    t.integer "jurisdiction_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["discovered_by_id"], name: "index_system_map_systems_on_discovered_by_id"
-    t.index ["faction_affiliation_id"], name: "index_system_map_systems_on_faction_affiliation_id"
-    t.index ["jurisdiction_id"], name: "index_system_map_systems_on_jurisdiction_id"
-  end
+# Could not dump table "system_map_systems" because of following StandardError
+#   Unknown type 'uuid' for column 'id'
 
   create_table "task_logs", force: :cascade do |t|
     t.text "task_id"

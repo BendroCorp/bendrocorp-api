@@ -1,4 +1,6 @@
 class SystemMapImage < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+  
   belongs_to :of_system, :class_name => 'SystemMapSystem', :foreign_key => 'of_system_id', optional: true
   belongs_to :of_planet, :class_name => 'SystemMapSystemPlanetaryBody', :foreign_key => 'of_planet_id', optional: true
   belongs_to :of_moon, :class_name => 'SystemMapSystemPlanetaryBodyMoon', :foreign_key => 'of_moon_id', optional: true
@@ -6,6 +8,8 @@ class SystemMapImage < ApplicationRecord
   belongs_to :of_system_object, :class_name => 'SystemMapSystemObject', :foreign_key => 'of_system_object_id', optional: true
   belongs_to :of_location, :class_name => 'SystemMapSystemPlanetaryBodyLocation', :foreign_key => 'of_location_id', optional: true
   belongs_to :of_settlement, :class_name => 'SystemMapSystemSettlement', :foreign_key => 'of_settlement_id', optional: true
+  belongs_to :of_mission_giver, class_name: 'SystemMapMissionGiver', foreign_key: 'of_mission_giver_id', optional: true
+  belongs_to :of_connection, class_name: 'SystemMapSystemConnection', foreign_key: 'of_connection_id', optional: true
 
   validates :created_by_id, presence: true
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true

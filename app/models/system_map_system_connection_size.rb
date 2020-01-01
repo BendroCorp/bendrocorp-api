@@ -1,2 +1,0 @@
-class SystemMapSystemConnectionSize < ApplicationRecord
-end

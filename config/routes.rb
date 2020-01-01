@@ -122,8 +122,17 @@ Rails.application.routes.draw do
   get 'api/events/:event_id' => 'events#show'
   delete 'api/events/:event_id/' => 'events#archive_event'
 
+  # factions
+  scope 'api', as: 'api' do
+    get 'factions' => 'faction_affiliation#list'
+    post 'factions' => 'faction_affiliation#create'
+    put 'factions' => 'faction_affiliation#update'
+    delete 'factions/:id' => 'faction_affiliation#archive'
+  end
+
   # field
   get 'api/fields' => 'fields#list'
+  get 'api/fields/:id' => 'fields#show'
 
   # flight Logs
   get 'api/flight-logs' => 'flight_logs#list'
@@ -301,40 +310,75 @@ Rails.application.routes.draw do
   get 'api/site-logs' => 'site_log#list'
 
   # system map routes
-  get 'api/system-map/types' => 'system_map#list_types'
+  get 'api/system-map/types' => 'system_map#list_types' # to be deprecated
+  get 'api/system-map/details' => 'system_map#list_details'
   get 'api/system-map' => 'system_map#list'
   post 'api/system-map' => 'system_map#create'
   put 'api/system-map' => 'system_map#update'
 
-  post 'api/system-map/planet' => 'system_map#add_planet'
-  patch 'api/system-map/planet' => 'system_map#update_planet'
-  put 'api/system-map/planet' => 'system_map#update_planet'
-  delete 'api/system-map/planet/:planet_id' => 'system_map#delete_planet'
+  get 'api/system-map/planet' => 'system_map_planets#index'
+  get 'api/system-map/planet/:id' => 'system_map_planets#show'
+  post 'api/system-map/planet' => 'system_map_planets#create'
+  put 'api/system-map/planet' => 'system_map_planets#update'
+  delete 'api/system-map/planet/:planet_id' => 'system_map_planets#archive'
 
-  post 'api/system-map/moon' => 'system_map#add_moon'
-  patch 'api/system-map/moon' => 'system_map#update_moon'
-  put 'api/system-map/moon' => 'system_map#update_moon'
-  delete 'api/system-map/moon/:moon_id' => 'system_map#delete_moon'
+  get 'api/system-map/moon' => 'system_map_moons#index'
+  get 'api/system-map/moon/:id' => 'system_map_moons#show'
+  post 'api/system-map/moon' => 'system_map_moons#create'
+  put 'api/system-map/moon' => 'system_map_moons#update'
+  delete 'api/system-map/moon/:moon_id' => 'system_map_moons#archive'
 
-  post 'api/system-map/system-object' => 'system_map#add_system_object'
-  patch 'api/system-map/system-object' => 'system_map#update_system_object'
-  put 'api/system-map/system-object' => 'system_map#update_system_object'
-  delete 'api/system-map/system-object/:so_id' => 'system_map#delete_system_object'
+  get 'api/system-map/system-object' => 'system_map_system_objects#index'
+  get 'api/system-map/system-object/:id' => 'system_map_system_objects#show'
+  post 'api/system-map/system-object' => 'system_map_system_objects#create'
+  put 'api/system-map/system-object' => 'system_map_system_objects#update'
+  delete 'api/system-map/system-object/:so_id' => 'system_map_system_objects#archive'
 
-  post 'api/system-map/settlement' => 'system_map#add_settlement'
-  patch 'api/system-map/settlement' => 'system_map#update_settlement'
-  put 'api/system-map/settlement' => 'system_map#update_settlement'
-  delete 'api/system-map/settlement/:settlement_id' => 'system_map#delete_settlement'
+  get 'api/system-map/settlement' => 'system_map_settlements#index'
+  get 'api/system-map/settlement/:id' => 'system_map_settlements#show'
+  post 'api/system-map/settlement' => 'system_map_settlements#create'
+  put 'api/system-map/settlement' => 'system_map_settlements#update'
+  delete 'api/system-map/settlement/:settlement_id' => 'system_map_settlements#archive'
 
-  post 'api/system-map/location' => 'system_map#add_location'
-  patch 'api/system-map/location' => 'system_map#update_location'
-  put 'api/system-map/location' => 'system_map#update_location'
-  delete 'api/system-map/location/:so_id' => 'system_map#delete_location'
+  get 'api/system-map/location' => 'system_map_locations#index'
+  get 'api/system-map/location/:id' => 'system_map_locations#show'
+  post 'api/system-map/location' => 'system_map_locations#create'
+  put 'api/system-map/location' => 'system_map_locations#update'
+  delete 'api/system-map/location/:so_id' => 'system_map_locations#archive'
 
-  post 'api/system-map/image' => 'system_map#add_system_image'
-  patch 'api/system-map/image' => 'system_map#update_system_image'
-  put 'api/system-map/image' => 'system_map#update_system_image'
-  delete 'api/system-map/image/:image_id' => 'system_map#delete_system_image'
+  post 'api/system-map/image' => 'system_map_images#create'
+  put 'api/system-map/image' => 'system_map_images#update'
+  delete 'api/system-map/image/:image_id' => 'system_map_images#archive'
+
+  get 'api/system-map/mission-giver' => 'system_map_mission_givers#index'
+  get 'api/system-map/mission-giver/:id' => 'system_map_mission_givers#show'
+  post 'api/system-map/mission-giver' => 'system_map_mission_givers#create'
+  put 'api/system-map/mission-giver' => 'system_map_mission_givers#update'
+  delete 'api/system-map/mission-giver/:id' => 'system_map_mission_givers#archive'
+
+  get 'api/system-map/flora' => 'system_map_floras#index'
+  get 'api/system-map/flora/:id' => 'system_map_floras#show'
+  post 'api/system-map/flora' => 'system_map_floras#create'
+  put 'api/system-map/flora' => 'system_map_floras#update'
+  delete 'api/system-map/flora/:id' => 'system_map_floras#archive'
+
+  get 'api/system-map/fauna' => 'system_map_faunas#index'
+  get 'api/system-map/fauna/:id' => 'system_map_faunas#show'
+  post 'api/system-map/fauna' => 'system_map_faunas#create'
+  put 'api/system-map/fauna' => 'system_map_faunas#update'
+  delete 'api/system-map/fauna/:id' => 'system_map_faunas#archive'
+
+  get 'api/system-map/gravity-well' => 'system_map_gravity_wells#index'
+  get 'api/system-map/gravity-well/:id' => 'system_map_gravity_wells#show'
+  post 'api/system-map/gravity-well' => 'system_map_gravity_wells#create'
+  put 'api/system-map/gravity-well' => 'system_map_gravity_wells#update'
+  delete 'api/system-map/gravity-well/:id' => 'system_map_gravity_wells#archive'
+
+  get 'api/system-map/jump-point' => 'system_map_jump_points#index'
+  get 'api/system-map/jump-point/:id' => 'system_map_jump_points#show'
+  post 'api/system-map/jump-point' => 'system_map_jump_points#create'
+  put 'api/system-map/jump-point' => 'system_map_jump_points#update'
+  delete 'api/system-map/jump-point/:id' => 'system_map_jump_points#archive'
 
   # training
   get 'api/training' => 'training#list_courses'

@@ -1,25 +1,26 @@
 class CreateSystemMapSystemObjects < ActiveRecord::Migration[5.1]
   def change
-    create_table :system_map_system_objects do |t|
+    create_table :system_map_system_objects, id: :uuid do |t|
       t.text :title
       t.text :description
+      t.text :tags
       t.boolean :approved, default: true
 
-      t.belongs_to :object_type
+      t.belongs_to :object_type, type: :uuid
 
-      t.belongs_to :orbits_system
-      t.belongs_to :orbits_planet
-      t.belongs_to :orbits_moon
+      t.belongs_to :orbits_system, type: :uuid
+      t.belongs_to :orbits_planet, type: :uuid
+      t.belongs_to :orbits_moon, type: :uuid
 
       t.belongs_to :discovered_by
       t.boolean :discovered
 
-      t.boolean :archived
+      t.boolean :archived, default: false
 
-      #standard known characteristics
+      # standard known characteristics
       t.boolean :atmosphere_present
       t.boolean :atmosphere_human_breathable
-      t.float :atmo_pressure #in ATL
+      t.float :atmo_pressure # in ATL
       t.float :population_density
       t.float :economic_rating
       t.float :general_radiation
@@ -39,8 +40,11 @@ class CreateSystemMapSystemObjects < ActiveRecord::Migration[5.1]
       t.text :orbital_velocity
 
       t.belongs_to :jurisdiction
+      t.belongs_to :faction_affiliation, type: :uuid
 
-      t.belongs_to :primary_image
+      t.belongs_to :classification_level, index: false
+
+      t.belongs_to :primary_image, type: :uuid
       t.timestamps
     end
   end

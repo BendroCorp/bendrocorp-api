@@ -1,7 +1,7 @@
 class ImageUpload < ApplicationRecord
 
   # paperclip attachment
-  has_attached_file :image, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :large => "200x200#" },
+  has_attached_file :image, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :large => "200x200#", :original => "1920x1080>" },
                     #content_type: { content_type: ["image/jpg", "image/jpeg", "image/png"] },
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",
                     #:path => ":rails_root/public/assets/avatars/:id/:style/:basename.:extension",
@@ -37,4 +37,7 @@ class ImageUpload < ApplicationRecord
     self.image.url(:original)
   end
 
+  def image_url
+    image_url_original
+  end
 end

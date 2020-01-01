@@ -1,2 +1,0 @@
-class SystemMapSystemPlanetaryBodyLocationType < ApplicationRecord
-end

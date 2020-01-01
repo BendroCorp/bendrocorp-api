@@ -1,2 +1,0 @@
-class SystemMapSystemConnectionStatus < ApplicationRecord
-end

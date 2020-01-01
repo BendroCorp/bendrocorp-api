@@ -1,2 +1,0 @@
-class SystemMapSystemSafetyRating < ApplicationRecord
-end
