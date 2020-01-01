@@ -69,8 +69,8 @@ class SystemMapSystemPlanetaryBody < ApplicationRecord
   end
 
   accepts_nested_attributes_for :primary_image
-  accepts_nested_attributes_for :planet_type_ins
-  accepts_nested_attributes_for :planet_types
+  # accepts_nested_attributes_for :planet_type_ins
+  # accepts_nested_attributes_for :planet_types
   accepts_nested_attributes_for :moons
   accepts_nested_attributes_for :system_objects
   accepts_nested_attributes_for :system_map_images
