@@ -16,6 +16,7 @@ class CreateSystemMapMissionGivers < ActiveRecord::Migration[5.1]
       t.belongs_to :on_settlement, type: :uuid
       t.belongs_to :on_location, type: :uuid
 
+      t.boolean :approved, default: true
       t.boolean :archived, default: false
 
       t.timestamps
