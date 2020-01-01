@@ -8,8 +8,8 @@ class SystemMapSystemPlanetaryBody < ApplicationRecord
 
   has_many :system_objects, :dependent => :delete_all, class_name: 'SystemMapSystemObject', foreign_key: 'orbits_planet_id'
 
-  has_many :planet_type_ins, :dependent => :delete_all, class_name: 'SystemMapSystemPlanetaryBodyTypeIn', foreign_key: 'planet_id'
-  has_many :planet_types, through: :planet_type_ins, class_name: 'SystemMapSystemPlanetaryBodyType', foreign_key: 'planet_type_id'
+  # has_many :planet_type_ins, :dependent => :delete_all, class_name: 'SystemMapSystemPlanetaryBodyTypeIn', foreign_key: 'planet_id'
+  # has_many :planet_types, through: :planet_type_ins, class_name: 'SystemMapSystemPlanetaryBodyType', foreign_key: 'planet_type_id'
 
 
   belongs_to :safety_rating, :class_name  => 'SystemMapSystemSafetyRating', foreign_key: 'safety_rating_id', optional: true

@@ -6,8 +6,8 @@ class SystemMapSystemPlanetaryBodyMoon < ApplicationRecord
 
   has_many :system_objects, :dependent => :delete_all, class_name: 'SystemMapSystemObject', foreign_key: 'orbits_moon_id'
 
-  has_many :moon_type_ins, :dependent => :delete_all, class_name: 'SystemMapSystemPlanetaryBodyMoonTypeIn', foreign_key: 'moon_id'
-  has_many :moon_types, through: :moon_type_ins, class_name: 'SystemMapSystemPlanetaryBodyMoonType', foreign_key: 'moon_type_id'
+  # has_many :moon_type_ins, :dependent => :delete_all, class_name: 'SystemMapSystemPlanetaryBodyMoonTypeIn', foreign_key: 'moon_id'
+  # has_many :moon_types, through: :moon_type_ins, class_name: 'SystemMapSystemPlanetaryBodyMoonType', foreign_key: 'moon_type_id'
 
   has_many :settlements, class_name: 'SystemMapSystemSettlement', foreign_key: 'on_moon_id'
   has_many :locations, :dependent => :delete_all, class_name: 'SystemMapSystemPlanetaryBodyLocation', foreign_key: 'on_moon_id'
