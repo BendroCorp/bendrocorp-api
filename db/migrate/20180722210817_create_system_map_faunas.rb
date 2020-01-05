@@ -7,7 +7,7 @@ class CreateSystemMapFaunas < ActiveRecord::Migration[5.1]
 
       t.boolean :is_predator
       t.boolean :is_sentient
-      t.integer :density, :limit => 10 #how common is it
+      t.integer :density # , :limit => 10 #how common is it
 
       t.belongs_to :on_moon, type: :uuid
       t.belongs_to :on_planet, type: :uuid
