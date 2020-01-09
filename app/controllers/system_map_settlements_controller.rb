@@ -13,50 +13,50 @@ class SystemMapSettlementsController < ApplicationController
   end
 
   # def add_settlement
-  #   @settlement = SystemMapSystemSettlement.new
+  #   @system_map_settlement = SystemMapSystemSettlement.new
   #   if params[:settlement][:new_primary_image] != nil
-  #     if @settlement.primary_image != nil
-  #       @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
-  #       @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
+  #     if @system_map_settlement.primary_image != nil
+  #       @system_map_settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
+  #       @system_map_settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
   #     else
-  #       @settlement.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name], title: @settlement.title, description: @settlement.title)
+  #       @system_map_settlement.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name], title: @system_map_settlement.title, description: @system_map_settlement.title)
   #     end
   #   end
-  #   @settlement.title = params[:settlement][:title]
-  #   @settlement.description = params[:settlement][:description]
-  #   @settlement.on_planet_id = params[:settlement][:on_planet_id]
-  #   @settlement.on_moon_id = params[:settlement][:on_moon_id]
-  #   @settlement.jurisdiction_id = params[:settlement][:jurisdiction_id]
+  #   @system_map_settlement.title = params[:settlement][:title]
+  #   @system_map_settlement.description = params[:settlement][:description]
+  #   @system_map_settlement.on_planet_id = params[:settlement][:on_planet_id]
+  #   @system_map_settlement.on_moon_id = params[:settlement][:on_moon_id]
+  #   @system_map_settlement.jurisdiction_id = params[:settlement][:jurisdiction_id]
 
-  #   @settlement.discovered_by_id = current_user.id
+  #   @system_map_settlement.discovered_by_id = current_user.id
 
-  #   if @settlement.save
-  #     render status: 200, json: @settlement.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
+  #   if @system_map_settlement.save
+  #     render status: 200, json: @system_map_settlement.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
   #   else
   #     render status: 500, json: { message: "ERROR Occured: New settlement could not be saved."}
   #   end
   # end
 
   # def update_settlement
-  #   @settlement = SystemMapSystemSettlement.find_by_id(params[:settlement][:id].to_i)
-  #   if @settlement != nil
+  #   @system_map_settlement = SystemMapSystemSettlement.find_by_id(params[:settlement][:id].to_i)
+  #   if @system_map_settlement != nil
   #     if params[:settlement][:new_primary_image] != nil
-  #       if @settlement.primary_image != nil
-  #         @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
-  #         @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
+  #       if @system_map_settlement.primary_image != nil
+  #         @system_map_settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
+  #         @system_map_settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
   #       else
   #         new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name])
-  #         @settlement.primary_image = new_primary_image
+  #         @system_map_settlement.primary_image = new_primary_image
   #       end
   #     end
-  #     @settlement.title = params[:settlement][:title]
-  #     @settlement.description = params[:settlement][:description]
-  #     @settlement.on_planet_id = params[:settlement][:on_planet_id]
-  #     @settlement.on_moon_id = params[:settlement][:on_moon_id]
-  #     @settlement.jurisdiction_id = params[:settlement][:jurisdiction_id]
+  #     @system_map_settlement.title = params[:settlement][:title]
+  #     @system_map_settlement.description = params[:settlement][:description]
+  #     @system_map_settlement.on_planet_id = params[:settlement][:on_planet_id]
+  #     @system_map_settlement.on_moon_id = params[:settlement][:on_moon_id]
+  #     @system_map_settlement.jurisdiction_id = params[:settlement][:jurisdiction_id]
 
-  #     if @settlement.save
-  #       render status: 200, json: @settlement.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
+  #     if @system_map_settlement.save
+  #       render status: 200, json: @system_map_settlement.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, locations: { methods: [:primary_image_url, :primary_image_url_full] } }, methods: [:primary_image_url, :primary_image_url_full] )
   #     else
   #       render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
   #     end
@@ -66,9 +66,9 @@ class SystemMapSettlementsController < ApplicationController
   # end
 
   # def delete_settlement
-  #   @settlement = SystemMapSystemSettlement.find_by_id(params[:settlement_id].to_i)
-  #   if @settlement != nil
-  #     if @settlement.destroy
+  #   @system_map_settlement = SystemMapSystemSettlement.find_by_id(params[:settlement_id].to_i)
+  #   if @system_map_settlement != nil
+  #     if @system_map_settlement.destroy
   #       render status: 200, json: { message: "Success" }
   #     else
   #       render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
@@ -101,12 +101,12 @@ class SystemMapSettlementsController < ApplicationController
     @system_map_settlement.discovered_by_id = current_user.id
 
     if params[:settlement][:new_primary_image] != nil
-      if @settlement.primary_image != nil
-        @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
-        @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
+      if @system_map_settlement.primary_image != nil
+        @system_map_settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
+        @system_map_settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
       else
         new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name])
-        @settlement.primary_image = new_primary_image
+        @system_map_settlement.primary_image = new_primary_image
       end
     end
 
@@ -121,12 +121,12 @@ class SystemMapSettlementsController < ApplicationController
   def update
     if @system_map_settlement
       if params[:settlement][:new_primary_image] != nil
-        if @settlement.primary_image != nil
-          @settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
-          @settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
+        if @system_map_settlement.primary_image != nil
+          @system_map_settlement.primary_image.image = params[:settlement][:new_primary_image][:base64]
+          @system_map_settlement.primary_image.image_file_name = params[:settlement][:new_primary_image][:name]
         else
           new_primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:settlement][:new_primary_image][:base64], image_file_name: params[:settlement][:new_primary_image][:name])
-          @settlement.primary_image = new_primary_image
+          @system_map_settlement.primary_image = new_primary_image
         end
       end
 
