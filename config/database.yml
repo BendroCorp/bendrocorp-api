@@ -27,7 +27,7 @@ test:
   database: db/test.sqlite3
 
 production:
-  host: db2.daleslab.com
+  host: <%= ENV["BENDROCORP_SQLURI"]%>
   adapter:  postgresql
   pool: 5
   database: bendrocorp-production
