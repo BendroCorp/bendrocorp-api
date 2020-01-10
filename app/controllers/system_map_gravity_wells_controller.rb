@@ -33,7 +33,7 @@ class SystemMapGravityWellsController < ApplicationController
   def index
     @system_map_gravity_wells = SystemMapSystemGravityWell.where(archived: false)
 
-    render json: @system_map_gravity_wells.as_json(methods: [:kind, :parent])
+    render json: @system_map_gravity_wells.as_json(methods: [:kind, :parent], include: { gravity_well_type: {}, luminosity_class: {} })
   end
 
   # GET /system_map_gravity_wells/1
@@ -62,7 +62,7 @@ class SystemMapGravityWellsController < ApplicationController
     end
 
     if @system_map_gravity_well.save
-      render json: @system_map_gravity_well, status: :created
+      render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { gravity_well_type: {}, luminosity_class: {} }), status: :created
     else
       render json: { message: @system_map_gravity_well.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -83,7 +83,7 @@ class SystemMapGravityWellsController < ApplicationController
       end
 
       if @system_map_gravity_well.update(system_map_gravity_well_params)
-        render json: @system_map_gravity_well
+        render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { gravity_well_type: {}, luminosity_class: {} })
       else
         render json: { message: @system_map_gravity_well.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
