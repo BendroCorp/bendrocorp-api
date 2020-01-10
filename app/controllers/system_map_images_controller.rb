@@ -99,7 +99,7 @@ class SystemMapImagesController < ApplicationController
     @system_map_image.created_by_id = current_user.id
 
     if @system_map_image.save
-      render json: @system_map_image, status: :created, location: @system_map_image
+      render json: @system_map_image, status: :created
     else
       render json: { message: @system_map_image.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
