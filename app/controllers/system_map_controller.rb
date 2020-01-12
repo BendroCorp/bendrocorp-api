@@ -3,20 +3,14 @@ class SystemMapController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  # temporary till system map is ready
-  # system map role IDS: 22 - Editor, 23 - Admin (admins can delete/archive objects)
-  # before_action except: [] do |a|
-  #   a.require_one_role([9]) #for now CEO only :)
-  # end
-
-  #all methods except public ones and deletion methods are available to editors
+  # all methods except public ones and deletion methods are available to editors
   before_action only: [:update_location, :update_settlement, :update_system_object, :update_moon, :update_planet, :delete_atmo_comp, :update_atmo_comps] do |a|
    a.require_one_role([22,23]) #editor
   end
 
   # all others methods should only be available to admins
   before_action except: [:list, :update_location, :update_settlement, :update_system_object, :update_moon, :update_planet, :delete_atmo_comp, :update_atmo_comps] do |a|
-   a.require_one_role([23]) #admin
+   a.require_one_role([23]) # admin
   end
 
 
@@ -47,30 +41,6 @@ class SystemMapController < ApplicationController
         )
   end
 
-  # GET api/system-map/types
-  # DEPRECATED/DO NOT USE
-  # def list_types
-  #   @gravity_well_types = SystemMapSystemGravityWellType.all
-  #   @planetary_body_types = SystemMapSystemPlanetaryBodyType.all
-  #   @moon_types = SystemMapSystemPlanetaryBodyMoonType.all
-  #   @gw_lum_classes = SystemMapSystemGravityWellLuminosityClass.all
-  #   @jp_sizes = SystemMapSystemConnectionSize.all
-  #   @jp_statues = SystemMapSystemConnectionStatus.all
-  #   @system_object_types = SystemMapSystemObjectType.all
-  #   @location_types = SystemMapSystemPlanetaryBodyLocationType.all.order("title asc")
-
-  #   render :json => {
-  #                     :gravity_well_types => @gravity_well_types.as_json,
-  #                     :planetary_body_types => @planetary_body_types.as_json,
-  #                     :moon_types => @moon_types.as_json,
-  #                     :gw_lum_classes => @gw_lum_classes.as_json,
-  #                     :jp_sizes => @jp_sizes.as_json,
-  #                     :jp_statues => @jp_statues.as_json,
-  #                     :system_object_types => @system_object_types.as_json,
-  #                     :location_types => @location_types.as_json
-  #                   }
-  # end
-
   # POST api/system-map
   # Body should contain system_object
   def create
@@ -97,11 +67,6 @@ class SystemMapController < ApplicationController
       @system = SystemMapSystem.find_by_id(params[:system][:id])
       if @system != nil
         if @system.update_attributes(system_create_params)
-          # if params[:fix_types] && params[:fix_types] == true
-          #   @system = fix_system_types(@system, params)
-          # end
-          # @system = fix_discovered_by(@system)
-          # @system.save
           render status: 200, json: { message: 'Success' }
         else
           render status: 500, json: { message: "ERROR Occured: System could not be edited because: #{@system.errors.full_messages.to_sentence}"}
@@ -166,7 +131,7 @@ class SystemMapController < ApplicationController
   #   end
   # end
 
-  #get
+  # get
   # system-map/fetch-known-gases
   def fetch_known_atmo_gases
     render status: 200, json: { known_gases: SystemMapAtmoGase.all }
@@ -186,7 +151,7 @@ class SystemMapController < ApplicationController
       # number of jumps - ob.cost
       # shortest path - ob.shortest_path
       render json: { :path => ob }
-      #how how do we return this
+      # how how do we return this
     else
       render :nothing => true, :status => 500
     end
@@ -195,33 +160,5 @@ class SystemMapController < ApplicationController
   private
   def system_create_params
     params.require(:system).permit(:title, :description, :tags, :jurisdiction_id, :faction_affiliation_id)
-    # Old silly 'universal' update idea
-    # params.require(:system).permit(:id,
-    #                                :title,
-    #                                :description,
-    #                                :jurisdiction_id,
-    #                                system_objects_attributes: [:id,
-    #                                                            :title,
-    #                                                            :description,
-    #                                                            :object_type_id],
-    #                                gravity_wells_attributes: [:id,
-    #                                                           :title,
-    #                                                           :description,
-    #                                                           :luminosity_class_id,
-    #                                                           :gravity_well_type_id],
-    #                                planets_attributes: [:id,
-    #                                                     :title,
-    #                                                     :description,
-    #                                                     moons_attributes:[:id,
-    #                                                                       :title,
-    #                                                                       :description,
-    #                                                                       moon_types: [:id],
-    #                                                                       system_objects_attributes: [:id, :title, :description, :object_type_id],
-    #                                                                       locations_attributes: [:id, :title, :description]
-    #                                                                       ],
-    #                                                     system_objects_attributes: [:id, :title, :description, :object_type_id],
-    #                                                     planet_types_attributes: [:id],
-    #                                                     locations_attributes: [:id, :title, :description]
-    #                                                     ])
   end
 end

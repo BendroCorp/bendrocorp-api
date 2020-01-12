@@ -12,100 +12,17 @@ class SystemMapSystemObjectsController < ApplicationController
     a.require_one_role([23]) # admin
   end
 
-  # def add_system_object
-  #   begin
-  #       @system_map_system_object = SystemMapSystemObject.new()
-  #       @system_map_system_object.title = params[:system_object][:title]
-  #       @system_map_system_object.description = params[:system_object][:description]
-  #       @system_map_system_object.object_type_id = params[:system_object][:object_type_id]
-  #       @system_map_system_object.orbits_planet_id = params[:system_object][:orbits_planet_id]
-  #       @system_map_system_object.orbits_moon_id = params[:system_object][:orbits_moon_id]
-  #       @system_map_system_object.jurisdiction_id = params[:system_object][:jurisdiction_id]
-
-  #       @system_map_system_object.discovered_by_id = current_user.id
-
-  #       if params[:system_object][:new_primary_image] != nil
-  #         if @system_map_system_object.primary_image != nil
-  #           @system_map_system_object.primary_image.image = params[:system_object][:new_primary_image][:base64]
-  #           @system_map_system_object.primary_image.image_file_name = params[:system_object][:new_primary_image][:name]
-  #         else
-  #           @system_map_system_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @system_map_system_object.title, description: @system_map_system_object.title)
-  #         end
-  #       end
-
-  #       if @system_map_system_object.save
-  #         render status: 200, json: @system_map_system_object.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, flora: {}, fauna: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
-  #       else
-  #         render status: 500, json: { message: "System object could not be created because: #{@system_map_system_object.errors.full_messages.to_sentence}"}
-  #       end
-  #   rescue => e
-  #     render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
-  #   end
-  # end
-
-  # def update_system_object
-  #   begin
-  #       @system_map_system_object = SystemMapSystemObject.find_by_id(params[:system_object][:id].to_i)
-  #       if @system_map_system_object != nil
-  #         @system_map_system_object.title = params[:system_object][:title]
-  #         @system_map_system_object.description = params[:system_object][:description]
-  #         @system_map_system_object.object_type_id = params[:system_object][:object_type_id]
-  #         @system_map_system_object.orbits_planet_id = params[:system_object][:orbits_planet_id]
-  #         @system_map_system_object.orbits_moon_id = params[:system_object][:orbits_moon_id]
-  #         @system_map_system_object.jurisdiction_id = params[:system_object][:jurisdiction_id]
-  #         if params[:system_object][:new_primary_image] != nil
-  #           if @system_map_system_object.primary_image != nil
-  #             @system_map_system_object.primary_image.image = params[:system_object][:new_primary_image][:base64]
-  #             @system_map_system_object.primary_image.image_file_name = params[:system_object][:new_primary_image][:name]
-  #           else
-  #             @system_map_system_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:system_object][:new_primary_image][:base64], image_file_name: params[:system_object][:new_primary_image][:name], title: @system_map_system_object.title, description: @system_map_system_object.title)
-  #           end
-  #         end
-
-  #         @system_map_system_object.discovered_by_id = current_user.id
-
-  #         if @system_map_system_object.save
-  #           render status: 200, json: @system_map_system_object.as_json(include: { jurisdiction: { include: { categories: { include: { laws: {} } } } }, flora: {}, fauna: {}, discovered_by: { only: [], methods: [:main_character] }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only: [], methods: [:main_character] } } }, object_type: {}, locations: { methods: [:primary_image_url, :primary_image_url_full] }, atmo_compositions: { include: { atmo_gas: {} } } }, methods: [:primary_image_url, :primary_image_url_full])
-  #         else
-  #           render status: 500, json: { message: "System object could not be updated because: #{@system_map_system_object.errors.full_messages.to_sentence}"}
-  #         end
-  #       else
-  #         render status: 404, json: { message: "System object not found." }
-  #       end
-  #   rescue => e
-  #     render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
-  #   end
-  # end
-
-  # def delete_system_object
-  #   begin
-  #       @system_map_system_object = SystemMapSystemObject.find_by_id(params[:so_id].to_i)
-  #       if @system_map_system_object != nil
-  #         @system_map_system_object.archived = true
-  #         if @system_map_system_object.save
-  #           render status: 200, json: { message: "Success" }
-  #         else
-  #           render status: 500, json: { message: "System object could not be archived because: #{@system_map_system_object.errors.full_messages.to_sentence}"}
-  #         end
-  #       else
-  #         render status: 404, json: { message: "Gravity well not found." }
-  #       end
-  #   rescue => e
-  #     render status: 500, json: { message: "ERROR Occured: New system could not be saved: " + e.message}
-  #   end
-  # end
-
   # GET /system_map_system_objects
   def index
     @system_map_system_objects = SystemMapSystemObject.where(archived: false)
 
-    render json: @system_map_system_objects.to_json(include: { object_type: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_system_objects.to_json(include: { object_type: {}, system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
   end
 
   # GET /system_map_system_objects/1
   def show
     if @system_map_system_object
-      render json: @system_map_system_object.to_json(include: { object_type: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
     else
       render status: 404, json: { message: 'System object not found!' }
     end
@@ -127,7 +44,7 @@ class SystemMapSystemObjectsController < ApplicationController
     end
 
     if @system_map_system_object.save
-      render json: @system_map_system_object.to_json(include: { object_type: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_system_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -147,7 +64,7 @@ class SystemMapSystemObjectsController < ApplicationController
       end
 
       if @system_map_system_object.update(system_map_system_object_params)
-        render json: @system_map_system_object.to_json(include: { object_type: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
       else
         render json: { message: @system_map_system_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end

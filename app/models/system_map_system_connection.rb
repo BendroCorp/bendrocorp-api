@@ -19,6 +19,8 @@ class SystemMapSystemConnection < ApplicationRecord
   validates :discovered_by_id, presence: true
   belongs_to :discovered_by, class_name: 'User', foreign_key: 'discovered_by_id'
 
+  has_many :system_map_images, class_name: 'SystemMapImage', foreign_key: 'of_connection_id'
+
   accepts_nested_attributes_for :primary_image_one
   accepts_nested_attributes_for :primary_image_two
 
