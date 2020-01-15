@@ -15,8 +15,6 @@ class SystemMapImagesController < ApplicationController
   # POST /system_map_images
   def create
     @system_map_image = SystemMapImage.new(system_map_image_params)
-
-    @system_map_image = SystemMapImage.new(system_image_params)
     @system_map_image.image = params[:image][:new_image][:base64]
     @system_map_image.image_file_name = params[:image][:new_image][:name]
     @system_map_image.created_by_id = current_user.id
