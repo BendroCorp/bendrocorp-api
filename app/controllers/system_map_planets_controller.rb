@@ -15,7 +15,7 @@ class SystemMapPlanetsController < ApplicationController
   # GET /system_map_planets
   def index
     @system_map_planets = SystemMapSystemPlanetaryBody.where(archived: false)
-    .to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: {}, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    .to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: {}, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
 
     render json: @system_map_planets
   end
@@ -23,7 +23,7 @@ class SystemMapPlanetsController < ApplicationController
   # GET /system_map_planets/1
   def show
     if @system_map_planet
-      render json: @system_map_planet.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: {}, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_planet.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: {}, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
     else
       render status: 404, json: { message: 'Planet not found!' }
     end
@@ -45,7 +45,7 @@ class SystemMapPlanetsController < ApplicationController
     end
 
     if @system_map_planet.save
-      render json: @system_map_planet.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: {}, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_planet.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: {}, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_planet.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class SystemMapPlanetsController < ApplicationController
       end
 
       if @system_map_planet.update(system_map_planet_params)
-        render json: @system_map_planet.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: { include: { mission_givers: {} } }, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_planet.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, settlements: {}, locations: { include: { mission_givers: {} } }, moons: {}, system_objects: {}, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
       else
         render json: { message: @system_map_planet.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
