@@ -16,13 +16,13 @@ class SystemMapFlorasController < ApplicationController
   def index
     @system_map_floras = SystemMapFlora.where(archived: false)
 
-    render json: @system_map_floras.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_floras.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind])
   end
 
   # GET /system_map_floras/1
   def show
     if @system_map_flora
-      render json: @system_map_flora.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_flora.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind])
     else
       render status: 404, json: { message: "Flora not found." }
     end
@@ -45,7 +45,7 @@ class SystemMapFlorasController < ApplicationController
     end
 
     if @system_map_flora.save
-      render json: @system_map_flora.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_flora.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_flora.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -66,7 +66,7 @@ class SystemMapFlorasController < ApplicationController
       end
 
       if @system_map_flora.update(system_map_flora_params)
-        render json: @system_map_flora.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_flora.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind])
       else
         render json: { message: @system_map_flora.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end

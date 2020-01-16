@@ -16,13 +16,13 @@ class SystemMapFaunasController < ApplicationController
   def index
     @system_map_faunas = SystemMapFauna.where(archived: false)
 
-    render json: @system_map_faunas.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_faunas.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind])
   end
 
   # GET /system_map_faunas/1
   def show
     if @system_map_fauna
-      render json: @system_map_fauna.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_fauna.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind])
     else
       render status: 404, json: { message: "Fauna not found."}
     end
@@ -45,7 +45,7 @@ class SystemMapFaunasController < ApplicationController
     end
 
     if @system_map_fauna.save
-      render json: @system_map_fauna.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_fauna.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_fauna.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -66,7 +66,7 @@ class SystemMapFaunasController < ApplicationController
       end
 
       if @system_map_fauna.update(system_map_fauna_params)
-        render json: @system_map_fauna.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_fauna.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :primary_image_url_full, :parent, :title_with_kind])
       else
         render json: { message: @system_map_fauna.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
