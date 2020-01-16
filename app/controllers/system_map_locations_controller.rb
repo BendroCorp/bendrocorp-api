@@ -16,13 +16,13 @@ class SystemMapLocationsController < ApplicationController
   def index
     @system_map_locations = SystemMapSystemPlanetaryBodyLocation.where(archived: false)
 
-    render json: @system_map_locations.to_json(include: { system_map_images: {}, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_locations.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
   end
 
   # GET /system_map_locations/1
   def show
     if @system_map_location
-      render json: @system_map_location.to_json(include: { system_map_images: {}, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_location.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
     else
       render status: 404, json: { message: 'Location not found!' }
     end
@@ -45,7 +45,7 @@ class SystemMapLocationsController < ApplicationController
     end
 
     if @system_map_location.save
-      render json: @system_map_location.to_json(include: { system_map_images: {}, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_location.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_location.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -66,7 +66,7 @@ class SystemMapLocationsController < ApplicationController
       end
 
       if @system_map_location.update(system_map_location_params)
-        render json: @system_map_location.to_json(include: { system_map_images: {}, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_location.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, mission_givers: {}, faction_affiliation: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
       else
         render json: { message: @system_map_location.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end

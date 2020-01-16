@@ -16,13 +16,13 @@ class SystemMapSettlementsController < ApplicationController
   def index
     @system_map_settlements = SystemMapSystemSettlement.where(archived: false)
 
-    render json: @system_map_settlements.to_json(include: { system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_settlements.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
   end
 
   # GET /system_map_settlements/1
   def show
     if @system_map_settlement
-      render json: @system_map_settlement.to_json(include: { system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_settlement.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
     else
       render status: 404, json: { message: 'Settlement not found!' }
     end
@@ -45,7 +45,7 @@ class SystemMapSettlementsController < ApplicationController
     end
 
     if @system_map_settlement.save
-      render json: @system_map_settlement.to_json(include: { system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_settlement.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_settlement.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -65,7 +65,7 @@ class SystemMapSettlementsController < ApplicationController
       end
 
       if @system_map_settlement.update(system_map_settlement_params)
-        render json: @system_map_settlement.to_json(include: { system_map_images: {}, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_settlement.to_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
       else
         render json: { message: @system_map_settlement.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
