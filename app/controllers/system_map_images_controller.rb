@@ -57,6 +57,6 @@ class SystemMapImagesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def system_map_image_params
-      params.require(:image).permit(:title, :description, :created_by, :is_default_image, :of_system, :of_planet, :of_moon, :of_system_object, :of_location, :of_settlement, :of_gravity_well, :of_mission_giver)
+      params.require(:image).permit(:title, :description, :is_default_image, :of_system_id, :of_planet_id, :of_moon_id, :of_system_object_id, :of_location_id, :of_settlement_id, :of_gravity_well_id, :of_mission_giver_id)
     end
 end
