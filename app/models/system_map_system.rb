@@ -20,7 +20,7 @@ class SystemMapSystem < ApplicationRecord
   belongs_to :primary_image, class_name: 'SystemMapImage', foreign_key: 'primary_image_id', optional: true
 
   def jump_points
-    syss= SystemMapSystemConnection.where("system_one_id = ? OR system_two_id = ? ", self.id, self.id)
+    syss = SystemMapSystemConnection.where("system_one_id = ? OR system_two_id = ? ", self.id, self.id)
     ret = []
 
     syss.each do |sys|
