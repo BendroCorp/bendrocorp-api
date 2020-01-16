@@ -16,13 +16,13 @@ class SystemMapGravityWellsController < ApplicationController
   def index
     @system_map_gravity_wells = SystemMapSystemGravityWell.where(archived: false)
 
-    render json: @system_map_gravity_wells.as_json(methods: [:kind, :parent], include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} })
+    render json: @system_map_gravity_wells.as_json(methods: [:kind, :parent], include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} })
   end
 
   # GET /system_map_gravity_wells/1
   def show
     if @system_map_gravity_well
-      render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} })
+      render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} })
     else
       render status: 404, json: { message: 'Gravity well not found!' }
     end
@@ -45,7 +45,7 @@ class SystemMapGravityWellsController < ApplicationController
     end
 
     if @system_map_gravity_well.save
-      render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} }), status: :created
+      render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} }), status: :created
     else
       render json: { message: @system_map_gravity_well.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -66,7 +66,7 @@ class SystemMapGravityWellsController < ApplicationController
       end
 
       if @system_map_gravity_well.update(system_map_gravity_well_params)
-        render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} })
+        render json: @system_map_gravity_well.as_json(methods: [:kind, :parent], include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, gravity_well_type: {}, luminosity_class: {} })
       else
         render json: { message: @system_map_gravity_well.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end

@@ -16,13 +16,13 @@ class SystemMapSystemObjectsController < ApplicationController
   def index
     @system_map_system_objects = SystemMapSystemObject.where(archived: false)
 
-    render json: @system_map_system_objects.to_json(include: { object_type: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_system_objects.to_json(include: { object_type: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
   end
 
   # GET /system_map_system_objects/1
   def show
     if @system_map_system_object
-      render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
     else
       render status: 404, json: { message: 'System object not found!' }
     end
@@ -44,7 +44,7 @@ class SystemMapSystemObjectsController < ApplicationController
     end
 
     if @system_map_system_object.save
-      render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_system_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class SystemMapSystemObjectsController < ApplicationController
       end
 
       if @system_map_system_object.update(system_map_system_object_params)
-        render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_system_object.to_json(include: { object_type: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, locations: { include: { mission_givers: {} } }, faction_affiliation: {}, jurisdiction: {} }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
       else
         render json: { message: @system_map_system_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end

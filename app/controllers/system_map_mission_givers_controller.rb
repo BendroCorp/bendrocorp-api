@@ -16,13 +16,13 @@ class SystemMapMissionGiversController < ApplicationController
   def index
     @system_map_mission_givers = SystemMapMissionGiver.where(archived: false)
 
-    render json: @system_map_mission_givers.to_json(include: { faction_affiliation: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+    render json: @system_map_mission_givers.to_json(include: { faction_affiliation: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
   end
 
   # GET /system_map_mission_givers/:uuid
   def show
     if @system_map_mission_giver
-      render json: @system_map_mission_giver.to_json(include: { faction_affiliation: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+      render json: @system_map_mission_giver.to_json(include: { faction_affiliation: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
     else
       render status: 404, json: { message: 'Mission giver not found!'}
     end
@@ -44,7 +44,7 @@ class SystemMapMissionGiversController < ApplicationController
     end
 
     if @system_map_mission_giver.save
-      render json: @system_map_mission_giver.to_json(include: { faction_affiliation: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
+      render json: @system_map_mission_giver.to_json(include: { faction_affiliation: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind]), status: :created
     else
       render json: { message: @system_map_mission_giver.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -64,7 +64,7 @@ class SystemMapMissionGiversController < ApplicationController
       end
 
       if @system_map_mission_giver.update(system_map_mission_giver_params)
-        render json: @system_map_mission_giver.to_json(include: { faction_affiliation: {}, system_map_images: { include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
+        render json: @system_map_mission_giver.to_json(include: { faction_affiliation: {}, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } } }, methods: [:kind, :primary_image_url, :parent, :title_with_kind])
       else
         render json: { message: @system_map_mission_giver.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
