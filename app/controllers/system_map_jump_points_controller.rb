@@ -16,13 +16,13 @@ class SystemMapJumpPointsController < ApplicationController
   def index
     @system_map_jump_points = SystemMapSystemConnection.where(archived: false)
 
-    render json: @system_map_jump_points.as_json(include: { system_map_images: {}, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
+    render json: @system_map_jump_points.as_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
   end
 
   # GET /system_map_jump_points/1
   def show
     if @system_map_jump_point
-      render json: @system_map_jump_point.as_json(include: { system_map_images: {}, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
+      render json: @system_map_jump_point.as_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
     else
       render status: 404, json: { message: 'Jump point not found!' }
     end
@@ -53,7 +53,7 @@ class SystemMapJumpPointsController < ApplicationController
     end
 
     if @system_map_jump_point.save
-      render json: @system_map_jump_point.as_json(include: { system_map_images: {}, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
+      render json: @system_map_jump_point.as_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
     else
       render json: { message: @system_map_jump_point.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -82,7 +82,7 @@ class SystemMapJumpPointsController < ApplicationController
       end
 
       if @system_map_jump_point.update(system_map_jump_point_params)
-        render json: @system_map_jump_pointz.as_json(include: { system_map_images: {}, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
+        render json: @system_map_jump_pointz.as_json(include: { system_map_images: { include: { created_by: { methods: [:main_character] } } }, system_one: {}, system_two: {}, connection_size: {}, connection_status: {} }, methods: [:kind, :primary_image_one_url, :primary_image_one_url_full, :primary_image_two_url, :primary_image_url_two_full])
       else
         render json: { message: @system_map_jump_point.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
