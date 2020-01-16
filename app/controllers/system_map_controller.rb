@@ -24,7 +24,7 @@ class SystemMapController < ApplicationController
 
   # GET api/system-map/
   def list
-    render json: SystemMapSystem.where(archived: false).as_json(methods: [:kind, :primary_image_url, :primary_image_url_full], include: { planets: {}, faction_affiliation: {}, jurisdiction: {} })
+    render json: SystemMapSystem.where(archived: false).as_json(methods: [:kind, :primary_image_url, :primary_image_url_full, :jump_points], include: { planets: {}, faction_affiliation: {}, jurisdiction: {} })
   end
 
   # GET api/system-map/details
