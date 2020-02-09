@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20191207225348) do
+ActiveRecord::Schema.define(version: 20200119232655) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -596,22 +596,41 @@ ActiveRecord::Schema.define(version: 20191207225348) do
     t.index ["primary_image_id"], name: "index_faction_affiliations_on_primary_image_id"
   end
 
+  create_table "field_descriptor_classes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "title"
+    t.text "class_name"
+    t.text "class_field"
+    t.boolean "restrict_by_owner", default: false
+    t.text "owner_field_name"
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "field_descriptors", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "field_id"
     t.text "title"
     t.text "description"
     t.text "ordinal"
+    t.bigint "created_by_id"
     t.boolean "read_only", default: false
+    t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_field_descriptors_on_created_by_id"
     t.index ["field_id"], name: "index_field_descriptors_on_field_id"
   end
 
   create_table "fields", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name"
     t.boolean "read_only", default: false
+    t.uuid "field_descriptor_class_id"
+    t.bigint "created_by_id"
+    t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_fields_on_created_by_id"
+    t.index ["field_descriptor_class_id"], name: "index_fields_on_field_descriptor_class_id"
   end
 
   create_table "flight_log_images", force: :cascade do |t|

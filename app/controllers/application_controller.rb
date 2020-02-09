@@ -67,8 +67,8 @@ class ApplicationController < ActionController::API
     end
 
     # set the expiration
-    # NOTE: Expiration is currently set for three hours down from 12 hours since we are adding in refresh tokens
-    payload[:exp] = (Time.now.to_i + (3 * 3600)).to_i if !offline_access
+    # NOTE: Expiration is currently set for six hours down from 12 hours since we are adding in refresh tokens
+    payload[:exp] = (Time.now.to_i + (6 * 3600)).to_i if !offline_access
     # if offline access is selected then the token will be very short lived at 6 minutes since we can refresh it after all
     payload[:exp] = (Time.now.to_i + (0.1 * 3600)).to_i if offline_access
 
