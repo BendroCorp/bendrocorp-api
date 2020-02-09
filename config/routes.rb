@@ -130,9 +130,19 @@ Rails.application.routes.draw do
     delete 'factions/:id' => 'faction_affiliation#archive'
   end
 
+  # field descriptors
+  post 'api/fields/descriptor' => 'field_descriptors#create'
+  put 'api/fields/descriptor' => 'field_descriptors#update'
+  delete 'api/fields/descriptor/:id' => 'field_descriptors#archive'
+
   # field
   get 'api/fields' => 'fields#list'
+  get 'api/fields/classes' => 'fields#field_classes'
   get 'api/fields/:id' => 'fields#show'
+  get 'api/fields/:id/details' => 'fields#show_details'
+  post 'api/fields/' => 'fields#create'
+  put 'api/fields/' => 'fields#update'
+  delete 'api/fields/:id' => 'fields#archive'
 
   # flight Logs
   get 'api/flight-logs' => 'flight_logs#list'

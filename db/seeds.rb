@@ -14,6 +14,7 @@ ReportHandler.create([{ id: 1, name: 'Generic Approval' }])
 # make a base field
 Field.create([{ name: 'Yes/No/Maybe' }])
 FieldDescriptor.create([{ title: 'Yes', field: Field.first }, { title: 'No', field: Field.first }, { title: 'Maybe', field: Field.first }])
+FieldDescriptorClass.create([{ title: 'Character Full Names', class_name: 'Character', class_field: 'full_name' }])
 
 # make all the other fields
 Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Connection Size' },
@@ -90,7 +91,8 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
                  { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
                  { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
-                 { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 6, nested_under_id: 12 }
+                 { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 7, nested_under_id: 12 },
+                 { id: 21, title: 'Field Admin', icon: 'fas fa-toilet-paper', link: '/field-admin', ordinal: 8, nested_under_id: 12 }
                  ])
 # { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
@@ -371,7 +373,8 @@ roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrat
                      { id: 48, name: 'Report Builder', description: '' },
                      { id: 49, name: 'Report Admin', description: '' },
                      { id: 50, name: 'Bot Master', description: '' },
-                     { id: 51, name: 'Faction Administrator', description: '' }])
+                     { id: 51, name: 'Faction Administrator', description: '' },
+                     { id: 52, name: 'Field Administrator', description: '' }])
 
 ClassificationLevel.create([{ id: 1, title: 'Unclassified', description: 'Publically available corporate information.', ordinal: 1 },
                            { id: 2, title: 'Confidential', description: 'Not publically available information. Available to all members.', ordinal: 2 },
