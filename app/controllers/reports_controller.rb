@@ -18,14 +18,14 @@ class ReportsController < ApplicationController
   def create
     # take the params
     @report = Report.new(report_create_params)
-    
+
     # valid template?
-    if @report.template
-      
+    if @report.template && (!@report.template.role || current_user.is_in_role(48) || current_user.is_in_role(@report.template.role_id))
+
       # fill in values from template
       @report.template_name = @report.template.name
       @report.template_description = @report.template.description
-      
+
       # set created by
       @report.created_by_id = current_user.id
 

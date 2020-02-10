@@ -9,6 +9,11 @@ class ReportTemplatesController < ApplicationController
   # GET /report_templates
   def index
     @report_templates = ReportTemplate.where(archived: false)
+
+    @report_templates_final = @report_templates.map do |template|
+      template if (!template.role || current_user.is_in_role(48) || current_user.is_in_role(@report.template.role_id))
+    end
+
     render json: @report_templates.as_json(include: { fields: { } })
   end
 
@@ -70,6 +75,6 @@ class ReportTemplatesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def report_template_params
-      params.require(:report_template).permit(:name, :description, :draft, :handler_id)
+      params.require(:report_template).permit(:name, :description, :draft, :handler_id, :role_id)
     end
 end
