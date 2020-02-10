@@ -1328,11 +1328,13 @@ ActiveRecord::Schema.define(version: 20200119232655) do
     t.bigint "handler_id"
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
+    t.bigint "role_id"
     t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_report_templates_on_created_by_id"
     t.index ["handler_id"], name: "index_report_templates_on_handler_id"
+    t.index ["role_id"], name: "index_report_templates_on_role_id"
     t.index ["updated_by_id"], name: "index_report_templates_on_updated_by_id"
   end
 

@@ -277,6 +277,7 @@ Rails.application.routes.draw do
 
   # roles
   get 'api/role' => 'roles#list'
+  get 'api/role/simple' => 'roles#list'
   get 'api/role/admin' => 'roles#admin_fetch_roles'
   post 'api/role' => 'roles#create_role'
   patch 'api/role' => 'roles#update_role'

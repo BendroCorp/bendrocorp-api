@@ -6,6 +6,11 @@ class RolesController < ApplicationController
    a.require_one_role([37]) # role admin
   end
 
+  # GET api/role/simple
+  def list_simple
+    render status: 200, json: Role.all.order('id')
+  end
+
   # GET api/role
   def list
     if current_user.isinrole(37)
