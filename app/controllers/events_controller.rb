@@ -303,11 +303,15 @@ class EventsController < ApplicationController
 
             # save the modified attendance record
             attendance.save
-          end          
+          end
         end
-        
+
         # get all of the users not in the `attendance` table id list
         users = User.where("is_member = ? AND id NOT IN (?) AND id <> 0", true, attender_ids)
+
+        # if an event has zero attenders then we just go and get everyone
+        users ||= Role.find_by_id(0).role_full_users if users.nil? || users.count = 0
+
         # interate through the list and assign negative attendance unless they are present in the auto attendance table
         users.each do |user|
           # if the user exists in the auto attendance for the event the mark as attending
