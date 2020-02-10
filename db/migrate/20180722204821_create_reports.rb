@@ -6,8 +6,7 @@ class CreateReports < ActiveRecord::Migration[5.1]
       t.text :template_description
       t.belongs_to :handler
       t.belongs_to :created_by
-      t.belongs_to :report_for
-      t.boolean :report_for_group, default: false
+      t.belongs_to :report_for, type: :uuid
       t.boolean :draft, default: true
       t.boolean :approved, default: false
       t.boolean :archived, default: false

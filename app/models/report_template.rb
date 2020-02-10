@@ -11,4 +11,6 @@ class ReportTemplate < ApplicationRecord
   belongs_to :updated_by, class_name: 'User', foreign_key: 'updated_by_id'
 
   belongs_to :role, optional: true
+
+  belongs_to :report_for, class_name: 'ReportRoute', foreign_key: 'report_for_id', optional: true
 end
