@@ -270,6 +270,7 @@ Rails.application.routes.draw do
     put 'reports/values' => 'report_field_values#update'
     # resources :reports, path: 'reports', only: [:index, :create, :update, :destroy]
     get 'reports' => 'reports#index'
+    get 'reports/routes' => 'reports#fetch_routes'
     post 'reports' => 'reports#create'
     put 'reports' => 'reports#update'
     delete 'reports/:id' => 'reports#destroy'

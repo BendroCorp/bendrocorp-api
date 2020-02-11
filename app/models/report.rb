@@ -10,5 +10,6 @@ class Report < ApplicationRecord
   belongs_to :template, class_name: 'ReportTemplate', foreign_key: 'template_id', optional: true
 
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
-  belongs_to :report_for, class_name: 'User', foreign_key: 'report_for_id', optional: true
+
+  belongs_to :report_for, class_name: 'ReportRoute', foreign_key: 'report_for_id', optional: true
 end

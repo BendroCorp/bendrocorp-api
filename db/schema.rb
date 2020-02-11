@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200119232655) do
+ActiveRecord::Schema.define(version: 20200210222523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1305,6 +1305,17 @@ ActiveRecord::Schema.define(version: 20200119232655) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "report_routes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "title"
+    t.bigint "for_role_id"
+    t.bigint "for_user_id"
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["for_role_id"], name: "index_report_routes_on_for_role_id"
+    t.index ["for_user_id"], name: "index_report_routes_on_for_user_id"
+  end
+
   create_table "report_template_fields", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "template_id"
     t.text "name"
@@ -1329,11 +1340,13 @@ ActiveRecord::Schema.define(version: 20200119232655) do
     t.bigint "created_by_id"
     t.bigint "updated_by_id"
     t.bigint "role_id"
+    t.uuid "report_for_id"
     t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_report_templates_on_created_by_id"
     t.index ["handler_id"], name: "index_report_templates_on_handler_id"
+    t.index ["report_for_id"], name: "index_report_templates_on_report_for_id"
     t.index ["role_id"], name: "index_report_templates_on_role_id"
     t.index ["updated_by_id"], name: "index_report_templates_on_updated_by_id"
   end
@@ -1344,8 +1357,7 @@ ActiveRecord::Schema.define(version: 20200119232655) do
     t.text "template_description"
     t.bigint "handler_id"
     t.bigint "created_by_id"
-    t.bigint "report_for_id"
-    t.boolean "report_for_group", default: false
+    t.uuid "report_for_id"
     t.boolean "draft", default: true
     t.boolean "approved", default: false
     t.boolean "archived", default: false

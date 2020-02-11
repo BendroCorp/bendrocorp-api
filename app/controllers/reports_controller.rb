@@ -14,6 +14,11 @@ class ReportsController < ApplicationController
     render json: @reports.as_json(include: { handler: {}, template: {}, created_by: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
   end
 
+  # GET /reports/routes
+  def fetch_routes
+    render json: ReportRoute.where(archived: false)
+  end
+
   # POST /reports
   def create
     # take the params
@@ -31,6 +36,9 @@ class ReportsController < ApplicationController
 
       # just grab the first available handler for a draft
       @report.handler_id = @report.template.handler_id
+
+      # get default routing - if present
+      @report.report_for_id = @report.template.report_for_id if !@report.template.report_for_id.nil? && @report.template.report_for_id != 0
 
       # save the new report
       if @report.save
@@ -58,12 +66,17 @@ class ReportsController < ApplicationController
     if current_user.id == @report.created_by_id
       if @report.draft == true
         if params[:report][:draft] == false
-          # approval_id = data[:approval_id]
+          # make sure that the report has been routed
+          if @report.report_for.nil? 
+            render status: 400, json: { message: 'You must select a route for your report!' }
+            return
+          end
 
           # create the new approval request
           approval_request = ReportApprovalRequest.new
           # put the approval instance in the request
-          approval_request.approval_id = new_approval(21, @report.report_for_id) # report approval
+          approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) if !@report.report_for.for_user_id.nil? 
+          approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) if !@report.report_for.for_role_id.nil? 
 
           # lastly add the request to the current_user
           approval_request.user_id = current_user.id
