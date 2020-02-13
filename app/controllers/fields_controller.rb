@@ -14,7 +14,7 @@ class FieldsController < ApplicationController
 
   # GET api/fields/:id
   def show
-    @field = Field.where(id: params[:id], archived: false).descriptors
+    @field = Field.where(id: params[:id], archived: false).first.descriptors
 
     if @field
       render json: @field
