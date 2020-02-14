@@ -3,7 +3,7 @@ class RoleRemovalRequest < ApplicationRecord
   belongs_to :role
   belongs_to :approval # required field/fk
 
-  belongs_to :on_behalf_of, :class_name => 'Character', :foreign_key => 'on_behalf_of_id'
+  belongs_to :on_behalf_of, class_name: 'Character', foreign_key: 'on_behalf_of_id'
 
   accepts_nested_attributes_for :approval
 

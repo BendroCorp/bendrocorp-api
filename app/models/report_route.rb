@@ -13,6 +13,8 @@ class ReportReportValidator < ActiveModel::Validator
 end
 
 class ReportRoute < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+  
   validates :title, presence: true
   validates_with ReportReportValidator
 end

@@ -1,4 +1,6 @@
 class ReportTemplateField < ApplicationRecord
+  before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+
   # audited
   before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
   before_save { self.field_id = nil unless self.field_presentation_type_id == 5 }
@@ -9,6 +11,8 @@ class ReportTemplateField < ApplicationRecord
   belongs_to :template, class_name: 'ReportTemplate', foreign_key: 'template_id', optional: true # required
 
   belongs_to :field, optional: true
+
+  belongs_to :report_handler_variable, optional: true
 
   # validators
   validates :name, presence: true

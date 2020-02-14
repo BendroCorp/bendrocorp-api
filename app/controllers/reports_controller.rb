@@ -9,14 +9,42 @@ class ReportsController < ApplicationController
 
   # GET /reports
   def index
-    @reports = Report.where(archived: false) if current_user.is_in_role(49)
-    @reports ||= Report.where('created_by_id = ? OR report_for_id = ?', current_user.id, current_user.id)
-    render json: @reports.as_json(include: { handler: {}, template: {}, created_by: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
+    # get reports that I have access to
+    reports = Report.where(archived: false) if current_user.is_in_role(49)
+    reports ||= Report.where('created_by_id = ?', current_user.id)
+
+    # reports which are for me
+    reports_for_me = Report.all.map do |report|
+      report if report.report_for && (report.report_for.for_user_id == current_user.id || current_user.is_in_role(report.report_for.for_role_id))
+    end
+
+    reports_final = []
+
+    reports.each do |report|
+      reports_final << report
+    end
+
+    reports_for_me.each do |report|
+      reports_final << report if !report.nil?
+    end
+
+    # remove any empty elements
+    reports_final.reject { |c| c.nil? }
+
+    # uniq items only
+    reports_final.uniq!
+
+    render json: reports_final.as_json(include: { handler: {}, template: {}, created_by: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
   end
 
   # GET /reports/routes
   def fetch_routes
     render json: ReportRoute.where(archived: false)
+  end
+
+  # GET /reports/handlers
+  def fetch_handlers
+    render json: ReportHandler.where(archived: false).as_json(include: { variables: {} })
   end
 
   # POST /reports
@@ -44,7 +72,17 @@ class ReportsController < ApplicationController
       if @report.save
         # add fields
         @report.template.fields.each do |template_field|
-          @report.fields << ReportField.new(report_id: @report.id, name: template_field.name, description: template_field.description, validator: template_field.validator, field_presentation_type_id: template_field.field_presentation_type_id, field_id: template_field.field_id, required: template_field.required, ordinal: template_field.ordinal)
+          @report.fields << ReportField.new(
+            report_id: @report.id, 
+            name: template_field.name,
+            description: template_field.description,
+            validator: template_field.validator,
+            field_presentation_type_id: template_field.field_presentation_type_id,
+            field_id: template_field.field_id,
+            required: template_field.required,
+            ordinal: template_field.ordinal,
+            report_handler_variable_id: template_field.report_handler_variable_id
+          )
         end
 
         # save the field back
@@ -66,24 +104,65 @@ class ReportsController < ApplicationController
     if current_user.id == @report.created_by_id
       if @report.draft == true
         if params[:report][:draft] == false
-          # make sure that the report has been routed
-          if @report.report_for.nil? 
+          # make sure that the report has been routed or is handled by a class handler
+          if @report.report_for.nil? && @report.handler.for_class.nil?
             render status: 400, json: { message: 'You must select a route for your report!' }
             return
           end
 
-          # create the new approval request
-          approval_request = ReportApprovalRequest.new
-          # put the approval instance in the request
-          approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) if !@report.report_for.for_user_id.nil? 
-          approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) if !@report.report_for.for_role_id.nil? 
+          if !@report.handler.for_class.nil?
+            # get the class we are trying to handle, these classes are expected to be "Request" formatted object ActiveRecord tables 
+            request_clazz = @report.handler.for_class.constantize.new
+            # if clazz.new.try(:ordinal)
+            # item.instance_eval(class_field)
 
-          # lastly add the request to the current_user
-          approval_request.user_id = current_user.id
-          approval_request.report = @report
+            @report.handler.variables.each do |variable|
+              # get variable value from the assigned field
+              field_variable_value = @report.fields.where(report_handler_variable_id: variable.id).first.field_value.value
 
-          # save back the approval request
-          approval_request.save
+              # request_clazz.instance_variable_set(variable.object_name, field_variable_value)
+              request_clazz.send("#{variable.object_name}=", field_variable_value)
+              # eval "request_clazz.#{variable.object_name}=#{field_variable_value}"
+            end
+
+            # create an approval object for that approval
+            # NOTE/TODO: Do we deprecate the old way of doing this??
+            request_clazz.approval_id = new_approval(@report.handler.approval_kind_id)
+            request_clazz.user_id = current_user.id
+
+            # attempt to save the request class
+            # strong valdiation is required here on the model itself
+            if !request_clazz.save
+              cancel_approval(request_clazz.approval_id)
+              render status: 500, json: { message: "Report could not be submitted because: #{request_clazz.errors.full_messages.to_sentence}" }
+              return
+            end
+
+            # update the approval with the report_id
+            approval = Approval.find_by_id(approval_request.approval_id)
+            approval.report_id = @report.id
+            approval.save
+
+          else
+            # create the default report approval request
+            approval_request = ReportApprovalRequest.new
+
+            # put the approval instance in the request based on the routed user or group
+            approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
+            approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
+
+            # lastly add the request to the current_user
+            approval_request.user_id = current_user.id
+            approval_request.report = @report
+
+            # save back the approval request
+            approval_request.save
+
+            # update the approval with the report_id
+            approval = Approval.find_by_id(approval_request.approval_id)
+            approval.report_id = @report.id
+            approval.save
+          end
 
           # mark the report as not a draft
           @report.draft = false
