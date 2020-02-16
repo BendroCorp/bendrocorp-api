@@ -14,10 +14,10 @@ class FieldsController < ApplicationController
 
   # GET api/fields/:id
   def show
-    @field = Field.where(id: params[:id], archived: false).descriptors
+    @field = Field.where(id: params[:id], archived: false).first
 
     if @field
-      render json: @field
+      render json: @field.descriptors
     else
       render status: :not_found, json: { message: 'Field not found!' }
     end
