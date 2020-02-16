@@ -15,7 +15,8 @@ ReportHandler.create([{ name: 'Generic Approval', ordinal: 1 }])
 Field.create([{ name: 'Yes/No/Maybe' }])
 FieldDescriptor.create([{ title: 'Yes', field: Field.first }, { title: 'No', field: Field.first }, { title: 'Maybe', field: Field.first }])
 FieldDescriptorClass.create([{ title: 'Character Full Names', class_name: 'Character', class_field: 'full_name' },
-                             { title: 'Roles', class_name: 'Role', class_field: 'name' }])
+                             { title: 'Roles', class_name: 'Role', class_field: 'name' },
+                             { title: 'Jobs', class_name: 'Job', class_field: 'title' }])
 
 # make all the other fields
 Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Connection Size' },
@@ -799,11 +800,14 @@ SystemMapSystemPlanetaryBodyMoon.create([{ title: 'Yela', orbits_planet: SystemM
                                          { title: 'Cellin', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 }])
 
 handler = ReportHandler.create({ name: 'Add Role Handler', for_class: 'RoleRequest', approval_kind_id: 1, ordinal: 2 })
-handler_two = ReportHandler.create({ name: 'Remove Role Handler', for_class: 'RoleRemovalRequest', approval_kind_id: 1, ordinal: 3 })
+handler_two = ReportHandler.create({ name: 'Remove Role Handler', for_class: 'RoleRemovalRequest', approval_kind_id: 12, ordinal: 3 })
+handler_three = ReportHandler.create({ name: 'Position Change Request', for_class: 'RoleRemovalRequest', approval_kind_id: 22, ordinal: 4 })
 ReportHandlerVariable.create([{ handler_id: handler.id, name: 'Role', object_name: 'role_id' },
                               { handler_id: handler.id, name: 'On Behalf Of', object_name: 'on_behalf_of_id' },
                               { handler_id: handler_two.id, name: 'Role', object_name: 'role_id' },
-                              { handler_id: handler_two.id, name: 'On Behalf Of', object_name: 'on_behalf_of_id' }])
+                              { handler_id: handler_two.id, name: 'On Behalf Of', object_name: 'on_behalf_of_id' },
+                              { handler_id: handler_three.id, name: 'Job', object_name: 'job_id' },
+                              { handler_id: handler_three.id, name: 'Member Character', object_name: 'character_id' }])
 # on_behalf_of
 # RoleRemovalRequest
 # { id: 1, title: 'Role Request'},
