@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-- 2.6.3
+- 2.6.5
 script:
 - bin/rails db:migrate RAILS_ENV=test --trace
 branches:
