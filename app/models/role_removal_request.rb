@@ -1,4 +1,13 @@
+class RoleRemovalRequestValidator < ActiveModel::Validator
+  def validate(record)
+    if !record.on_behalf_of.user.is_in_role(record.role_id)
+      record.errors[:role_id] << 'The user is not in the requested role!'
+    end
+  end
+end
+
 class RoleRemovalRequest < ApplicationRecord
+  validates_with RoleRemovalRequestValidator
   belongs_to :user # required field/fk
   belongs_to :role
   belongs_to :approval # required field/fk
