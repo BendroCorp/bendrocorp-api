@@ -10,6 +10,8 @@ class ReportField < ApplicationRecord
 
   belongs_to :field, optional: true
 
+  belongs_to :report_handler_variable, optional: true
+
   # validators
   validates :name, presence: true
   validates :field_presentation_type_id, presence: true

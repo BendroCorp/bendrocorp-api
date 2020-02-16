@@ -6,6 +6,7 @@ class CreateApprovals < ActiveRecord::Migration[5.1]
       t.boolean :single_consent, default: false
       t.boolean :denied, default: false
       t.boolean :approved, default: false
+      t.belongs_to :report, type: :uuid
 
       t.boolean :bound, default: false
       t.integer :bound_tries, default: 0

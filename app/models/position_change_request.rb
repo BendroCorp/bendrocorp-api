@@ -45,6 +45,7 @@ class PositionChangeRequest < ApplicationRecord
     end
   end
 
-  def approval_denied #what happens when the approval is denied
+  def approval_denied
+    # do nothing
   end
 end

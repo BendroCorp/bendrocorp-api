@@ -120,6 +120,13 @@ class ApprovalsController < ApplicationController
               send_email approver.user.email, 'Approval Overriden', approverEmailText
             end
 
+            # if there is a report attached deal with it as well
+            if approval.report
+              approval.report.draft = true if approval.denied
+              approval.report.approved = true if approval.approved
+              approval.save
+            end
+
             # run the completetion workflow
             run_approval_workflow @approval
           end
@@ -166,6 +173,13 @@ class ApprovalsController < ApplicationController
 
               send_push_notification approver.user.id, approverPushText
               send_email approver.user.email, 'Approval Overriden', approverEmailText
+            end
+
+            # if there is a report attached deal with it as well
+            if approval.report
+              approval.report.draft = true if approval.denied
+              approval.report.approved = true if approval.approved
+              approval.save
             end
 
             # run the completetion workflow
@@ -224,6 +238,13 @@ class ApprovalsController < ApplicationController
           SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{approval.id} has been denied!", site_log_type_id: 2)
         end
 
+        # if there is a report attached deal with it as well
+        if approval.report
+          approval.report.draft = true if approval.denied
+          approval.report.approved = true if approval.approved
+          approval.save
+        end
+
         # run final workflow
         run_approval_workflow approval
 
@@ -261,6 +282,13 @@ class ApprovalsController < ApplicationController
             SiteLog.create(module: 'Approvals', submodule: 'Approval Approved', message: "Approval ##{approval.id} has been approved!", site_log_type_id: 2)
           elsif !approval.approved && approval.denied
             SiteLog.create(module: 'Approvals', submodule: 'Approval Denied', message: "Approval ##{approval.id} has been denied!", site_log_type_id: 2)
+          end
+
+          # if there is a report attached deal with it as well
+          if approval.report
+            approval.report.draft = true if approval.denied
+            approval.report.approved = true if approval.approved
+            approval.save
           end
 
           # run final workflows

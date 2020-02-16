@@ -192,12 +192,14 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.boolean "single_consent", default: false
     t.boolean "denied", default: false
     t.boolean "approved", default: false
+    t.uuid "report_id"
     t.boolean "bound", default: false
     t.integer "bound_tries", default: 0
     t.boolean "notifications_sent", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["approval_kind_id"], name: "index_approvals_on_approval_kind_id"
+    t.index ["report_id"], name: "index_approvals_on_report_id"
   end
 
   create_table "approver_roles", force: :cascade do |t|
@@ -1282,11 +1284,13 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.text "validator"
     t.integer "field_presentation_type_id"
     t.uuid "field_id"
+    t.uuid "report_handler_variable_id"
     t.boolean "required"
     t.integer "ordinal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["field_id"], name: "index_report_fields_on_field_id"
+    t.index ["report_handler_variable_id"], name: "index_report_fields_on_report_handler_variable_id"
     t.index ["report_id"], name: "index_report_fields_on_report_id"
   end
 
@@ -1301,8 +1305,13 @@ ActiveRecord::Schema.define(version: 20200210222523) do
 
   create_table "report_handlers", force: :cascade do |t|
     t.text "name"
+    t.text "for_class"
+    t.bigint "approval_kind_id"
+    t.boolean "archived", default: false
+    t.integer "ordinal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["approval_kind_id"], name: "index_report_handlers_on_approval_kind_id"
   end
 
   create_table "report_routes", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1323,12 +1332,14 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.text "validator"
     t.integer "field_presentation_type_id"
     t.uuid "field_id"
+    t.uuid "report_handler_variable_id"
     t.boolean "required", default: false
     t.integer "ordinal"
     t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["field_id"], name: "index_report_template_fields_on_field_id"
+    t.index ["report_handler_variable_id"], name: "index_report_template_fields_on_report_handler_variable_id"
     t.index ["template_id"], name: "index_report_template_fields_on_template_id"
   end
 

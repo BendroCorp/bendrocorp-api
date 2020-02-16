@@ -1,8 +1,10 @@
 class Approval < ApplicationRecord
   belongs_to :approval_kind
+  belongs_to :report, optional: true
   has_many :approval_approvers, dependent: :delete_all
 
   accepts_nested_attributes_for :approval_approvers
+  accepts_nested_attributes_for :report
 
   def created_at_ms
     self.created_at.to_f * 1000
@@ -70,8 +72,9 @@ class Approval < ApplicationRecord
   end
 
   def approval_workflow
-    #this will need to be updated if/when new requests are created
-    if self.approval_kind_id == 1 #role_request
+    # this will need to be updated if/when new requests are created
+    # TODO: This needs to be re-thought
+    if self.approval_kind_id == 1 # role_request
       1
     elsif self.approval_kind_id == 3
       1
@@ -171,18 +174,12 @@ class Approval < ApplicationRecord
       "/offender-reports/report/#{e.offender_report.id}"
     elsif self.approval_kind_id == 18
       e = JobBoardMissionCompletionRequest.find_by approval_id: self.id
-      puts
-      puts self.id
-      puts e.inspect
       "/job-board/#{e.job_board_mission.id}"
     elsif self.approval_kind_id == 21
       e = ReportApprovalRequest.find_by approval_id: self.id
       "/reports/#{e.report.id}" # url_title_string
     elsif self.approval_kind_id == 23
       e = ApplicantApprovalRequest.find_by approval_id: self.id
-      puts 'debug'
-      puts self.id
-      puts e.inspect
       "/profiles/#{e.application.character.first_name.downcase}-#{e.application.character.last_name.downcase}-#{e.application.character.id}"
     end
   end

@@ -9,12 +9,13 @@ SiteLogType.create([{ id: 1, title: 'Authentication'}, { id: 2, title: 'General'
 
 TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { id: 3, title: 'Video' }, { id: 4, title: 'Instructor Approval' }])
 
-ReportHandler.create([{ id: 1, name: 'Generic Approval' }])
+ReportHandler.create([{ name: 'Generic Approval', ordinal: 1 }])
 
 # make a base field
 Field.create([{ name: 'Yes/No/Maybe' }])
 FieldDescriptor.create([{ title: 'Yes', field: Field.first }, { title: 'No', field: Field.first }, { title: 'Maybe', field: Field.first }])
-FieldDescriptorClass.create([{ title: 'Character Full Names', class_name: 'Character', class_field: 'full_name' }])
+FieldDescriptorClass.create([{ title: 'Character Full Names', class_name: 'Character', class_field: 'full_name' },
+                             { title: 'Roles', class_name: 'Role', class_field: 'name' }])
 
 # make all the other fields
 Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Connection Size' },
@@ -78,13 +79,13 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 3, title: 'Events', icon: 'fa-calendar', link: '/events', ordinal: 3 },
                  { id: 4, title: 'Job Board', icon: 'fa-briefcase', link: '/job-board', ordinal: 4 },
                  { id: 5, title: 'Flight Logs', icon: 'fa-book', link: '/flight-logs', ordinal: 5 },
-                 { id: 6, title: 'Reports', icon: 'fa-file-alt', link: '/reports', ordinal: 6 },
+                 { id: 6, title: 'Forms', icon: 'fa-file-alt', link: '/forms', ordinal: 6 },
                  { id: 8, title: 'Alerts', icon: 'fa-bell', link: '/alerts', ordinal: 8 },
                 #  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
                  { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
                  { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 13 },
-                 { id: 13, title: 'Requests', icon: 'fa-folder-open', link: '/requests', ordinal: 12 },
+                 { id: 13, title: 'Approvals', icon: 'far fa-check-circle', link: '/approvals', ordinal: 12 },
                  { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 1, nested_under_id: 12 },
                  { id: 15, title: 'Site Logs', icon: 'fas fa-user', link: '/site-logs', ordinal: 2, nested_under_id: 12 },
                  { id: 16, title: 'Roles', icon: 'fas fa-key', link: '/roles', ordinal: 3, nested_under_id: 12 },
@@ -796,6 +797,19 @@ SystemMapSystemPlanetaryBody.create([{ orbits_system: SystemMapSystem.first, tit
 SystemMapSystemPlanetaryBodyMoon.create([{ title: 'Yela', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 },
                                          { title: 'Daymar', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 },
                                          { title: 'Cellin', orbits_planet: SystemMapSystemPlanetaryBody.first, discovered_by: user1 }])
+
+handler = ReportHandler.create({ name: 'Add Role Handler', for_class: 'RoleRequest', approval_kind_id: 1, ordinal: 2 })
+handler_two = ReportHandler.create({ name: 'Remove Role Handler', for_class: 'RoleRemovalRequest', approval_kind_id: 1, ordinal: 3 })
+ReportHandlerVariable.create([{ handler_id: handler.id, name: 'Role', object_name: 'role_id' },
+                              { handler_id: handler.id, name: 'On Behalf Of', object_name: 'on_behalf_of_id' },
+                              { handler_id: handler_two.id, name: 'Role', object_name: 'role_id' },
+                              { handler_id: handler_two.id, name: 'On Behalf Of', object_name: 'on_behalf_of_id' }])
+# on_behalf_of
+# RoleRemovalRequest
+# { id: 1, title: 'Role Request'},
+# { id: 2, title: 'Application Approval Request'},
+# { id: 3, title: 'Award Approval'},
+# { id: 4, title: 'Role Removal'},
 
 # keep this at the bottom
 UserCountry.create([{ code: 'BD', title:'Bangladesh' },

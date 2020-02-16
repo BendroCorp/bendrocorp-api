@@ -37,14 +37,6 @@ class ReportFieldsController < ApplicationController
 
   # DELETE /report_fields/1
   def destroy
-    puts
-    puts
-    puts
-    puts
-    puts 'test'
-    puts
-    puts
-    puts
     @report_field.archived = true
     if @report_field.save
       render json: { message: 'Field archived!' }
@@ -62,10 +54,10 @@ class ReportFieldsController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def report_create_field_params
-      params.require(:report_field).permit(:template_id, :name, :validator, :field_presentation_type_id, :field_id, :required, :ordinal)
+      params.require(:report_field).permit(:template_id, :name, :validator, :field_presentation_type_id, :field_id, :required, :ordinal, :report_handler_variable_id)
     end
 
     def report_update_field_params
-      params.require(:report_field).permit(:name, :description, :validator, :field_presentation_type_id, :field_id, :required, :ordinal)
+      params.require(:report_field).permit(:name, :description, :validator, :field_presentation_type_id, :field_id, :required, :ordinal, :report_handler_variable_id)
     end
 end
