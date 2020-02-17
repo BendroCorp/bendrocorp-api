@@ -1,7 +1,16 @@
+class RoleRequestValidator < ActiveModel::Validator
+  def validate(record)
+    if record.on_behalf_of.user.is_in_role(record.role_id)
+      record.errors[:role_id] << 'The user is already in the requested role!'
+    end
+  end
+end
+
 class RoleRequest < ApplicationRecord
-  belongs_to :user #required field/fk
+  validates_with RoleRequestValidator
+  belongs_to :user # required field/fk
   belongs_to :role
-  belongs_to :approval #required field/fk
+  belongs_to :approval # required field/fk
 
   belongs_to :on_behalf_of, class_name: 'Character', foreign_key: 'on_behalf_of_id'
 
@@ -10,11 +19,11 @@ class RoleRequest < ApplicationRecord
   def approval_completion #required for approval
     self.on_behalf_of.user.roles << self.role
     if !self.on_behalf_of.user.save
-      error #throw an error :)
+      error # throw an error :)
     end
   end
 
   def approval_denied
-      #do nothing (nothing needs to be done here)
+      # do nothing (nothing needs to be done here)
   end
 end

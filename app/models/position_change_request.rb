@@ -1,7 +1,7 @@
 class PositionChangeRequest < ApplicationRecord
   validates :user_id, presence: true
-  belongs_to :user, optional: true #required field/fk - the requester
-  belongs_to :approval #required field/fk
+  belongs_to :user, optional: true # required field/fk - the requester
+  belongs_to :approval # required field/fk
   belongs_to :job
   belongs_to :character
 
