@@ -1,3 +1,4 @@
+# Takes an approval and "binds" it to the user and sends them approval notifications.
 class ApprovalBoundWorker
   include Sidekiq::Worker
 
@@ -14,7 +15,7 @@ class ApprovalBoundWorker
 
           # send emails
           EmailWorker.perform_async(approver.user.email, "New Approval Request",
-          "<p>Hello #{approver.user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/requests/approvals\'>your requests</a> for more information.</p>"
+          "<p>Hello #{approver.user.username}!</p><p>You have a new request which requires your approval. Please see <a href=\'http://localhost:4200/approvals/#{approval.id}\'>Approval ##{approval.id}</a> for more information.</p>"
           ) # to, subject, message
 
           approver.last_notified = Time.now
