@@ -15,6 +15,9 @@ class FieldDescriptorsController < ApplicationController
         # creator
         @field_descriptor.created_by_id = current_user.id
 
+        # set ordinal
+        @field.descriptor.ordinal = FieldDescriptor.where(field_id: @field_descriptor.field_id).count + 1
+
         if @field_descriptor.save
           render status: :created, json: @field_descriptor
         else
