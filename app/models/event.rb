@@ -75,4 +75,8 @@ class Event < ActiveRecord::Base
   def url_title_string
     "#{self.name.downcase.gsub(' ', '-')}-#{self.id}"
   end
+
+  def title_with_date
+    "#{name} - #{start_date.strftime("%B, %d %YT %H%M (UTC)")}"
+  end
 end
