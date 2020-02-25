@@ -15,8 +15,8 @@ class FieldDescriptorClass < ApplicationRecord
     clazz = class_name.constantize
 
     # check to see if the class has an ordinal or archived attribute
-    has_ordinal = true if clazz.new.try(:ordinal) != nil && !clazz.ordinal.nil?
-    has_archived = true if clazz.new.try(:archived) != nil && !clazz.archived.nil?
+    has_ordinal = true if clazz.attribute_method? :ordinal
+    has_archived = true if clazz.attribute_method? :archived
 
     # has an ordinal
     results = clazz.all.order('ordinal') if !has_ordinal && has_archived
