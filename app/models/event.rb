@@ -2,20 +2,20 @@ class Event < ActiveRecord::Base
   before_create { self.briefing = EventBriefing.new }
   before_create { self.debriefing = EventDebriefing.new }
 
-  validates :name, presence: true, length: { minimum:3, maximum: 255 }
+  validates :name, presence: true, length: { minimum: 3, maximum: 255 }
   validates :description, presence: true
   validates :start_date, presence: true
   validates :end_date, presence: true
 
-  has_many :attendences
+  has_many :attendences, dependent: :delete_all
   has_many :characters, through: :attendences
   belongs_to :event_type
   belongs_to :event_certification_request, optional: true
-  has_one :briefing, :class_name => 'EventBriefing'#, :foreign_key => 'briefing_id'
-  has_one :debriefing, :class_name => 'EventDebriefing'#, :foreign_key => 'debriefing_id'
+  has_one :briefing, class_name: 'EventBriefing', dependent: :delete
+  has_one :debriefing, class_name: 'EventDebriefing', dependent: :delete
 
   #awards
-  has_many :event_awards
+  has_many :event_awards, dependent: :delete_all
   has_many :awards, through: :event_awards
 
   has_one :event_auto_attendance
