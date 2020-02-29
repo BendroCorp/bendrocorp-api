@@ -2,7 +2,7 @@ class EventRegenWorker
   include Sidekiq::Worker
 
   def perform(*args)
-    Event.where('weekly_recurrence = true or monthly_recurrence = true and recurred = false').each do |old_event|
+    Event.where('(weekly_recurrence = true or monthly_recurrence = true) and recurred = false').each do |old_event|
       # check to see if this event is suppose to recur
       @event = Event.new
       @event.name = old_event.name
@@ -27,13 +27,13 @@ class EventRegenWorker
         @event.event_awards << EventAward.new(award_id: event_award.award_id)
       end
 
-      if !@event.save
+      unless @event.save
         throw "ERROR Occured: Reccurring event could not be saved."
       end
 
       old_event.recurred = true
-      if !old_event.save
-        # @event.destroy
+      unless old_event.save
+        @event.destroy
         throw "ERROR Occured: Reccurring original event could not be saved."
       end
     end
