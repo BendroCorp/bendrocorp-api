@@ -38,3 +38,6 @@
   discord_identity_reminder_worker:
     every: 72h
     class: DiscordIdentityReminderWorker
+  event_regen_worker:
+    every: 5m
+    class: EventRegenWorker
