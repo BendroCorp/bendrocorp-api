@@ -564,6 +564,7 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.datetime "end_date"
     t.boolean "weekly_recurrence", default: false
     t.boolean "monthly_recurrence", default: false
+    t.boolean "recurred", default: false
     t.bigint "event_type_id"
     t.text "livestream_url"
     t.boolean "submitted_for_certification", default: false
