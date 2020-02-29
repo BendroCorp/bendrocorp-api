@@ -2,7 +2,7 @@ class EventRegenWorker
   include Sidekiq::Worker
 
   def perform(*args)
-    Event.where('(weekly_recurrence = true or monthly_recurrence = true) and recurred = false').each do |old_event|
+    Event.where('(weekly_recurrence = true or monthly_recurrence = true) and recurred = false and end_date < ?', Time.now).each do |old_event|
       # check to see if this event is suppose to recur
       @event = Event.new
       @event.name = old_event.name
