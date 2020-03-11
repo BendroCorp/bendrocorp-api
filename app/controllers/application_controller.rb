@@ -270,11 +270,18 @@ class ApplicationController < ActionController::API
 
   private
   def bearer_token
-    pattern =  /^(Bearer|Basic|bearer|basic) / #
+    # try to get it from the body
+    pattern = /^(Bearer|Basic|bearer|basic) / #
     header = request.env["HTTP_AUTHORIZATION"] #
     header ||= request.env["HTTP_X_AUTHORIZATION"] #
+
+    # we also allow the token to be passed in the URI
+    uri_token = request.query_parameters["access_token"]
+    uri_token ||= request.request_parameters["access_token"]
+
     # prep the final header
     header = header.gsub(pattern, '') if header && header.match(pattern)
+    header ||= uri_token if uri_token
     return header
   end
 end
