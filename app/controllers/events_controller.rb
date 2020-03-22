@@ -287,6 +287,9 @@ class EventsController < ApplicationController
           auto.save
         end
 
+        # check to see if any records have been processed if this is the case set the boolean
+        processing_done = true if EventAutoAttendance.where(event_id: params[:event_id].to_i, processed: true).count > 0
+
         # array of all current attendees
         attender_ids = []
 
@@ -298,7 +301,7 @@ class EventsController < ApplicationController
           attender_ids << attendance.user_id
 
           # set the attendance for the current attendees based on the auto attendance if they have a valid discord_identity
-          if attendance.user.discord_identity
+          if attendance.user.discord_identity && !processing_done
             # are the in the attendance list?
             if auto_attendance.include? attendance.user_id
               attendance.attendence_type_id = 1 # attending
