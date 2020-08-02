@@ -153,6 +153,11 @@ Rails.application.routes.draw do
   patch 'api/flight-logs' => 'flight_logs#update'
   delete 'api/flight-logs/:flight_log_id' => 'flight_logs#delete'
 
+  # images
+  get 'api/images' => 'image_uploads#index'
+  post 'api/images' => 'image_uploads#create'
+  delete 'api/images' => 'image_uploads#destroy'
+
   # job Board
   get 'api/job-board/' => 'job_board#list'
   get 'api/job-board/types' => 'job_board#list_types'
@@ -224,7 +229,9 @@ Rails.application.routes.draw do
   get 'api/pages' => 'page_entries#list'
   post 'api/pages' => 'page_entries#create_page'
   patch 'api/pages' => 'page_entries#update_page'
+  put 'api/pages' => 'page_entries#update_page'
   delete 'api/pages/:page_id' => 'page_entries#delete_page'
+  get 'api/pages/search/:uuid_segment' => 'page_entries#id_search'
   post 'api/pages/publish' => 'page_entries#publish'
   post 'api/pages/unpublish' => 'page_entries#unpublish'
   post 'api/pages/add-role' => 'page_entries#add_role'
@@ -233,6 +240,12 @@ Rails.application.routes.draw do
   post 'api/pages/category' => 'page_entries#update_category'
   patch 'api/pages/category' => 'page_entries#update_category'
   get 'api/pages/category/:page_category_id' => 'page_entries#delete_category'
+  # page image routes
+  post 'api/pages/:page_id/images' => 'page_entries#create_image'
+  delete 'api/pages/:page_id/images' => 'page_entries#destroy_image'
+
+  # at the bottom
+  get 'api/pages/:page_id' => 'page_entries#show'
 
   # profiles
   get 'api/profile' => 'profiles#list'

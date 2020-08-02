@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200210222523) do
+ActiveRecord::Schema.define(version: 20200725013618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1192,15 +1192,17 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.index ["ship_id"], name: "index_owned_ships_on_ship_id"
   end
 
-  create_table "page_categories", force: :cascade do |t|
+  create_table "page_categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "title"
+    t.boolean "featured", default: false
+    t.boolean "read_only", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "page_entry_edits", force: :cascade do |t|
+  create_table "page_entry_edits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "comment"
-    t.bigint "page_id"
+    t.uuid "page_id"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1208,8 +1210,8 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.index ["user_id"], name: "index_page_entry_edits_on_user_id"
   end
 
-  create_table "page_entry_roles", force: :cascade do |t|
-    t.bigint "page_id"
+  create_table "page_entry_roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "page_id"
     t.bigint "role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1217,23 +1219,40 @@ ActiveRecord::Schema.define(version: 20200210222523) do
     t.index ["role_id"], name: "index_page_entry_roles_on_role_id"
   end
 
-  create_table "pages", force: :cascade do |t|
+  create_table "page_images", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "page_id"
+    t.bigint "image_upload_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["image_upload_id"], name: "index_page_images_on_image_upload_id"
+    t.index ["page_id"], name: "index_page_images_on_page_id"
+  end
+
+  create_table "page_in_categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "page_id"
+    t.uuid "category_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["category_id"], name: "index_page_in_categories_on_category_id"
+    t.index ["page_id"], name: "index_page_in_categories_on_page_id"
+  end
+
+  create_table "pages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "title"
     t.text "subtitle"
     t.text "content"
-    t.text "url_link"
     t.text "tags"
     t.boolean "read_only", default: false
     t.datetime "published_when"
-    t.boolean "is_published", default: false
-    t.bigint "page_category_id"
+    t.boolean "published", default: false
     t.bigint "creator_id"
+    t.bigint "classification_level_id"
     t.boolean "archived", default: false
     t.boolean "is_official", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["classification_level_id"], name: "index_pages_on_classification_level_id"
     t.index ["creator_id"], name: "index_pages_on_creator_id"
-    t.index ["page_category_id"], name: "index_pages_on_page_category_id"
   end
 
   create_table "point_transactions", force: :cascade do |t|
