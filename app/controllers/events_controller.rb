@@ -273,9 +273,12 @@ class EventsController < ApplicationController
     @event = Event.find_by_id(params[:event_id].to_i)
     if @event != nil && !@event.submitted_for_certification
       if @event.is_expired
-        # fetch the auto attendance array
+
+        # the auto attendance array
         auto_attendance = []
-        EventAutoAttendance.where('event_id = ? AND processed = ?', params[:event_id].to_i, false).each do |auto|  # .map(&:user_id)
+
+        # populate auto attendance array and mark auto attendances as processed
+        EventAutoAttendance.where(event_id: params[:event_id].to_i, processed: false).each do |auto|  # .map(&:user_id)
           # add the id to the array
           auto_attendance << auto.user_id
 
@@ -284,16 +287,21 @@ class EventsController < ApplicationController
           auto.save
         end
 
-        # get all the members not in event and create negative attendence entries for them
+        # check to see if any records have been processed if this is the case set the boolean
+        processing_done = true if EventAutoAttendance.where(event_id: params[:event_id].to_i, processed: true).count > 0
+
+        # array of all current attendees
         attender_ids = []
 
-        # loop through the current attendances and 
-        Attendence.where("event_id = ?", params[:event_id]).each do |attendance| # .map(&:user_id)
+        # loop through the current attendances and..
+        # 1. Get their user.id into the attender_ids array
+        # 2. Adjust the user's attendance type/status based on the auto attendance
+        Attendence.where(event_id: params[:event_id]).each do |attendance| # .map(&:user_id)
           # add the list to the attender_ids
           attender_ids << attendance.user_id
 
-          # set the attendance based on the auto attendance if they have a valid discord_identity
-          if attendance.user.discord_identity
+          # set the attendance for the current attendees based on the auto attendance if they have a valid discord_identity
+          if attendance.user.discord_identity && !processing_done
             # are the in the attendance list?
             if auto_attendance.include? attendance.user_id
               attendance.attendence_type_id = 1 # attending
@@ -307,17 +315,19 @@ class EventsController < ApplicationController
         end
 
         # get all of the users not in the `attendance` table id list
-        users = User.where("is_member = ? AND id NOT IN (?) AND id <> 0", true, attender_ids)
-
-        # if an event has zero attenders then we just go and get everyone
-        users = Role.find_by_id(0).role_full_users if users.nil? || users.count == 0
+        users = Role.find_by_id(0).role_full_users.filter { |user| !attender_ids.include? user.id }
 
         # interate through the list and assign negative attendance unless they are present in the auto attendance table
         users.each do |user|
           # if the user exists in the auto attendance for the event the mark as attending
-          attendence_type_id = 1 if auto_attendance.include? user.id # they are attending
-          # if they are not in the list then set to not attending
-          attendence_type_id ||= 2 # 2 = not attending
+          # this is in case they didn't say either way but Discord knows they showed up
+          if auto_attendance.include? user.id
+            attendence_type_id = 1
+          else
+            attendence_type_id = 2
+          end
+
+          # create the new attendance
           attendence = Attendence.new(event_id: params[:event_id].to_i,
                                        user_id: user.id,
                                        character_id: user.main_character.id,
@@ -327,6 +337,8 @@ class EventsController < ApplicationController
 
         # then we reload the event to get the attendences
         @event = Event.find_by_id(params[:event_id].to_i)
+
+        # return attendances
         render status: 200, json: @event.attendences.as_json(include: { character: { methods: [:full_name] }})
       else
         render status: 403, json: { message: 'Event end time has not expired. You can not certify an event until after it has concluded.' }
