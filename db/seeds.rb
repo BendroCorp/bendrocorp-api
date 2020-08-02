@@ -75,18 +75,25 @@ Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Co
     { id:'0a5faa82-ae2a-424e-9d68-790a6f3ec39a',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Other',description:'Other objects which do not meet the currently defined definitions.',ordinal:99 }, 
     { id:'53923cf1-087c-4437-a5ad-2e4549e31ce8',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Other',description:'Location types which do not fit into the current set of location classifications.',ordinal:99 }])
 
+
+page_categories_field = Field.create(id: '95ba5b0c-cbfb-4fe7-ab39-75010a30b20f', name: 'Page Categories')
+FieldDescriptor.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', field_id: page_categories_field.id, title: 'Featured', read_only: true },
+                        { id: 'b8bdff1d-237e-4812-9e2d-ef33cc2bd76d', field_id: page_categories_field.id, title: 'Guides', read_only: true },
+                        { id: 'f9b194cc-7ec3-48d5-93b9-467a6227823e', field_id: page_categories_field.id, title: 'Policy', read_only: true }])
+
 MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
                  { id: 3, title: 'Events', icon: 'fa-calendar', link: '/events', ordinal: 3 },
                  { id: 4, title: 'Job Board', icon: 'fa-briefcase', link: '/job-board', ordinal: 4 },
                  { id: 5, title: 'Flight Logs', icon: 'fa-book', link: '/flight-logs', ordinal: 5 },
                  { id: 6, title: 'Forms', icon: 'fa-file-alt', link: '/forms', ordinal: 6 },
+                 { id: 22, title: 'Pages', icon: 'fas fa-columns', link: '/pages', ordinal: 7 },
                  { id: 8, title: 'Alerts', icon: 'fa-bell', link: '/alerts', ordinal: 8 },
                 #  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
                  { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
                  { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
                  { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 13 },
-                 { id: 13, title: 'Approvals', icon: 'far fa-check-circle', link: '/approvals', ordinal: 12 },
+                #  { id: 13, title: 'Approvals', icon: 'far fa-check-circle', link: '/approvals', ordinal: 12 },
                  { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 1, nested_under_id: 12 },
                  { id: 15, title: 'Site Logs', icon: 'fas fa-user', link: '/site-logs', ordinal: 2, nested_under_id: 12 },
                  { id: 16, title: 'Roles', icon: 'fas fa-key', link: '/roles', ordinal: 3, nested_under_id: 12 },
@@ -290,13 +297,9 @@ ships = Ship.create([{ name: 'M50 Intercepter', manufacturer: 'ORIG'},
                       { name: 'Crucible', manufacturer: 'ANVL'},
                       { name: 'Terrapin', manufacturer: 'ANVL'}])
 
-page_categories = PageCategory.create([{ title: 'General' },
-                                       { title: 'Recruitment' },
-                                       { title: 'Transport' },
-                                       { title: 'Security' },
-                                       { title: 'Research' },
-                                       { title: 'Ships' },
-                                       { title: 'Training' }])
+# page_categories = PageCategory.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', title: 'Featured', read_only: true },
+#                                        { id: 'b8bdff1d-237e-4812-9e2d-ef33cc2bd76d', title: 'Guides', read_only: true },
+#                                        { id: 'f9b194cc-7ec3-48d5-93b9-467a6227823e', title: 'Policy', read_only: true }])
 
 event_types = EventType.create([{ id: 1, title: 'Operation'},
                                 { id: 2, title: 'Livestream'}])
