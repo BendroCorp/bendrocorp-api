@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 
 jobs:
-  test:
+  master-build:
 
     runs-on: ubuntu-latest
 
@@ -22,3 +22,12 @@ jobs:
       run: bundle install
     #- name: Run tests
     #  run: bundle exec rake
+    - name: Push to Dokku
+      uses: obrassard/action-dokku-push@v1.0.2
+      with:
+        # The dokku app's git repository url (in SSH format)
+        dokku_repo: ${{ secrets.dokkuRepo }}
+        # A private SSH key that has push acces to your Dokku instance
+        ssh_key: ${{ secrets.dokkuPrivateKey }}
+        # The branch to be deployed when pushing to Dokku (default: master)
+        deploy_branch: master # optional, default is master
