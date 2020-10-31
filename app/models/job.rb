@@ -11,10 +11,10 @@ class Job < ActiveRecord::Base
 
   def max_hired
     if self.checks_max_headcount_from
-      true if self.checks_max_headcount_from.max && self.checks_max_headcount_from.max != -1 && self.checks_max_headcount_from.characters.count >= self.checks_max_headcount_from.max
+      return true if self.checks_max_headcount_from.max && self.checks_max_headcount_from.max != -1 && self.checks_max_headcount_from.characters.count >= self.checks_max_headcount_from.max
     else
-      true if self.max && self.max != -1 && self.characters.count >= self.max
+      return true if self.max && self.max != -1 && self.characters.count >= self.max
     end
-    false
+    return false
   end
 end
