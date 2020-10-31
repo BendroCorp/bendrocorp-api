@@ -12,11 +12,11 @@ class JobsController < ApplicationController
 
   # GET api/job/hiring
   def list_hiring
-    jobs = []
-    Job.where('hiring = ?', true).order('title').each do |job|
-      jobs << job if !job.max_hired
-    end
-    render status: 200, json: jobs
+    # jobs = []
+    # Job.where('hiring = ?', true).order('title').each do |job|
+    #   jobs << job if !job.max_hired
+    # end
+    render status: 200, json: Job.where('hiring = ?', true).order('title').select { |job| !job.max_hired }
   end
 
   # GET api/job/types
