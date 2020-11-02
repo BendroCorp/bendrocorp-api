@@ -6,6 +6,6 @@ class PagesController < ApplicationController
 
   # CATCH ALL 404 ROUTE
   def not_found
-    render status: 404, json: { message: 'The endpoint you are looking for does not exist!' }
+    render status: 404, json: { message: 'We are sorry the endpoint you are looking for does not exist!' }
   end
 end
