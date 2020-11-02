@@ -1,7 +1,7 @@
 class PagesController < ApplicationController
   # Root route
   def hello
-    render status: 200, json: { message: 'Hi! Welcome to the BendroCorp API!' }
+    render status: 200, json: { message: 'Hi! Welcome to the BendroCorp primary API!' }
   end
 
   # CATCH ALL 404 ROUTE
