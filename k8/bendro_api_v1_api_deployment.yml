@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bendro-api-v1-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bendro-api-v1-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: bendro-api-v1-deployment
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: bendro-krakend-deployment
+        image: docker.pkg.github.com/bendrocorp/bendrocorp-api/bendrocorp-api-v1:latest
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always
+        command: [ "rails" ]
+        args: [ "s", "-p", "3000" ]

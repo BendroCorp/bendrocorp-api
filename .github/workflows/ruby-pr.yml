@@ -13,12 +13,19 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  # Name of docker image
+  IMAGE_NAME: bendrocorp-api-v1
+
 jobs:
   test:
 
     runs-on: ubuntu-latest
 
     steps:
+    - name: Allow unsecure commands - cause we have to...
+      run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
     - uses: actions/checkout@v2
     - name: Set up Ruby
     # To automatically get bug fixes and new Ruby versions for ruby/setup-ruby,
@@ -31,3 +38,6 @@ jobs:
       run: bundle install
     #- name: Run tests
     #  run: bundle exec rake
+
+    - name: Attempt to build Docker image
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME

@@ -120,9 +120,8 @@ class ReportsController < ApplicationController
               # get variable value from the assigned field
               field_variable_value = @report.fields.where(report_handler_variable_id: variable.id).first.field_value.value
 
-              # request_clazz.instance_variable_set(variable.object_name, field_variable_value)
+              # What am I doing here??
               request_clazz.send("#{variable.object_name}=", field_variable_value)
-              # eval "request_clazz.#{variable.object_name}=#{field_variable_value}"
             end
 
             # create an approval object for that approval
