@@ -21,3 +21,5 @@ spec:
         imagePullPolicy: Always
         command: [ "rails" ]
         args: [ "s", "-p", "3000" ]
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
