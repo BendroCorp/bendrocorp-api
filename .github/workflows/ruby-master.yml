@@ -4,6 +4,10 @@ on:
   push:
     branches: [ master ]
 
+env:
+  # Name of docker image
+  IMAGE_NAME: bendrocorp-api-v1
+
 jobs:
   master-build:
 
@@ -24,15 +28,74 @@ jobs:
       run: bundle install
     #- name: Run tests
     #  run: bundle exec rake
-    - name: Push to Dokku
-      uses: obrassard/action-dokku-push@v1.0.2
+
+    - name: Build image
+      run: docker build . --file Dockerfile --tag $IMAGE_NAME
+
+    - name: Log into registry
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
+
+    - name: Push image
+      run: |
+        IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
+        # Change all uppercase to lowercase
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        # Strip git ref prefix from version
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        # Strip "v" prefix from tag name
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+        # Use Docker `latest` tag convention
+        [ "$VERSION" == "master" ] && VERSION=latest
+        echo IMAGE_ID=$IMAGE_ID
+        echo VERSION=$VERSION
+        docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
+        docker push $IMAGE_ID:$VERSION
+    
+    - name: Update Deployment Version
+      run: |
+        # Strip git ref prefix from version
+        VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+        # Strip "v" prefix from tag name
+        [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+        # Use Docker `latest` tag convention
+        [ "$VERSION" == "master" ] && VERSION=latest
+        # Update deployment file w/Docker Version
+        sed -i 's/latest/'"$VERSION"'/' ./k8/bendro_api_v1_api_deployment.yml
+    - name: Cat Deployment
+      run: cat ./k8/bendro_api_v1_api_deployment.yml
+
+    - name: Allow unsecure commands - cause we have to...
+      run: echo "ACTIONS_ALLOW_UNSECURE_COMMANDS=true" >> $GITHUB_ENV
+
+    - name: Set up kubectl
+      uses: matootie/dokube@v1.3.3
       with:
-        # The dokku app's git repository url (in SSH format)
-        dokku_repo: ${{ secrets.dokkuRepo }}
-        # A private SSH key that has push acces to your Dokku instance
-        ssh_key: ${{ secrets.dokkuPrivateKey }}
-        # The branch to be deployed when pushing to Dokku (default: master)
-        deploy_branch: master # optional, default is master
+        personalAccessToken: ${{ secrets.DIGITALOCEAN_TOKEN }}
+        clusterName: bubble-kube
+
+    # apply ymls
+    # make sure any deployment changes are applied
+    - name: Apply Deployment
+      run: kubectl apply -f ./k8/bendro_api_v1_api_deployment.yml
+
+    # make sure any deployment changes are applied
+    - name: Apply Service
+      run: kubectl apply -f ./k8/bendro_api_v1_api_service.yml
+
+    # TODO: Need deployments for sidekiq and rpush
+
+    - name: Re-deploy pods for main deployment
+      run: kubectl rollout restart deployment bendro-api-v1-deployment
+
+    # - name: Push to Dokku
+    #   uses: obrassard/action-dokku-push@v1.0.2
+    #   with:
+    #     # The dokku app's git repository url (in SSH format)
+    #     dokku_repo: ${{ secrets.dokkuRepo }}
+    #     # A private SSH key that has push acces to your Dokku instance
+    #     ssh_key: ${{ secrets.dokkuPrivateKey }}
+    #     # The branch to be deployed when pushing to Dokku (default: master)
+    #     deploy_branch: master # optional, default is master
     - name: Discord Notification
       env:
         DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
