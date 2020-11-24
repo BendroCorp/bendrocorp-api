@@ -11,8 +11,8 @@ WORKDIR /app
 # install needed rails items
 RUN gem install bundler
 RUN gem install rails
-RUN tzinfo-data
-RUN tzinfo
+RUN gem install tzinfo-data
+RUN gem install tzinfo
 
 # copy what we need to copy
 COPY Gemfile Gemfile.lock ./
