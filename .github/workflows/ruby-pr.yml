@@ -13,6 +13,10 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  # Name of docker image
+  IMAGE_NAME: bendrocorp-api-v1
+
 jobs:
   test:
 
