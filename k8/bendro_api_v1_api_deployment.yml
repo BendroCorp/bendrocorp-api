@@ -132,6 +132,6 @@ spec:
         - containerPort: 3000
         imagePullPolicy: Always
         command: [ "rails" ]
-        args: [ "s", "-p", "3000" ]
+        args: [ "s", "-p", "3000", "-e", "production" ]
       imagePullSecrets:
         - name: dockerconfigjson-github-com
