@@ -102,6 +102,7 @@ class ReportsController < ApplicationController
   # PATCH/PUT /reports/1
   def update
     if current_user.id == @report.created_by_id
+      # make sure the report is a draft, otherwise block further editing
       if @report.draft == true
         if params[:report][:draft] == false
           # make sure that the report has been routed or is handled by a class handler

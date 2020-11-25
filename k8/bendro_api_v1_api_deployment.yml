@@ -41,7 +41,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: bendro-v1-api-secrets
-              key: RAILS_SERVE_STATIC_FILES
+              key: REDIS_URL
         - name: BENDROCORP_SQLPASS
           valueFrom:
             secretKeyRef:
