@@ -11,7 +11,7 @@ class ReportsController < ApplicationController
   def index
     # get reports that I have access to
     reports = Report.where(archived: false) if current_user.is_in_role(49)
-    reports ||= Report.where('created_by_id = ?', current_user.id)
+    reports ||= Report.where('created_by_id = ? AND archived = false', current_user.id)
 
     # reports which are for me
     reports_for_me = Report.all.map do |report|
@@ -102,6 +102,12 @@ class ReportsController < ApplicationController
   # PATCH/PUT /reports/1
   def update
     if current_user.id == @report.created_by_id
+
+      if @report.archived
+        render status: 403, json: { message: 'This report is archived and cannot be updated!' }
+        return
+      end
+
       # make sure the report is a draft, otherwise block further editing
       if @report.draft == true
         if params[:report][:draft] == false
