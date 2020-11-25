@@ -8,7 +8,7 @@ class OffenderReport < ApplicationRecord
 
   # fks
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true
-  belongs_to :offender, :class_name => 'OffenderReportOffender', :foreign_key => 'offender_id'
+  belongs_to :offender, :class_name => 'OffenderReportOffender', :foreign_key => 'offender_id', optional: true
   belongs_to :violence_rating, :class_name => 'OffenderReportViolenceRating', :foreign_key => 'violence_rating_id'
   belongs_to :ship, :class_name => 'Ship', :foreign_key => 'ship_id', optional: true
   belongs_to :system, :class_name => 'SystemMapSystem', :foreign_key => 'system_id', optional: true

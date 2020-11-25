@@ -11,7 +11,7 @@ class ReportApprovalRequest < ApplicationRecord
 
   def approval_completion #what happens when the approval is approved
     # handler code goes here
-    
+
     # self.report.save
   end
 

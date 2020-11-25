@@ -1,0 +1,15 @@
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: bendro-api-v1-service
+  labels:
+    app: bendro-api-v1-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+    protocol: TCP
+  selector:
+    app: bendro-api-v1-deployment

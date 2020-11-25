@@ -102,6 +102,7 @@ class ReportsController < ApplicationController
   # PATCH/PUT /reports/1
   def update
     if current_user.id == @report.created_by_id
+      # make sure the report is a draft, otherwise block further editing
       if @report.draft == true
         if params[:report][:draft] == false
           # make sure that the report has been routed or is handled by a class handler
@@ -120,9 +121,8 @@ class ReportsController < ApplicationController
               # get variable value from the assigned field
               field_variable_value = @report.fields.where(report_handler_variable_id: variable.id).first.field_value.value
 
-              # request_clazz.instance_variable_set(variable.object_name, field_variable_value)
+              # What am I doing here??
               request_clazz.send("#{variable.object_name}=", field_variable_value)
-              # eval "request_clazz.#{variable.object_name}=#{field_variable_value}"
             end
 
             # create an approval object for that approval
