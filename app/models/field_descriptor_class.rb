@@ -40,14 +40,15 @@ class FieldDescriptorClass < ApplicationRecord
 
     mapped_results = results.map do |item|
       if has_ordinal
-        { id: item.id, title: item.instance_eval(class_field), ordinal: item.ordinal }
+        { id: item.id, title: item.instance_eval(class_field), created_at: item.created_at, ordinal: item.ordinal }
       else
-        { id: item.id, title: item.instance_eval(class_field) }
+        { id: item.id, title: item.instance_eval(class_field), created_at: item.created_at }
       end
     end
 
     mapped_results.sort! { |a, b| a[:ordinal] <=> b[:ordinal] } if has_ordinal
-    mapped_results.sort! { |a, b| a[:title] <=> b[:title] } if !has_ordinal
+    mapped_results.sort! { |a, b| a[:created_at] <=> b[:created_at] } if !has_ordinal && self.sort_by_date
+    mapped_results.sort! { |a, b| a[:title] <=> b[:title] } if !has_ordinal && !self.sort_by_date
 
     # return the results
     mapped_results
