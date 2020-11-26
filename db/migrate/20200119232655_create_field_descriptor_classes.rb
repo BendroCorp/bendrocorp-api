@@ -6,6 +6,7 @@ class CreateFieldDescriptorClasses < ActiveRecord::Migration[5.1]
       t.text :class_field # identifies the attribute or method to draw
       t.boolean :restrict_by_owner, default: false
       t.text :owner_field_name # id. created_by_id, etc.
+      t.boolean :sort_by_date, default: false
       t.boolean :archived, default: false
       t.timestamps
     end

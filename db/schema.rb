@@ -605,6 +605,7 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.text "class_field"
     t.boolean "restrict_by_owner", default: false
     t.text "owner_field_name"
+    t.boolean "sort_by_date", default: false
     t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
