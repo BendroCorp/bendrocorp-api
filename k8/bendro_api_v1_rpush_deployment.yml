@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bendro-rpush-v1-deployment
+spec:
+  selector:
+    matchLabels:
+      app: bendro-rpush-v1-deployment
+  replicas: 0
+  template:
+    metadata:
+      labels:
+        app: bendro-rpush-v1-deployment
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: bendro-krakend-deployment
+        image: docker.pkg.github.com/bendrocorp/bendrocorp-api/bendrocorp-api-v1:latest
+        env:
+        - name: RACK_ENV
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: RACK_ENV
+        - name: RAILS_ENV
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: RAILS_ENV
+        - name: RAILS_LOG_TO_STDOUT
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: RAILS_LOG_TO_STDOUT
+        - name: RAILS_SERVE_STATIC_FILES
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: RAILS_SERVE_STATIC_FILES
+        - name: REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: REDIS_URL
+        - name: BENDROCORP_SQLPASS
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: BENDROCORP_SQLPASS
+        - name: BENDROCORP_SQLURI
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: BENDROCORP_SQLURI
+        - name: BENDROCORP_SQLUSER
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: BENDROCORP_SQLUSER
+        - name: DISCORD_BOT_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: DISCORD_BOT_CLIENT_ID
+        - name: DISCORD_BOT_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: DISCORD_BOT_CLIENT_SECRET
+        - name: DISCORD_MESSAGES
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: DISCORD_MESSAGES
+        #
+        - name: NEWS_WEBHOOK_LINK
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: NEWS_WEBHOOK_LINK
+        - name: WEBHOOK_LINK
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: WEBHOOK_LINK
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: ADMIN_EMAIL
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: AWS_ACCESS_KEY_ID
+        - name: AWS_REGION
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: AWS_REGION
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: AWS_SECRET_ACCESS_KEY
+        - name: S3_BUCKET_NAME
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: S3_BUCKET_NAME
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: SECRET_KEY_BASE
+        - name: SENDGRID_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: SENDGRID_API_KEY
+        - name: STRIPE_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: STRIPE_API_KEY
+        - name: USPS_USER
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: USPS_USER
+        ports:
+        - containerPort: 3000
+        imagePullPolicy: Always
+        command: [ "bundle" ]
+        args: [ "exec", "rpush", "start", "-e", "-f" ]
+      imagePullSecrets:
+        - name: dockerconfigjson-github-com
