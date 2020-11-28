@@ -14,7 +14,7 @@ class ReportsController < ApplicationController
     reports ||= Report.where('created_by_id = ? AND archived = false', current_user.id)
 
     # reports which are for me
-    reports_for_me = Report.all.map do |report|
+    reports_for_me = Report.where(arachived: false).map do |report|
       report if report.report_for && (report.report_for.for_user_id == current_user.id || current_user.is_in_role(report.report_for.for_role_id))
     end
 
@@ -188,6 +188,16 @@ class ReportsController < ApplicationController
 
   # DELETE /reports/1
   def destroy
+    if @report.nil?
+      render status: 404, json: { message: 'Report does not exist!' }
+      return
+    end
+
+    if @report.archived
+      render status: 403, json: { message: 'This report has already been archived!' }
+      return
+    end
+
     if (current_user.id == @report.created_by_id && @report.draft) || current_user.is_in_role(49)
       @report.archived = true
       if @report.save
