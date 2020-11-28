@@ -64,8 +64,19 @@ class SessionsController < ApplicationController
       if user_token && user_token.user && !user_token.is_expired
         # make sure that the user is not grounded
         if !user_token.user.locked && user_token.user.login_allowed && user_token.user.active
+          # create user session
           user_token.user.user_sessions << UserSession.new(ip_address: request.remote_ip)
-          jwt_bundle = make_jwt(user_token.user, true, false)
+
+          # create the bundle
+          jwt_bundle = make_jwt(user_token.user, true, true)
+
+          # store the bundle result
+          @user.user_tokens << UserToken.new(token: jwt_bundle[:refresh_token], device: user_token.device, expires: Time.now + 2.years, ip_address: request.remote_ip)
+
+          # remove the old refresh token
+          user_token.destroy
+
+          # return the results
           render status: 201, json: jwt_bundle
         else
           # if the user account is locked out for whatever reason then trash all of their refresh_tokens
