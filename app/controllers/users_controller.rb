@@ -218,7 +218,7 @@ class UsersController < ApplicationController
   # GET api/user/push
   def push_self
     send_push_notification current_user.id, "This is a test. You sent this to your devices. :)"
-    render status: 200, json: { message: 'Self push succeeded!' }
+    render status: 200, json: { message: 'Self push succeeded! ;)' }
   end
 
   # GET api/user/event-test
