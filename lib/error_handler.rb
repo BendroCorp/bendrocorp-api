@@ -14,6 +14,7 @@ module Error
 
               # additional data -
               additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "AWS Access Key Id"
+              additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "Check your key and signing method"
 
               # message
               message_in = "<p>The following error occured on the BendroCorp site:</p> <p>#{e.message.to_s}</p><p>#{e.backtrace.join("\n <br />")}</p><p>#{additional_data}</p>"
