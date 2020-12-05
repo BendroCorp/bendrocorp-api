@@ -12,6 +12,9 @@ module Error
               # the piece that goes on the end of all of the emails
               outro = "<p><b><strong>Please do not reply to this email.</strong></b><p/><p>Sincerely,</p><p>Kaden Aayhan<br />Assistant to the CEO<br />BendroCorp, Inc.</p><p>Corp Plaza 11, Platform R3Q<br />Crusader, Stanton</p>"
 
+              # additional data - 
+              additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "AWS Access Key Id"
+
               # message
               message_in = "<p>The following error occured on the BendroCorp site:</p> <p>#{e.message.to_s}</p><p>#{e.backtrace.join("\n <br />")}</p>"
 
