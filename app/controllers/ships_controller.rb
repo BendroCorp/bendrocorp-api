@@ -5,7 +5,7 @@ class ShipsController < ApplicationController
   # GET api/ship
   # Retieves a list of all ships - NOT owned ships
   def list
-    render status: 200, json: Ship.all
+    render status: 200, json: Ship.all.order(:name)
   end
 
   # GET api/ship/owned
