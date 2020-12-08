@@ -33,7 +33,8 @@ class Character < ActiveRecord::Base
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",
                     #:url  => "/bendrocorp/#{Rails.env}/character/:id/:style/:basename.:extension",
                     #:path => ":rails_root/public/assets/avatars/:id/:style/:basename.:extension",
-                    :path => "/bendrocorp/#{Rails.env}/character/:id/:style/:basename.:extension",
+                    # :path => "/bendrocorp/#{Rails.env}/character/:id/:style/:basename.:extension",
+                    :path => "/bendrocorp/#{Rails.env}/character/:id/:style/avatar-:id.:extension",
                     :default_url => "/assets/imgs/missing-avatar.png"
 
 	validates_attachment 	:avatar,
