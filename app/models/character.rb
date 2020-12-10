@@ -42,7 +42,7 @@ class Character < ActiveRecord::Base
 				:size => { :less_than => 10.megabyte }
 
   def avatar_url
-    self.avatar.url(:original)
+    self.avatar.url(:original).split('?')[0]
   end
 
   accepts_nested_attributes_for :application
