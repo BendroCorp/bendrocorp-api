@@ -10,10 +10,11 @@ class ShipsController < ApplicationController
 
   # GET api/ship/owned
   def list_owned
-    render status: 200, json: OwnedShip.where('archived = ?', false).as_json(include: { ship: { }, character: { } })
+    render status: 200, json: OwnedShip.where(hidden: false).as_json(include: { ship: { }, character: { } })
   end
 
   # GET api/ship/owned/:owned_ship_id
+  # Fetch a particular owned ship
   def fetch
     @owned_ship = OwnedShip.find_by_id(params[:owned_ship_id])
     if @owned_ship != nil

@@ -37,7 +37,7 @@ class FlightLogsController < ApplicationController
   def list_ships
     @owned_ships = []
 
-    all_owned_ships = OwnedShip.all
+    all_owned_ships = OwnedShip.where(hidden: false)
 
     # we need all ships where the current user owns them or is in the crew
     all_owned_ships.each do |ship|
