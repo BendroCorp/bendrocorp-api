@@ -26,7 +26,7 @@ class SystemMapImage < ApplicationRecord
 				:size => { :less_than => 10.megabyte }
 
   def image_url_thumbnail
-    self.image.url(:thumbnail)
+    self.image.url(:big) # possible perm change, temp for now
   end
 
   def image_url
