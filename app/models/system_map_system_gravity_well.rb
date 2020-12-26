@@ -1,7 +1,10 @@
 class SystemMapSystemGravityWell < ApplicationRecord
   before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
 
+  validates :title, presence: true
+  validates :description, presence: true
   validates :system_id, presence: true
+
   belongs_to :system, class_name: 'SystemMapSystem', foreign_key: 'system_id', optional: true
   belongs_to :gravity_well_type, class_name: 'FieldDescriptor', foreign_key: 'gravity_well_type_id', optional: true
   belongs_to :luminosity_class, class_name: 'FieldDescriptor', foreign_key: 'luminosity_class_id', optional: true
