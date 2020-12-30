@@ -9,6 +9,10 @@ class CreateFields < ActiveRecord::Migration[5.1]
       t.belongs_to :created_by
 
       t.boolean :archived, default: false
+
+      t.text :additional_data
+
+      t.boolean :multi_value_allowed, default: false
       t.timestamps
     end
   end
