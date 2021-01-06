@@ -60,7 +60,12 @@ module Error
           puts
           puts
           # raise e
-          render status: 500, json: { message: "An API error occured. We are aware of the issue and will get it resolved ASAP.", debug: "#{e.message}" }
+          render status: 500,
+                json: { 
+                  message: "An API error occured. We are aware of the issue and will get it resolved ASAP.",
+                  debug: "#{e.message}",
+                  trace: e.backtrace.join("\n")
+                }
         end
 
       end

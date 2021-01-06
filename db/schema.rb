@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200725013618) do
+ActiveRecord::Schema.define(version: 20210106143802) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -611,6 +611,15 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "field_descriptor_field_maps", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "field_descriptor_id"
+    t.bigint "field_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["field_descriptor_id"], name: "index_field_descriptor_field_maps_on_field_descriptor_id"
+    t.index ["field_id"], name: "index_field_descriptor_field_maps_on_field_id"
+  end
+
   create_table "field_descriptors", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "field_id"
     t.text "title"
@@ -625,12 +634,23 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.index ["field_id"], name: "index_field_descriptors_on_field_id"
   end
 
+  create_table "field_values", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "field_id"
+    t.text "value"
+    t.uuid "master_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["field_id"], name: "index_field_values_on_field_id"
+    t.index ["master_id"], name: "index_field_values_on_master_id"
+  end
+
   create_table "fields", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name"
     t.boolean "read_only", default: false
     t.uuid "field_descriptor_class_id"
     t.bigint "created_by_id"
     t.boolean "archived", default: false
+    t.integer "ordinal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_fields_on_created_by_id"
@@ -911,6 +931,13 @@ ActiveRecord::Schema.define(version: 20200725013618) do
   create_table "mail_queues", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "master_ids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "type_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["type_id"], name: "index_master_ids_on_type_id"
   end
 
   create_table "member_badges", force: :cascade do |t|
@@ -1857,6 +1884,7 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.uuid "of_gravity_well_id"
     t.uuid "of_mission_giver_id"
     t.uuid "of_connection_id"
+    t.uuid "of_star_object_id_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "image_file_name"
@@ -1871,8 +1899,19 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.index ["of_moon_id"], name: "index_system_map_images_on_of_moon_id"
     t.index ["of_planet_id"], name: "index_system_map_images_on_of_planet_id"
     t.index ["of_settlement_id"], name: "index_system_map_images_on_of_settlement_id"
+    t.index ["of_star_object_id_id"], name: "index_system_map_images_on_of_star_object_id_id"
     t.index ["of_system_id"], name: "index_system_map_images_on_of_system_id"
     t.index ["of_system_object_id"], name: "index_system_map_images_on_of_system_object_id"
+  end
+
+  create_table "system_map_mapping_rules", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "parent_id"
+    t.uuid "child_id"
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_system_map_mapping_rules_on_child_id"
+    t.index ["parent_id"], name: "index_system_map_mapping_rules_on_parent_id"
   end
 
   create_table "system_map_mission_givers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -1897,6 +1936,21 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.index ["on_settlement_id"], name: "index_system_map_mission_givers_on_on_settlement_id"
     t.index ["on_system_object_id"], name: "index_system_map_mission_givers_on_on_system_object_id"
     t.index ["primary_image_id"], name: "index_system_map_mission_givers_on_primary_image_id"
+  end
+
+  create_table "system_map_star_objects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.text "tags"
+    t.text "primary_image_id"
+    t.uuid "object_type_id"
+    t.uuid "parent_id"
+    t.boolean "draft", default: true
+    t.boolean "archived", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["object_type_id"], name: "index_system_map_star_objects_on_object_type_id"
+    t.index ["parent_id"], name: "index_system_map_star_objects_on_parent_id"
   end
 
   create_table "system_map_system_connections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -2495,6 +2549,16 @@ ActiveRecord::Schema.define(version: 20200725013618) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_account_type_id"], name: "index_users_on_user_account_type_id"
+  end
+
+  create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "item_type", null: false
+    t.bigint "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.datetime "created_at"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
 end

@@ -406,6 +406,14 @@ Rails.application.routes.draw do
   put 'api/system-map/jump-point' => 'system_map_jump_points#update'
   delete 'api/system-map/jump-point/:id' => 'system_map_jump_points#archive'
 
+  # use of the above system map routes is deprecated and they will be removed
+  get 'api/system-map/object' => 'star_object#list'
+  get 'api/system-map/rules' => 'star_object#list_rules'
+  get 'api/system-map/object/:id' => 'star_object#show'
+  post 'api/system-map/object' => 'star_object#create'
+  put 'api/system-map/object' => 'star_object#update'
+  delete 'api/system-map/object/:id' => 'star_object#archive'
+
   # training
   get 'api/training' => 'training#list_courses'
   get 'api/training/types' => 'training#fetch_types'
@@ -446,8 +454,12 @@ Rails.application.routes.draw do
   post 'api/oauth-token' => 'oauth#oauth_post'
   delete 'api/oauth-token/:token' => 'oauth#remove_token'
 
+  #############################
   # All other routes go above here
   # This two routes should always be at the bottom of the list of routes
+  #############################
+  #############################
+  #############################
 	match '*any' => 'application#options', :via => [:options]
 	match "*path", to: "pages#not_found", via: :all
 end

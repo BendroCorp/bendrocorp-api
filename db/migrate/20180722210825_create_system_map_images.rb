@@ -16,6 +16,7 @@ class CreateSystemMapImages < ActiveRecord::Migration[5.1]
       t.belongs_to :of_gravity_well, type: :uuid
       t.belongs_to :of_mission_giver, type: :uuid
       t.belongs_to :of_connection, type: :uuid
+      t.belongs_to :of_star_object_id, type: :uuid
       t.timestamps
     end
   end
