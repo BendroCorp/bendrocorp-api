@@ -18,13 +18,29 @@ FieldDescriptorClass.create([{ title: 'Character Full Names', class_name: 'Chara
                              { title: 'Roles', class_name: 'Role', class_field: 'name' },
                              { title: 'Jobs', class_name: 'Job', class_field: 'title' }])
 
+SystemMapMappingRule.create([{ id:"3f132e7f-9218-4189-a312-1b22fbe586f3", parent_id:"ba0fd9ae-a371-49de-9f78-0f58153dd4c4", note:"system object to system"}, 
+  { id:"d2b10d5a-e20e-4ead-9f12-2e1481a54c4c", parent_id:"ba0fd9ae-a371-49de-9f78-0f58153dd4c4", child_id:"7a4697fc-8c8d-4443-8aa0-0d9451156e1e", note:"jump point to system"}, 
+  { id:"f9a09b83-7ff0-409e-aea5-2d9f7bc7dfe2", parent_id:"ba0fd9ae-a371-49de-9f78-0f58153dd4c4", child_id:"b1c3ce36-b924-4b25-8fa7-dd5ad8cbe969", note:"planet to system"}, 
+  { id:"b36c045f-3256-4804-be72-49c89d448972", parent_id:"b1c3ce36-b924-4b25-8fa7-dd5ad8cbe969", child_id:"8e2671c0-2048-4743-b9b3-631752de93eb", note:"moon to planet"}, 
+  { id:"e72f011c-f6b5-409c-9292-3c95690eae79", parent_id:"b1c3ce36-b924-4b25-8fa7-dd5ad8cbe969", child_id:"941a1835-e901-4184-af59-8c91daa73c5d", note:"settlement to planet"}, 
+  { id:"ce93f75b-1fe4-46f2-9579-f5d6d7d9e44d", parent_id:"8e2671c0-2048-4743-b9b3-631752de93eb", child_id:"941a1835-e901-4184-af59-8c91daa73c5d", note:"settlement to moon"}, 
+  { id:"444b344b-5703-4c04-8571-5c4c95fb5a3d", parent_id:"8e2671c0-2048-4743-b9b3-631752de93eb", child_id:"99839260-6bc6-4c11-8129-fa2c6908cb9d", note:"location to moon"}, 
+  { id:"5475a642-0293-49e3-8206-cd7cc81a0acd", parent_id:"b1c3ce36-b924-4b25-8fa7-dd5ad8cbe969", child_id:"99839260-6bc6-4c11-8129-fa2c6908cb9d", note:"location to planet"}, 
+  { id:"12c05e36-0a59-49cb-8f94-830e9022b942", parent_id:"53902d5c-4cb5-46f7-ae57-b2d9b1df1cde", child_id:"99839260-6bc6-4c11-8129-fa2c6908cb9d", note:"location to system object"}, 
+  { id:"d3289104-8172-4844-83bd-c0bbeb275d3b", parent_id:"941a1835-e901-4184-af59-8c91daa73c5d", child_id:"99839260-6bc6-4c11-8129-fa2c6908cb9d", note:"location to settlement"}, 
+  { id:"91d328dd-cf82-4565-b19b-f5493618f42e", parent_id:"99839260-6bc6-4c11-8129-fa2c6908cb9d", child_id:"05f25434-da25-4800-9db6-9bae84a28736", note:"mission giver to location"}, 
+  { id:"9fc17503-fbf3-4c63-95b5-e2297eeb40db", parent_id:"b1c3ce36-b924-4b25-8fa7-dd5ad8cbe969", child_id:"53902d5c-4cb5-46f7-ae57-b2d9b1df1cde", note:"system object to planet"}, 
+  { id:"b6b0da6e-4db6-41b6-990b-629e370557e2", parent_id:"8e2671c0-2048-4743-b9b3-631752de93eb", child_id:"53902d5c-4cb5-46f7-ae57-b2d9b1df1cde", note:"system object to moon"}])
+
 # make all the other fields
 Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Connection Size' },
   { id: '62fdb35f-39ab-47f8-9fc0-0c690793e076', name: 'Jump Point Connection Status' },
   { id: 'ce45fca0-80c1-4969-84d4-2449eb0f5164', name: 'Gravity Well Luminosity Class' },
   { id: 'e5d23d1f-13bc-42b9-949f-383097773727', name: 'Gravity Well Type' },
   { id: '9393a4e0-210b-43db-a5e7-92d7d0226066', name: 'Location Type' },
-  { id: '62ac3a07-ece3-4079-8da1-3e88617032fd', name: 'System Object Kind' }])
+  { id: '62ac3a07-ece3-4079-8da1-3e88617032fd', name: 'System Object Kind' },
+  {id: "0f65a426-aa0e-4589-88b6-6bb54247e0bf", name: "System Map Kinds"},
+  {id: "16c4cbbb-aeaa-4504-84cd-852c7757a5b8", name: "MasterId Types", read_only: true}])
 
   FieldDescriptor.create([{ id:'9886a385-414d-42fd-bf06-a7da2d3aee8d',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Small',description:'Small Jump Point',ordinal:1 }, 
     { id:'e37a0432-57bc-4bcd-9449-5f9dfeddf271',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Medium',description:'Medium Jump Point',ordinal:2 }, 
@@ -73,7 +89,20 @@ Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Co
     { id:'90f1149b-b747-405d-8660-0db730e0d69f',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Rest Stop Station',description:'A \'small\' rest stop station. The stations typically provide a variety of service but lack habitation.',ordinal:7 }, 
     { id:'bdb3c43b-c7f3-4739-a969-3e58118e8f97',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Port Station',description:'A \'large\' port station. These stations feature habitation and large collection of public services. They also typically provide docking moorings for larger classes of starship.',ordinal:8 }, 
     { id:'0a5faa82-ae2a-424e-9d68-790a6f3ec39a',field_id:'62ac3a07-ece3-4079-8da1-3e88617032fd',title:'Other',description:'Other objects which do not meet the currently defined definitions.',ordinal:99 }, 
-    { id:'53923cf1-087c-4437-a5ad-2e4549e31ce8',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Other',description:'Location types which do not fit into the current set of location classifications.',ordinal:99 }])
+    { id:'53923cf1-087c-4437-a5ad-2e4549e31ce8',field_id:'9393a4e0-210b-43db-a5e7-92d7d0226066',title:'Other',description:'Location types which do not fit into the current set of location classifications.',ordinal:99 },
+    { id:"ba0fd9ae-a371-49de-9f78-0f58153dd4c4", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"System", description:"A star system", ordinal:1, read_only:true, archived:false}, 
+  { id:"b1c3ce36-b924-4b25-8fa7-dd5ad8cbe969", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Planet", description:"A planet within in a star system", ordinal:2, read_only:true, archived:false}, 
+  { id:"8e2671c0-2048-4743-b9b3-631752de93eb", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Moon", description:"A moon which orbits a planet. These are planetary bodies separate from other orbital objects.", ordinal:3, read_only:true, archived:false}, 
+  { id:"53902d5c-4cb5-46f7-ae57-b2d9b1df1cde", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"System Object", description:"Other orbital objects. Space stations, celestial objects, etc", ordinal:4, read_only:true, archived:false}, 
+  { id:"941a1835-e901-4184-af59-8c91daa73c5d", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Settlement", description:"Settlements are considered to be meta-locations with multiple child locations. (ie. Lorville)", ordinal:5, read_only:true, archived:false}, 
+  { id:"99839260-6bc6-4c11-8129-fa2c6908cb9d", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Location", description:"A distinct point of interest", ordinal:6, read_only:true, archived:false}, 
+  { id:"05f25434-da25-4800-9db6-9bae84a28736", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Mission Giver", description:"A individual who provides missions on behalf of themselves or an organization", ordinal:7, read_only:true, archived:false}, 
+  { id:"75077527-be54-4c06-87f4-a73026438305", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Gravity Well", description:"A gravity well which is a part of a Star System", ordinal:8, read_only:true, archived:false}, 
+  { id:"7a4697fc-8c8d-4443-8aa0-0d9451156e1e", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Jump Point", description:"A jump point (ie wormhole) which allows traversal between Star Systems.", ordinal:9, read_only:true, archived:false}, 
+  { id:"384f7e96-d7db-4154-b36f-79343e59d9a6", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Flora", description:"A plant entity found within a given biome or system body", ordinal:10, read_only:true, archived:true}, 
+  { id:"ef61a50e-03ff-4db4-82e1-71858edac976", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Fauna", description:"An animal entity found within a given biome or system body", ordinal:11, read_only:true, archived:true}, 
+  { id:"8b91273e-d133-4b8c-a809-af9c26c5c7ad", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Biome", description:"A given climate zone on a planet or moon", ordinal:12, read_only:true, archived:true},
+  { id: '209a90cd-5546-4353-83f6-36d7b025a96f', field_id: '16c4cbbb-aeaa-4504-84cd-852c7757a5b8', title: 'SystemMapStarObject', ordinal: 1, read_only: true }])
 
 
 page_categories_field = Field.create(id: '95ba5b0c-cbfb-4fe7-ab39-75010a30b20f', name: 'Page Categories')
@@ -733,6 +762,7 @@ apptypes = ApplicationStatus.create([{ id: 1, title: 'Submitted', description: '
                                     { id: 6, title: 'Accepted', description: 'Your application has been accepted. You will be contacted by the Director of Human Resources and your respective division Director shortly.', ordinal: 6},
                                     { id: 7, title: 'Declined', description: 'Your application to BendroCorp has been declined. A member of our HR team will be following up with you to explain the reasoning.', ordinal: 7},
                                     { id: 8, title: 'Withdrawn', description: 'You have withdrawn your application.', ordinal:8}])
+
 
 user_sys = User.create(id: 0, username: 'System', email: 'no-reply@bendrocorp.com', password: 'gqsUIhu2uUhghJiMIdNr', password_confirmation: 'gqsUIsdfgdsfghu2uUhghJiMIdNrdsfg45', is_member: true, is_admin: true, email_verified: true, locked: true, login_allowed: false)
 user2 = User.create(id: 2, username: 'Stevo', email: 'dale@daleslab.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
