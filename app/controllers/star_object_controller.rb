@@ -20,7 +20,7 @@ class StarObjectController < ApplicationController
     fetched ||= SystemMapStarObject.where(archived: false) if current_user.is_in_one_role([22, 23])
 
     # return the results
-    render json: fetched
+    render json: fetched.to_json(include: { object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
   end
 
   # GET /api/system-map/rules
@@ -123,7 +123,7 @@ class StarObjectController < ApplicationController
 
     # once place to adjust what json details we return for a multi object fetch
     # def star_object_json star_object
-    #   star_object.to_json(include: { object_type: {}, methods: [:kind, :primary_image_url, :primary_image_url_full] })
+    #   star_object.to_json(include: { object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
     # end
 
     # once place to adjust what json details we return for a single object fetch
