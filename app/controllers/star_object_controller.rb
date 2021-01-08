@@ -109,7 +109,7 @@ class StarObjectController < ApplicationController
     # Use callbacks to share common setup or constraints between actions.
     def set_star_object
       # try to find the object
-      @star_object = SystemMapStarObject.find(params[:star_object][:id])
+      @star_object = SystemMapStarObject.find(params[:star_object][:id]) if params[:star_object]
       @star_object ||= SystemMapStarObject.find(params[:id])
 
       # return the object as long as its not archived
