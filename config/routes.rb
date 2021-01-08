@@ -409,6 +409,7 @@ Rails.application.routes.draw do
   # use of the above system map routes is deprecated and they will be removed
   get 'api/system-map/object' => 'star_object#list'
   get 'api/system-map/rules' => 'star_object#list_rules'
+  get 'api/system-map/object/search/:uuid_segment' => 'star_object#id_search'
   get 'api/system-map/object/:id' => 'star_object#show'
   post 'api/system-map/object' => 'star_object#create'
   put 'api/system-map/object' => 'star_object#update'

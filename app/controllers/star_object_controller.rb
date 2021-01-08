@@ -23,6 +23,18 @@ class StarObjectController < ApplicationController
     render json: fetched.to_json(include: { object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
   end
 
+  # GET /api/system-map/object/search/:uuid_segment
+  def id_search
+    if params[:uuid_segment] && params[:uuid_segment].match(/^(?!.*--)[A-Za-z0-9_-]*$/)
+      @star_object = SystemMapStarObject.where("id::text LIKE ? AND archived = false", "#{params[:uuid_segment]}%")
+
+      # return the pages
+      render json: @star_object.to_json(include: { parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
+    else
+      render status: 400, json: { message: 'Invalid ID segment!' }
+    end
+  end
+
   # GET /api/system-map/rules
   def list_rules
     render json: SystemMapMappingRule.all
