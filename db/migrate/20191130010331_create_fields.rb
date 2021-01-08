@@ -11,6 +11,9 @@ class CreateFields < ActiveRecord::Migration[5.1]
       t.boolean :archived, default: false
 
       t.integer :ordinal
+      t.text :additional_data
+
+      t.boolean :multi_value_allowed, default: false
       t.timestamps
     end
   end
