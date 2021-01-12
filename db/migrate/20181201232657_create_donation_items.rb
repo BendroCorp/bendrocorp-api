@@ -8,6 +8,7 @@ class CreateDonationItems < ActiveRecord::Migration[5.1]
       t.belongs_to :created_by
       t.boolean :archived, default: false
       t.integer :ordinal
+      t.belongs_to :donation_type, type: :uuid
       t.timestamps
     end
   end

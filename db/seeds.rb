@@ -39,8 +39,9 @@ Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Co
   { id: 'e5d23d1f-13bc-42b9-949f-383097773727', name: 'Gravity Well Type' },
   { id: '9393a4e0-210b-43db-a5e7-92d7d0226066', name: 'Location Type' },
   { id: '62ac3a07-ece3-4079-8da1-3e88617032fd', name: 'System Object Kind' },
-  {id: "0f65a426-aa0e-4589-88b6-6bb54247e0bf", name: "System Map Kinds"},
-  {id: "16c4cbbb-aeaa-4504-84cd-852c7757a5b8", name: "MasterId Types", read_only: true}])
+  { id: "0f65a426-aa0e-4589-88b6-6bb54247e0bf", name: "System Map Kinds" },
+  { id: "16c4cbbb-aeaa-4504-84cd-852c7757a5b8", name: "MasterId Types", read_only: true },
+  { id: "de4df4ca-b124-4171-a77b-770bdd81da72", name:	"Donation Type" }])
 
   FieldDescriptor.create([{ id:'9886a385-414d-42fd-bf06-a7da2d3aee8d',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Small',description:'Small Jump Point',ordinal:1 }, 
     { id:'e37a0432-57bc-4bcd-9449-5f9dfeddf271',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Medium',description:'Medium Jump Point',ordinal:2 }, 
@@ -102,8 +103,10 @@ Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Co
   { id:"384f7e96-d7db-4154-b36f-79343e59d9a6", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Flora", description:"A plant entity found within a given biome or system body", ordinal:10, read_only:true, archived:true}, 
   { id:"ef61a50e-03ff-4db4-82e1-71858edac976", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Fauna", description:"An animal entity found within a given biome or system body", ordinal:11, read_only:true, archived:true}, 
   { id:"8b91273e-d133-4b8c-a809-af9c26c5c7ad", field_id:"0f65a426-aa0e-4589-88b6-6bb54247e0bf", title:"Biome", description:"A given climate zone on a planet or moon", ordinal:12, read_only:true, archived:true},
-  { id: '209a90cd-5546-4353-83f6-36d7b025a96f', field_id: '16c4cbbb-aeaa-4504-84cd-852c7757a5b8', title: 'SystemMapStarObject', ordinal: 1, read_only: true }])
-
+  { id: '209a90cd-5546-4353-83f6-36d7b025a96f', field_id: '16c4cbbb-aeaa-4504-84cd-852c7757a5b8', title: 'SystemMapStarObject', ordinal: 1, read_only: true },
+  { id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", field_id: "de4df4ca-b124-4171-a77b-770bdd81da72", title:	"Operating Expenses", ordinal:	1, read_only: true },
+  { id: "c6a4a515-09a1-438e-a9f5-9227d7c9ee54",	field_id: "de4df4ca-b124-4171-a77b-770bdd81da72",	title:	"Ship", ordinal:	2, read_only: true },
+  { id: "b80d9b75-ba4d-4a0d-9860-1aca23a062d3",	field_id: "de4df4ca-b124-4171-a77b-770bdd81da72",	title:	"Other", ordinal:	3, read_only: true } ])
 
 page_categories_field = Field.create(id: '95ba5b0c-cbfb-4fe7-ab39-75010a30b20f', name: 'Page Categories')
 FieldDescriptor.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', field_id: page_categories_field.id, title: 'Featured', read_only: true },
@@ -847,6 +850,12 @@ ReportHandlerVariable.create([{ handler_id: handler.id, name: 'Role', object_nam
 # { id: 2, title: 'Application Approval Request'},
 # { id: 3, title: 'Award Approval'},
 # { id: 4, title: 'Role Removal'},
+
+DonationItem.create([{ title: 'Operating Budget 1', description: 'test data', goal: 5, goal_date: Time.now - 2.days, ordinal: 1, donation_type_id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", created_by_id: 1 },
+  { title: 'Operating Budget 2', description: 'test data', goal: 10, goal_date: Time.now + 2.days, ordinal: 2, donation_type_id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", archived: true, created_by_id: 1 },
+  { title: 'Ship 1', description: 'test data', goal: 14, goal_date: Time.now + 4.days, ordinal: 3, donation_type_id: "c6a4a515-09a1-438e-a9f5-9227d7c9ee54", created_by_id: 1 },
+  { title: 'Operating Budget 3', description: 'test data', goal: 50, goal_date: Time.now + 4.days, ordinal: 4, donation_type_id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", created_by_id: 1 },
+  { title: 'Operating Budget 4', description: 'test data', goal: 500, goal_date: Time.now + 10.days, ordinal: 5, donation_type_id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", created_by_id: 1 }])
 
 # keep this at the bottom
 UserCountry.create([{ code: 'BD', title:'Bangladesh' },

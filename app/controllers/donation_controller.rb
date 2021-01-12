@@ -8,7 +8,7 @@ class DonationController < ApplicationController
 
   # GET api/donation
   def list
-    render status: 200, json: DonationItem.where(archived: false).as_json(include: { donations: { include: { user: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } }, methods: [:total_donations, :is_completed])
+    render status: 200, json: DonationItem.where(archived: false).where('goal_date < ?', DateTime.now).as_json(include: { donations: { include: { user: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } }, methods: [:total_donations, :is_completed])
   end
 
   # GET api/donation/:donation_item_id
@@ -83,14 +83,14 @@ class DonationController < ApplicationController
       if @new_donation.save
         begin
           # start the process of creating a charge
-          # Get the stripe key
-          if ENV['RAILS_ENV'] == 'production'
-            puts 'Using Production Stripe env'
-            Stripe.api_key = ENV["STRIPE_API_KEY"]
-          else
-            puts 'Using Test Stripe env'
-            Stripe.api_key = "sk_test_5XT6Ve3VgDkohMPptPsRtm6t"
-          end
+          # # Get the stripe key
+          # if ENV['RAILS_ENV'] == 'production'
+          #   puts 'Using Production Stripe env'
+          #   Stripe.api_key = ENV["STRIPE_API_KEY"]
+          # else
+          #   puts 'Using Test Stripe env'
+          #   Stripe.api_key = "sk_test_5XT6Ve3VgDkohMPptPsRtm6t"
+          # end
 
           # Token is created using Checkout or Elements!
           # Get the payment token ID submitted by the form:

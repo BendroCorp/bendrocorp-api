@@ -335,6 +335,11 @@ Rails.application.routes.draw do
   # Site Logs
   get 'api/site-logs' => 'site_log#list'
 
+  # subscriptions
+  post 'api/subscription' => 'subscription#create'
+  delete 'api/subscription' => 'subscription#delete'
+  post 'api/subscription/stripe_callback' => 'subscription#callback_for_stripe'
+
   # system map routes
   get 'api/system-map/types' => 'system_map#list_types' # to be deprecated
   get 'api/system-map/details' => 'system_map#list_details'

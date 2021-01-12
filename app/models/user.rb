@@ -138,7 +138,10 @@ class User < ActiveRecord::Base
 
     # return roles list
     roles
+  end
 
+  def is_subscriber
+    !self.subscriber_subscription_id.nil?
   end
 
   # Alternate method to get all roles
@@ -234,26 +237,41 @@ class User < ActiveRecord::Base
   end
 
   def lifetime_points
-    positiveSum = 0
+    positive_sum = 0
     self.point_transactions.each do |trans|
       if trans.amount >= 0 # if the sum is a positive number
-        positiveSum += trans.amount
+        positive_sum += trans.amount
       end
     end
-    positiveSum
+    positive_sum
   end
 
   def current_cart
-    cartsCheck = self.carts.where('order_id IS NULL')
-    if cartsCheck.count == 1
-      cartsCheck.first
-    elsif cartsCheck.count == 0
-      newCart = StoreCart.create
-      self.carts << newCart
-      newCart
+    carts_check = self.carts.where('order_id IS NULL')
+    if carts_check.count == 1
+      carts_check.first
+    elsif carts_check.count == 0
+      new_cart = StoreCart.create
+      self.carts << new_cart
+      new_cart
     else
       raise 'Current user has more than one active cart. This should not be the case.'
     end
+  end
+
+  def stripe_customer
+    # return the subscriber id if its set
+    return subscriber_account_id if subscriber_account_id
+
+    # otherwise create a new one
+    customer = Stripe::Customer.create({ email: self.email, name: username, metadata: { user_id: id } })
+    self.subscriber_account_id = customer.id
+    self.save!
+
+    # return the value
+    subscriber_account_id
+    # Note: The general principle here is not to share an identifier with a third party service unless we really need to
+    # but once you start we leave this in for proper referencing
   end
 
   # End of model
