@@ -28,7 +28,7 @@ class PageEntriesController < ApplicationController
     end
 
     # combine your pages with published pages
-    @published_pages.concat(@your_pages)
+    @published_pages.concat(@your_pages) if @your_pages && @your_pages.count > 0
 
     # make sure there are no double entries
     @published_pages.uniq!
