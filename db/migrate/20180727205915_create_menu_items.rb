@@ -7,6 +7,7 @@ class CreateMenuItems < ActiveRecord::Migration[5.1]
       t.boolean :internal, default: true # will the angular router handle this :)
       t.belongs_to :nested_under
       t.integer :ordinal
+      t.boolean :skip_ios
       t.timestamps
     end
   end

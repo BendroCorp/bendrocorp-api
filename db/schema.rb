@@ -969,6 +969,7 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.boolean "internal", default: true
     t.bigint "nested_under_id"
     t.integer "ordinal"
+    t.boolean "skip_ios"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["nested_under_id"], name: "index_menu_items_on_nested_under_id"
