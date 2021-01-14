@@ -460,9 +460,11 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.bigint "created_by_id"
     t.boolean "archived", default: false
     t.integer "ordinal"
+    t.uuid "donation_type_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_donation_items_on_created_by_id"
+    t.index ["donation_type_id"], name: "index_donation_items_on_donation_type_id"
   end
 
   create_table "donations", force: :cascade do |t|

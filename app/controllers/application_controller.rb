@@ -53,6 +53,7 @@ class ApplicationController < ActionController::API
       roles: user.get_all_roles.map { |r| r[:id] },
       name: user.username,
       tfa_enabled: user.use_two_factor,
+      subscriber: user.is_subscriber,
       iat: Time.now.to_i,
       nbf: Time.now.to_i
     }
