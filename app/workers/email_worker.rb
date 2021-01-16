@@ -8,7 +8,7 @@ class EmailWorker
     outro = outro + "<p>#{Digest::SHA256.hexdigest message}</p>" if ENV['RAILS_ENV'] == 'development'
 
     #
-    message_trimmed = message.gsub('localhost:4200', 'my.bendrocorp.com') if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
+    message_trimmed = message.gsub('localhost:4200', 'bendrocorp.app') if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
 
     # the actual email itself
     from = Email.new(email: 'no-reply@bendrocorp.com')

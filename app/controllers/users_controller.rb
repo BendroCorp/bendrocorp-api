@@ -224,7 +224,6 @@ class UsersController < ApplicationController
   # GET api/user/event-test
   def event_self
     EventStreamWorker.perform_async('test', { message: 'This is a test event!' })
-    # ActionCable.server.broadcast('event', { type: "type#test", message: 'bleh', object: { message: 'This is a test event!' } })
     render status: 200, json: { message: 'Test event sent!' }
   end
 
