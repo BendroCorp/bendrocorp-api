@@ -48,7 +48,7 @@ class AccountController < ApplicationController
       if @user.save
         puts "Forgot password request processed"
         SiteLog.create(module: 'Forgot Password', submodule: 'Success', message: "Forgot password request successfully made for user ##{@user.id}!", site_log_type_id: 2) if @user
-        send_email(@user.email, "BendroCorp - Forgotten Password", "<h1>Forgot Your Password..?</h1><p>No worries. Just click the link below and you will be able to reset your password.</p><br /><p><a href=\'http://localhost:4200/password-reset/#{new_token}\'>Password Reset</a></p>")
+        send_email(@user.email, "BendroCorp - Forgotten Password", "<h1>Forgot Your Password..?</h1><p>No worries. Just click the link below and you will be able to reset your password.</p><br /><p><a href=\'http://localhost:4200/forgot-password/#{new_token}\'>Password Reset</a></p>")
       end
     end
 
