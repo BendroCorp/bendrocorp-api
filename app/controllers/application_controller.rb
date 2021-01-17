@@ -61,10 +61,10 @@ class ApplicationController < ActionController::API
     # if the user has a character include that information
     if user.main_character
       payload[:character_id] = user.main_character.id
-      payload[:given_name] = user.main_character.first_name if user.main_character
-      payload[:family_name] = user.main_character.last_name if user.main_character
-      payload[:avatar] = user.main_character.avatar_url if user.main_character
-      payload[:job_title] = user.main_character.current_job_title if user.main_character
+      payload[:given_name] = user.main_character.first_name
+      payload[:family_name] = user.main_character.last_name
+      payload[:avatar] = user.main_character.avatar_url
+      payload[:job_title] = user.main_character.current_job_title
     end
 
     # set the expiration
