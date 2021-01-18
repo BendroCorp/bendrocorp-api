@@ -2,7 +2,7 @@ class OwnedShip < ActiveRecord::Base
 
   validates :title, presence: true
   validates :ship_id, presence: true
-  validates :character_id, presence: true
+  # validates :character_id, presence: true
 
   belongs_to :avatar, :class_name => 'ImageUpload', :foreign_key => 'avatar_id', optional: true
   belongs_to :ship

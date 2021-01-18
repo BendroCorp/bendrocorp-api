@@ -6,9 +6,9 @@ class SignupsController < ApplicationController
     @user.email.downcase!
 
     if !HaveIBeenPwned::pwned params[:signup][:password]
-      puts "Preparing to create user"
-      @user.roles << Role.find_by_id(-1) # applicant role
-      @user.roles << Role.find_by_id(-2) # client role
+      # puts "Preparing to create user"
+      @user.roles << Role.find_by_id(-2) # applicant role
+      @user.roles << Role.find_by_id(-3) # client role
       if @user.save
         # email the verfification - we stopped sending verfication emails
         # send_email(@user.email, "BendroCorp Email Verification", "<h1>Welcome!</h1><p>Hey there #{@user.username}! Before we can let you apply to BendroCorp we need you to verify your email.</p><br /><p><a href=\'http://localhost:4200/verify/#{@user.verification_string}\'>Click Here to Verify</a></p><br />")

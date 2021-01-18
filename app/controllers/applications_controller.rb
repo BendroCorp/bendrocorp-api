@@ -12,22 +12,34 @@ class ApplicationsController < ApplicationController
   def create
     # make sure that the current user isn't already a member and that thier application hasn't already been logged
     if current_user.db_user.characters.count == 0
-      @character = Character.new(application_params)
-      puts params[:character].inspect
+      @character = Character.new(application_character_params)
+      # puts params[:character].inspect
       if Character.where('first_name = ? AND last_name = ?', @character.first_name, @character.last_name).count == 0
         @character.is_main_character = true
         @character.user_id = current_user.id
+
+        # setup the actual application
+        @character.application = Application.new(application_params)
         @character.application.application_status_id = 1
-        @character.application.interview = ApplicationInterview.new #create the interview packet
+        @character.application.interview = ApplicationInterview.new # create the interview packet
         applicantjob = Job.find_by id: 21 # applicant job id - cause everyone starts as an applicant
-        # @character.jobs << applicantjob
+
+        # add a job for the character
         @character.job_trackings << JobTracking.new(job: applicantjob)
 
+        # update status change tracking
         @character.application.last_status_change = Time.now
         @character.application.last_status_changed_by_id = current_user.id
 
+        # add the owned ship
+        @character.owned_ships << OwnedShip.new(owned_ship_params)
+
         # update rsi_handle
-        @character.user.rsi_handle = params[:character][:user_attributes][:rsi_handle].downcase
+        if params[:rsi_handle].nil?
+          render status: 400, json: { message: 'You must provide your RSI handle.' }
+          return
+        end
+        @character.user.rsi_handle = params[:rsi_handle].downcase
 
         page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{@character.user.rsi_handle.downcase}")
 
@@ -38,31 +50,36 @@ class ApplicationsController < ApplicationController
             # try to save
             if @character.save
               SiteLog.create(module: 'Application', submodule: 'Application Success', message: "Application successfully created for #{@character.id}", site_log_type_id: 1)
-              approverIds = []
+              approver_ids = []
               User.where('is_member = ?', true).each do |user|
-                approverIds << user.id if user.isinrole(2) # executive role
-                approverIds << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
-                approverIds << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
-                approverIds << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
-                approverIds << user.id if user.isinrole(45) && @character.application.job.division_id == 7 #user is in medical director role and application job div is medical
+                approver_ids << user.id if user.isinrole(2) # executive role
+                approver_ids << user.id if user.isinrole(13) && @character.application.job.division_id == 2 #user is in logistics director role and application job div is logistics
+                approver_ids << user.id if user.isinrole(14) && @character.application.job.division_id == 3 #user is in security director role and application job div is security
+                approver_ids << user.id if user.isinrole(15) && @character.application.job.division_id == 4 #user is in research director role and application job div is research
+                approver_ids << user.id if user.isinrole(45) && @character.application.job.division_id == 7 #user is in medical director role and application job div is medical
               end
 
               # make sure there are no duplicates
-              approverIds.uniq!
+              approver_ids.uniq!
 
-              #Create the new approval request
-              approvalRequest = ApplicantApprovalRequest.new
+              # create the new approval request
+              approval_request = Applicantapproval_request.new
 
-              approvalRequest.user_id = current_user.id
+              approval_request.user_id = current_user.id
 
-              # put the approval instance in the request
-              approvalRequest.approval_id = new_approval(23, 0, 0, approverIds, false) # applicant approval request
+              begin
+                # put the approval instance in the request
+                approval_request.approval_id = new_approval(23, 0, 0, approver_ids, false) # applicant approval request
+              rescue => e
+                @character.destroy
+                raise e
+              end
 
               # lastly add the request to the current_user
-              # approvalRequest.user = current_user # may not need to actually use this
-              approvalRequest.application = @character.application
+              # approval_request.user = current_user # may not need to actually use this
+              approval_request.application = @character.application
 
-              @character.application.applicant_approval_request = approvalRequest
+              @character.application.applicant_approval_request = approval_request
               if @character.save
                 SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
                 # mail Exec, Directors and HR
@@ -155,11 +172,11 @@ class ApplicationsController < ApplicationController
 
         if @character.application.application_status_id == 4 && !@character.application.interview.locked_for_review
 
-          render status: 400, json: { message: 'Cannot advance application to Executive Review until the application interview is locked for final review.' }
+          render status: :unprocessable_entity, json: { message: 'Cannot advance application to Executive Review until the application interview is locked for final review.' }
         elsif @character.application.application_status_id == 5 && @character.application.applicant_approval_request.approval.approval_approvers.where('approval_type_id < ?', 4).count > 0
-          render status: 400, json: { message: 'Cannot advance application to CEO Review until all approvers have submitted their approval notices.' }
+          render status: :unprocessable_entity, json: { message: 'Cannot advance application to CEO Review until all approvers have submitted their approval acceptance or rejection.' }
         elsif @character.application.application_status_id == 6 && !current_user.isinrole(9)
-          render status: 400, json: { message: 'Only the person in the CEO role can advance (accept) this application.' }
+          render status: :unprocessable_entity, json: { message: 'Only the person in the CEO role can advance (accept) this application.' }
         else
           #if the applicant's new status is 6 then flip the is_member flag on their user to true
           if @character.application.application_status_id == 6
@@ -168,7 +185,8 @@ class ApplicationsController < ApplicationController
             @character.user.roles << Role.find_by_id(0)
 
             # remove specific non-member roles
-            old_roles = @character.user.in_roles.where('user_id = ? AND role_id IN (-1, -2)')
+            # (ie. client and applicant)
+            old_roles = @character.user.in_roles.where('role_id IN (-2, -3)')
             old_roles.destroy_all
           end
 
@@ -219,7 +237,7 @@ class ApplicationsController < ApplicationController
 
             render status: 200, json: { message: 'Successfully updated application status!' }
           else
-            #err
+            # err
             # flash[:danger] = "Application status could not be updated."
             # redirect_to action: "personnel_view", id: @character.id
             render status: 500, json: { message: "Application status could not be updated because: #{@character.errors.full_messages.to_sentence}" }
@@ -286,8 +304,16 @@ class ApplicationsController < ApplicationController
   end
 
   private
+  def application_character_params
+    params.require(:character).permit(:first_name, :last_name, :description, :background) #, user_attributes: [:rsi_handle], owned_ships_attributes: [:ship_id, :title], application_attributes: [:tell_us_about_the_real_you, :why_do_want_to_join, :how_did_you_hear_about_us, :job_id, :rejection_reason])
+  end
+
   def application_params
-    params.require(:character).permit(:first_name, :last_name, :description, :background, user_attributes: [:rsi_handle], owned_ships_attributes: [:ship_id, :title], application_attributes: [:tell_us_about_the_real_you, :why_do_want_to_join, :how_did_you_hear_about_us, :job_id, :rejection_reason])
+    params.require(:new_application).permit(:why_do_want_to_join, :how_did_you_hear_about_us, :job_id)
+  end
+
+  def owned_ship_params
+    params.require(:owned_ship).permit(:ship_id, :title)
   end
 
   private

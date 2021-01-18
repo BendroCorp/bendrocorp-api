@@ -8,22 +8,22 @@ class RolesController < ApplicationController
 
   # GET api/role/simple
   def list_simple
-    render status: 200, json: Role.all.order('id')
+    render status: 200, json: Role.where('id > 0').order('id')
   end
 
   # GET api/role
   def list
     if current_user.isinrole(37)
-      render status: 200, json: Role.all.order('id').as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
+      render status: 200, json: Role.where('id > 0').order('id').as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
     else
-      render status: 200, json: Role.all.order('id')
+      render status: 200, json: Role.where('id > 0').order('id')
     end
   end
 
   # DEPRECATED
   # GET api/role/admin
   def admin_fetch_roles
-    render status: 200, json: Role.all.order('id').as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
+    render status: 200, json: Role.where('id > 0').order('id').as_json(methods: [:role_users], include: { nested_roles: { include: { role_nested: { } } }, classification_levels: { } } )
   end
 
   # POST api/role

@@ -63,13 +63,13 @@ class ProfilesController < ApplicationController
           if @character.update_attributes(character_params)
             render status: 200, json: { message: 'Character updated!' }
           else
-            render status: 500, json: { message: "Character could not be updated because: #{@character.errors.full_messages.to_sentence}" }
+            render status: :unprocessable_entity, json: { message: "Character could not be updated because: #{@character.errors.full_messages.to_sentence}" }
           end
         else # if the user is in the HR role
           if @character.update_attributes(character_admin_params)
             render status: 200, json: { message: 'Character updated (with HR rights)!' }
           else
-            render status: 500, json: { message: "Character could not be updated because: #{@character.errors.full_messages.to_sentence}" }
+            render status: :unprocessable_entity, json: { message: "Character could not be updated because: #{@character.errors.full_messages.to_sentence}" }
           end
         end
       else
@@ -94,7 +94,7 @@ class ProfilesController < ApplicationController
           if @character.user.save
             render status: 200, json: { message: "Character/user handle updated!" }
           else
-            render status: 500, json: { message: "Character/user handle could not be updated because: #{@character.errors.full_messages.to_sentence}" }
+            render status: :unprocessable_entity, json: { message: "Character/user handle could not be updated because: #{@character.errors.full_messages.to_sentence}" }
           end
         else
           render status: 400, json: { message: "Handle could not be verified with RSI." }
@@ -113,7 +113,7 @@ class ProfilesController < ApplicationController
     if @character != nil
       # Security check
       # the character is owned by the current user or the user is in the HR role
-      if current_user.id === @character.user_id || current_user.isinrole(7) # HR
+      if current_user.id == @character.user_id || current_user.isinrole(7) # HR
 
         # check for an avatar update
         if params[:character][:new_avatar]
@@ -125,7 +125,7 @@ class ProfilesController < ApplicationController
         if @character.save
           render status: 200, json: { message: 'Character avatar updated!' }
         else
-          render status: 500, json: { message: "Character avatar could not be updated because: #{@character.errors.full_messages.to_sentence}" }
+          render status: :unprocessable_entity, json: { message: "Character avatar could not be updated because: #{@character.errors.full_messages.to_sentence}" }
         end
       else
         render status: 403, json: { message: 'You are not authorized to update this character.' }
@@ -144,7 +144,7 @@ class ProfilesController < ApplicationController
         if @owned_ship.save
           render status: 200, json: @owned_ship
         else
-          render status: 500, json: { message: "Owned ship could not be archived because: #{@owned_ship.errors.full_messages.to_sentence}" }
+          render status: :unprocessable_entity, json: { message: "Owned ship could not be archived because: #{@owned_ship.errors.full_messages.to_sentence}" }
         end
       else
         render status: 403, json: { message: 'You are not authorized to create this ship!' }
@@ -169,7 +169,7 @@ class ProfilesController < ApplicationController
         if @owned_ship.save
           render status: 200, json: @owned_ship
         else
-          render status: 500, json: { message: "Owned ship could not be archived because: #{@owned_ship.errors.full_messages.to_sentence}" }
+          render status: :unprocessable_entity, json: { message: "Owned ship could not be archived because: #{@owned_ship.errors.full_messages.to_sentence}" }
         end
       else
         render status: 403, json: { message: "You are not authorized to edit this ship!" }
@@ -186,6 +186,7 @@ class ProfilesController < ApplicationController
     if @application
       # character app status check
       # Between submitted and executive review
+      # puts @application.application_status_id
       if @application.application_status_id > 1 && @application.application_status_id < 4
         @comment = ApplicationComment.new
         @comment.user_id = current_user.id
@@ -196,7 +197,7 @@ class ProfilesController < ApplicationController
         if @application.save
           render status: 201, json: @comment.as_json(methods: [:commenter_name, :avatar_url])
         else
-          render status: 500, json: { message: "Application comment could not be added because: #{@application.errors.full_messages.to_sentence}" }
+          render status: :unprocessable_entity, json: { message: "Application comment could not be added because: #{@application.errors.full_messages.to_sentence}" }
         end
       else
         render status: 403, json: { message: 'Application not eligible for application comments.' }
@@ -211,7 +212,7 @@ class ProfilesController < ApplicationController
   #   link = params[:id] #/profiles/firstname-lastname GET
   #   name = link.split('-')
   #
-  #   head 500 if name.count != 2 #no spaces allowed
+  #   head :unprocessable_entity if name.count != 2 #no spaces allowed
   #
   #   @character = Character.find_by(first_name: name[0].capitalize, last_name: name[1].capitalize) unless name.length != 2
   #   if @character == nil
@@ -233,7 +234,7 @@ class ProfilesController < ApplicationController
   #
   #       head 200
   #     else
-  #       head 500
+  #       head :unprocessable_entity
   #     end
   #   end
   # end

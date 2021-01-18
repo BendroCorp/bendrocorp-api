@@ -50,12 +50,12 @@ class UsersController < ApplicationController
 
   # GET api/user/approvals-count-total
   def approvals_count_total
-    render status: 200, json: current_user.db_user.approval_approvers.count
+    render status: 200, json: current_user.db_user.approval_approvers.count if current_user.db_user.approval_approvers
   end
 
   # GET api/user/approvals-count
   def approvals_count
-    render status: 200, json: current_user.db_user.approval_approvers.where('approval_type_id < 4').count
+    render status: 200, json: current_user.db_user.approval_approvers.where('approval_type_id < 4').count if current_user.db_user.approval_approvers.where('approval_type_id < 4')
   end
 
   # GET api/user/oauth-tokens

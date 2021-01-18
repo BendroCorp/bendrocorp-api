@@ -35,7 +35,7 @@ class TokenUser
       end
 
       # check the database users roll - in case roles are added after a token is rolled
-      return true if db_user.isinrole role_id
+      return true if !db_user.nil? && db_user.isinrole(role_id)
 
       # we have not found the role - :(
       return false
