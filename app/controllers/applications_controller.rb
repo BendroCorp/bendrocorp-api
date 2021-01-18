@@ -154,18 +154,11 @@ class ApplicationsController < ApplicationController
         @character.application.application_status_id += 1
 
         if @character.application.application_status_id == 4 && !@character.application.interview.locked_for_review
-          # flash[:warning] = "Cannot advance application to Executive Review until the application interview is locked for final review."
-          # redirect_to "hr/records/#{@character.id}"
-          # redirect_to action: "personnel_view", id: @character.id
 
           render status: 400, json: { message: 'Cannot advance application to Executive Review until the application interview is locked for final review.' }
         elsif @character.application.application_status_id == 5 && @character.application.applicant_approval_request.approval.approval_approvers.where('approval_type_id < ?', 4).count > 0
-          # flash[:warning] = "Cannot advance application to CEO Review until all approvers have submitted their approval notices."
-          # redirect_to action: "personnel_view", id: @character.id
           render status: 400, json: { message: 'Cannot advance application to CEO Review until all approvers have submitted their approval notices.' }
         elsif @character.application.application_status_id == 6 && !current_user.isinrole(9)
-          # flash[:warning] = "Only the person in the CEO role can advance (accept) this application."
-          # redirect_to action: "personnel_view", id: @character.id
           render status: 400, json: { message: 'Only the person in the CEO role can advance (accept) this application.' }
         else
           #if the applicant's new status is 6 then flip the is_member flag on their user to true
@@ -173,6 +166,10 @@ class ApplicationsController < ApplicationController
             @character.jobs << @character.application.job
             @character.user.is_member = true
             @character.user.roles << Role.find_by_id(0)
+
+            # remove specific non-member roles
+            old_roles = @character.user.in_roles.where('user_id = ? AND role_id IN (-1, -2)')
+            old_roles.destroy_all
           end
 
           @character.application.last_status_change = Time.now

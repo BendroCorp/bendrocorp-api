@@ -133,7 +133,8 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordina
                  { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
                  { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
                  { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 7, nested_under_id: 12 },
-                 { id: 21, title: 'Field Admin', icon: 'fas fa-toilet-paper', link: '/field-admin', ordinal: 8, nested_under_id: 12 }
+                 { id: 21, title: 'Field Admin', icon: 'fas fa-toilet-paper', link: '/field-admin', ordinal: 8, nested_under_id: 12 },
+                 { id: 22, title: 'Application', icon: 'fas fa-toilet-paper', link: '/application'}
                  ])
 # { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
@@ -145,7 +146,8 @@ MenuItemRole.create([{ id: 1, menu_item_id: 12, role_id: 42 },
                      { id: 4, menu_item_id: 16, role_id: 37 },
                      { id: 5, menu_item_id: 17, role_id: 40 },
                      { id: 6, menu_item_id: 18, role_id: 38 },
-                     { id: 7, menu_item_id: 19, role_id: 43 }])
+                     { id: 7, menu_item_id: 19, role_id: 43 },
+                     { id: 8, menu_item_id: 22, role_id: -1 }])
 
 OauthClient.create([{ id: 1, title: "Test Client", client_id: "test-client", logo: '/assets/imgs/bendrocorp-final.png'}])
 
@@ -359,7 +361,9 @@ ApprovalWorkflow.create([{ id: 1, title: 'Standard', description: 'Standard all 
 #                      published_when: Time.now,
 #                      page_category: page_categories[0] }])
 #create default roles
-roles = Role.create([{ id:1, name: 'Editor', description: 'Access to administrative controller.' },
+roles = Role.create([{ id:-2, name: 'Client', description: 'Used to give external users access to the application for tool access.' },
+                     { id:-1, name: 'Applicant', description: 'Applicant role.' },
+                     { id:1, name: 'Editor', description: 'Access to administrative controller.' },
                      { id:2, name: 'Executive', description: 'Access to Executive areas.' },
                      { id:3, name: 'Directors', description: 'Access to Director areas.'},
                      { id:4, name: 'Logistics', description: 'Access to Logistics areas.' },

@@ -7,11 +7,13 @@ class SignupsController < ApplicationController
 
     if !HaveIBeenPwned::pwned params[:signup][:password]
       puts "Preparing to create user"
+      @user.roles << Role.find_by_id(-1) # applicant role
+      @user.roles << Role.find_by_id(-2) # client role
       if @user.save
-        #email the verfification
+        # email the verfification - we stopped sending verfication emails
         # send_email(@user.email, "BendroCorp Email Verification", "<h1>Welcome!</h1><p>Hey there #{@user.username}! Before we can let you apply to BendroCorp we need you to verify your email.</p><br /><p><a href=\'http://localhost:4200/verify/#{@user.verification_string}\'>Click Here to Verify</a></p><br />")
-        send_email(@user.email, "Welcome! - BendroCorp", "<h1>Welcome!</h1><p>Hey there #{@user.username}! Thank you for signing up for BendroCorp. Remember that you need to complete the character application to become a part of BendroCorp. We look forward to hearing more from you soon!")
-        render status: 200, json: { message: 'Your account was successfully created. Please check your email for an account verification email.' }
+        send_email(@user.email, "Welcome! - BendroCorp", "<h1>Welcome!</h1><p>Hey there #{@user.username}! This is a confirmation that you have signed up for an account with BendroCorp.")
+        render status: 200, json: { message: 'Your account was successfully created.' }
       else
         render status: 500, json: { message: "Your account could not be created because: #{@user.errors.full_messages.to_sentence}" }
       end
