@@ -9,18 +9,22 @@ class MenuItemsController < ApplicationController
   # GET api/menu
   # Fetch the menu
   def list
-    #
+    # menu item return var
     @menu_items = []
+
     # Loop through
-    MenuItem.all.order('ordinal').each do |item| # where('nested_under_id is NULL')
+    MenuItem.where(archived: false).order('ordinal').each do |menu_item| # where('nested_under_id is NULL')
       # are protected by role
-      if item.roles.count > 0
-        item.roles.each do |role|
-          item.title = "#{item.title} *" # add an * to show it is protected by role
-          @menu_items << item if current_user.isinrole(role.id)
+      if menu_item.roles.count > 0
+        menu_item.roles.each do |role|
+          # add an * to show it is protected by role (that is not member, client, applicant)
+          # we only want to show special protected menu items with the *
+          menu_item.title = role.id < 1 ? menu_item.title : "#{menu_item.title} *"
+          @menu_items << menu_item if current_user.isinrole(role.id)
         end
+      # if they are not protected by roles
       else
-        @menu_items << item
+        @menu_items << menu_item
       end
     end
     # Hand out the member items

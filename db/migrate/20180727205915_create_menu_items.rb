@@ -8,6 +8,7 @@ class CreateMenuItems < ActiveRecord::Migration[5.1]
       t.belongs_to :nested_under
       t.integer :ordinal
       t.boolean :skip_ios
+      t.boolean :archived, default: false # basically just used to make it invisible
       t.timestamps
     end
   end
