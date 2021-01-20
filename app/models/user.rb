@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
   before_save { self.email = email.downcase }
   before_create { self.user_setting = UserSetting.new }
   before_create { self.user_information = UserInformation.new }
-  #validates :username, presence: true, length: { maximum: 50 }
+  # validates :username, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   VALID_USERNAME_REGEX = /\A[a-zA-Z0-9_.-]*\z/i
   validates :username, presence: true, length: { minimum:5, maximum: 30 },
@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
 
   has_many :approval_approvers
 
-  #requests
+  # requests
   has_many :role_requests
   has_many :role_removal_requests
   has_many :organization_ship_requests

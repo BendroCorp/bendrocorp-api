@@ -2,7 +2,7 @@ require 'httparty'
 
 class OffenderReportsController < ApplicationController
   before_action :require_user
-  before_action :require_member
+  before_action :require_member, except: [:verify_rsi_handle]
 
   before_action only: [:list_admin, :archive] do |a|
     a.require_one_role([16]) # offender report admin

@@ -100,12 +100,13 @@ class ApplicationController < ActionController::API
 
   # checks to make sure that a user is "logged in"
   def require_user
-    render status: 401, json: { message: 'You are not logged in/authorization required/you are not authorized to use this application.' }  unless current_user != nil
+    render status: 401, json: { message: 'You are not logged in/authorization required/you are not authorized to use this application.' }  unless current_user != nil && !current_user.db_user.nil?
   end
 
   # make sure that the current user in the member role
   def require_member
-    render status: 403, json: { message: 'You are not authorized to use this endpoint.' } unless current_user.isinrole(0) #current_user.is_member?
+    in_role = current_user.isinrole(0)
+    render status: 403, json: { message: 'You are not authorized to use this endpoint.' } unless in_role #current_user.is_member?
   end
 
   # before_action

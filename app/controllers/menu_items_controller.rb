@@ -1,6 +1,6 @@
 class MenuItemsController < ApplicationController
   before_action :require_user
-  before_action :require_member
+  before_action :require_member, except: [:list]
 
   before_action only: [:create, :update, :delete, :add_role, :delete_role] do |a|
     a.require_one_role([34]) # menu editor

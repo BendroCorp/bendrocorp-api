@@ -6,28 +6,27 @@ class Character < ActiveRecord::Base
   validates :background, presence: true
   # validates :application_id, presence: true
 
-
-  #references
-  belongs_to :gender, :class_name => 'CharacterGender', :foreign_key => 'gender_id', optional: true
-  belongs_to :species, :class_name => 'CharacterSpecy', :foreign_key => 'species_id', optional: true
+  # references
+  belongs_to :gender, class_name: 'FieldDescriptor', foreign_key: 'gender_id', optional: true
+  belongs_to :species, class_name: 'FieldDescriptor', foreign_key: 'species_id', optional: true
   belongs_to :user
-  has_many :attendences, -> { where certified: true }
+  has_many :attendences, -> { where certified: true }, :dependent => :delete_all
   has_many :events, through: :attendences
-  has_many :job_trackings
+  has_many :job_trackings, :dependent => :delete_all
   has_many :jobs, through: :job_trackings
-  has_one :application
-  has_many :awards_awardeds
+  has_one :application, :dependent => :delete
+  has_many :awards_awardeds, :dependent => :delete_all
   has_many :awards, through: :awards_awardeds
-  has_many :owned_ships, -> { where hidden: false }
+  has_many :owned_ships, -> { where hidden: false }, :dependent => :delete_all
   has_many :ships, through: :owned_ships
 
-  #hr stuff
+  # hr stuff
   has_many :service_notes
 
-  #http://josephndungu.com/tutorials/ajax-file-upload-with-dropezonejs-and-paperclip-rails
-  #http://stackoverflow.com/questions/3219787/how-do-i-tell-paperclip-to-not-save-the-original-file :D
-  #http://railscasts.com/episodes/134-paperclip
-  #http://stackoverflow.com/questions/8876340/paperclip-resize-and-crop-to-rectangle
+  # http://josephndungu.com/tutorials/ajax-file-upload-with-dropezonejs-and-paperclip-rails
+  # http://stackoverflow.com/questions/3219787/how-do-i-tell-paperclip-to-not-save-the-original-file :D
+  # http://railscasts.com/episodes/134-paperclip
+  # http://stackoverflow.com/questions/8876340/paperclip-resize-and-crop-to-rectangle
   has_attached_file :avatar, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :original => "200x200#" },
                     #content_type: { content_type: ["image/jpg", "image/jpeg", "image/png"] },
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",
