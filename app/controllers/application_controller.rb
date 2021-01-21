@@ -270,6 +270,53 @@ class ApplicationController < ActionController::API
     PushWorker.perform_async user_id, message
   end
 
+  # Create a key in redis
+  def create_redis_key(*params)
+    redis = Redis.new
+
+    raise 'You must supply a key: to set_redis_key' unless params.has_key?(:key)
+    raise 'You must supply a value: to set_redis_key' unless params.has_key?(:value)
+
+    key = params[:key]
+    value = params[:value]
+    ttl = params[:ttl] if params.has_key?(:ttl)
+
+    redis.set(key, value)
+
+    redis.expire(key, ttl) unless ttl.nil?
+  end
+
+  # Fetch a key from redis
+  def fetch_redis_key(*params)
+    raise 'You must supply a key: to clear_redis_key' unless params.has_key?(:key)
+    redis = Redis.new
+
+    key = params[:key]
+
+    return redis.get key
+  end
+
+  # Set TTL the specified redis key
+  def ttl_redis_key(*params)
+    raise 'You must supply a key: to expire_redis_key' unless params.has_key?(:key)
+    raise 'You must supply a ttl: to expire_redis_key' unless params.has_key?(:ttl)
+
+    key = params[:key]
+    ttl = params[:ttl]
+
+    redis.expire(key, ttl)
+  end
+
+  # Clear the specified redis key
+  def clear_redis_key(*params)
+    raise 'You must supply a key: to clear_redis_key' unless params.has_key?(:key)
+    redis = Redis.new
+
+    key = params[:key]
+
+    redis.del key
+  end
+
   private
   def bearer_token
     # try to get it from the body
