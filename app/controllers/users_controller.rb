@@ -195,7 +195,7 @@ class UsersController < ApplicationController
   end
 
   # POST api/user/push-token
-  # Must contain token, user_device_type_id, reg_data (1 = iOS, 2(TODO) = Amazon)
+  # Must contain token, user_device_type_id, reg_data (1 = iOS, 2(TODO) = Firebase)
   def add_push_token
     if params[:push_token] && params[:push_token][:token] && params[:push_token][:user_device_type_id] && params[:push_token][:reg_data]
       db_user = current_user.db_user
