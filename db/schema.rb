@@ -2485,6 +2485,7 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "token"
     t.boolean "active", default: true
     t.text "reg_data"
+    t.text "device_uuid"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_device_type_id"], name: "index_user_push_tokens_on_user_device_type_id"

@@ -187,7 +187,7 @@ class UsersController < ApplicationController
 
         render status: 200, json: { discord_identity: id.as_json, message: "#{id.discord_id} joined to BendroCorp Discord!" }
       else
-        render status: 500, json: { message: "Error occured could update discord identity because: #{id.errors.full_messages.to_sentence}" }
+        render status: :unprocessable_entity, json: { message: "Error occured could update discord identity because: #{id.errors.full_messages.to_sentence}" }
       end
     else
       render status: 404, json: { message: 'Discord identity not found!' }
@@ -205,7 +205,7 @@ class UsersController < ApplicationController
         if db_user.save
           render status: 200, json: { message: 'Device token added!' }
         else
-          render status: 500, json: { message: "A push token could not be added because: #{db_user.errors.full_messages.to_sentence}" }
+          render status: :unprocessable_entity, json: { message: "A push token could not be added because: #{db_user.errors.full_messages.to_sentence}" }
         end
       else
         render status: 400, json: { message: 'Device type if not found!' }
@@ -229,7 +229,7 @@ class UsersController < ApplicationController
 
   private
   def push_params
-    params.require(:push_token).permit(:token, :user_device_type_id, :reg_data)
+    params.require(:push_token).permit(:token, :user_device_type_id, :reg_data, :device_uuid)
   end
 
   def discord_identity_params

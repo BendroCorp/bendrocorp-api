@@ -6,6 +6,7 @@ class CreateUserPushTokens < ActiveRecord::Migration[5.1]
       t.text :token
       t.boolean :active, default: true
       t.text :reg_data
+      t.text :device_uuid
       t.timestamps
     end
   end
