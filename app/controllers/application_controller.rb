@@ -159,7 +159,7 @@ class ApplicationController < ActionController::API
         # if we can't find roles then we need to get the owner object
         # somehow we need to get the ship owner user here when that object is no available yet
         # some kinds of requests might not have roles - it might be an object with an owner who gets to manage what happens
-        
+
         # submit to a specific user
         if owner_id != 0 && approval_group == 0 && approval_id_list.count == 0
           owner = User.find_by_id(owner_id.to_i)
