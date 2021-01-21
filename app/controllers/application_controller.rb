@@ -293,7 +293,7 @@ class ApplicationController < ActionController::API
 
     key = params[:key]
 
-    return redis.get key
+    redis.get key
   end
 
   # Set TTL the specified redis key
