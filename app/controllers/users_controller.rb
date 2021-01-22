@@ -195,12 +195,16 @@ class UsersController < ApplicationController
   end
 
   # POST api/user/push-token
-  # Must contain token, user_device_type_id, reg_data (1 = iOS, 2(TODO) = Firebase)
+  # Must contain token, user_device_type_id, reg_data (1 = iOS, 2 = Android)
   def add_push_token
-    if params[:push_token] && params[:push_token][:token] && params[:push_token][:user_device_type_id] #&& params[:push_token][:reg_data]
+    if params[:push_token] && params[:push_token][:token] && params[:push_token][:user_device_type_id] && params[:push_token][:device_uuid]
       db_user = current_user.db_user
       device_type = UserDeviceType.find_by_id(params[:push_token][:user_device_type_id].to_i)
       if device_type
+        # make sure we do not store a duplicate token
+        UserPushToken.where(user_id: current_user.id, device_uuid: params[:push_token][:device_uuid]).destroy_all
+
+        # add the token to the users push token listing
         db_user.user_push_tokens << UserPushToken.new(push_params)
         if db_user.save
           render status: 200, json: { message: 'Device token added!' }
