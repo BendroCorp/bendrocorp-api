@@ -353,7 +353,8 @@ ApprovalWorkflow.create([{ id: 1, title: 'Standard', description: 'Standard all 
 #                      published_when: Time.now,
 #                      page_category: page_categories[0] }])
 #create default roles
-roles = Role.create([{ id:-3, name: 'Client', description: 'Used to give external users access to the application for tool access.' },
+roles = Role.create([{ id: -99, name: 'Debug', description: 'Putting someone in this role will cause the app to get extremely chatty...' },
+                     { id:-3, name: 'Client', description: 'Used to give external users access to the application for tool access.' },
                      { id:-2, name: 'Applicant', description: 'Applicant role.' },
                      { id:-1, name: 'Bot', description: 'a bot.' },
                      { id:1, name: 'Editor', description: 'Access to administrative controller.' },
