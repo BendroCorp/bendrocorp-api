@@ -132,6 +132,6 @@ spec:
         - containerPort: 3000
         imagePullPolicy: Always
         command: [ "bundle" ]
-        args: [ "exec", "rpush", "start", "-e", "-f" ]
+        args: [ "exec", "rpush", "start", "-e", "production", "-f" ]
       imagePullSecrets:
         - name: dockerconfigjson-github-com
