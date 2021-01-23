@@ -3,7 +3,7 @@ class MasterId < ApplicationRecord
 
   # NOTE: Fields 'fields' can be fetched as an attribute of 'type' (ie. self.type.fields)
 
-  has_many :field_values
+  has_many :field_values, class_name: 'FieldValue', foreign_key: 'master_id'
   accepts_nested_attributes_for :field_values
 
   # allows a field descriptor to identify an object as a type
