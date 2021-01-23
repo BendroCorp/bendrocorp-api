@@ -7,4 +7,10 @@ class MasterId < ApplicationRecord
   # allows a field descriptor to identify an object as a type
   validates :type_id, presence: true
   belongs_to :type, class_name: 'FieldDescriptor', foreign_key: :type_id, optional: true
+
+  # fields
+  has_many :field_descriptor_field_maps
+  has_many :fields, -> { order 'field_descriptor_field_maps.ordinal' }, though: :field_descriptor_field_maps
+
+  belongs_to :update_role, class_name: 'Role', foreign_key: :update_role_id, optional: true
 end

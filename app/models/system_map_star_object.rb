@@ -40,10 +40,14 @@ class SystemMapStarObject < ApplicationRecord
     object_type.title if object_type
   end
 
+  def fields
+    master.fields
+  end
+
   def field_values
     # TODO: May need to do more here for ordering and what not
     # TODO/TODO: There is a lot more to do here to include field data
-    # master.field_values
+    master.field_values
   end
 
   def can_map?
