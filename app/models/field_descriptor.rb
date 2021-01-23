@@ -8,5 +8,5 @@ class FieldDescriptor < ApplicationRecord
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id', optional: true
 
   has_many :field_descriptor_field_maps
-  has_many :fields, through: :field_descriptor_field_maps
+  has_many :fields, -> { order 'field_descriptor_field_maps.ordinal' }, through: :field_descriptor_field_maps
 end

@@ -41,7 +41,7 @@ class SystemMapStarObject < ApplicationRecord
   end
 
   def fields
-    master.fields
+    master.type.fields
   end
 
   def field_values
