@@ -15,7 +15,7 @@ class FieldValueController < ApplicationController
         raise 'You must provide an array' unless value_set.kind_of?(Array)
 
         # Makes sure that all of the updates/changes happen
-        FieldValue.transaction do 
+        FieldValue.transaction do
           value_set.each do |val|
             # updates will just contain an id, field_id and value
             # shortest path
@@ -24,9 +24,22 @@ class FieldValueController < ApplicationController
             if val[:id]
               update_value = FieldValue.find_by_id(field_id: val[:id])
               raise 'Value not found. Cannot update' if val[:value].nil?
+
+              # security check
+              if !update_value.master.update_role_id.nil? || !current_user.is_in_role(update_value.master.update_role_id)
+                raise "Current user is not allowed to edit master id #{update_value.master.id}"
+              end
+
               update_value.value = val[:value]
               update_value.save!
             else # create or multival
+              # make sure the master id exists
+              master = MasterId.find_by_id(val[:master_id])
+              raise "Master id #{val[:master_id]} does not exist!" if master.nil?
+
+              # security check
+              raise "Current user is not allowed to edit master id #{master.id}" if !current_user.is_in_role(update_value.master.update_role_id)
+
               # multi_value_allowed
               # fetch the field
               create_field = Field.find(id: val[:field_id])

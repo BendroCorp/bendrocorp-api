@@ -59,7 +59,7 @@ class SystemMapStarObject < ApplicationRecord
 
   private
     def set_id
-      master_id = MasterId.create(type_id: '209a90cd-5546-4353-83f6-36d7b025a96f')
+      master_id = MasterId.create(type_id: '209a90cd-5546-4353-83f6-36d7b025a96f', update_role_id: 22)
       self.id = master_id.id
     end
 end
