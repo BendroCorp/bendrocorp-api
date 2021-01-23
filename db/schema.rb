@@ -939,9 +939,11 @@ ActiveRecord::Schema.define(version: 20210106143802) do
 
   create_table "master_ids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "type_id"
+    t.bigint "update_role_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["type_id"], name: "index_master_ids_on_type_id"
+    t.index ["update_role_id"], name: "index_master_ids_on_update_role_id"
   end
 
   create_table "member_badges", force: :cascade do |t|

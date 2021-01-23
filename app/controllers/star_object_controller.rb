@@ -68,7 +68,7 @@ class StarObjectController < ApplicationController
     end
 
     if @star_object.save
-      render json: @star_object.to_json(include: { parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
+      render json: @star_object.to_json(include: { parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
     else
       render json: { message: @star_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -90,7 +90,7 @@ class StarObjectController < ApplicationController
 
       # update the object
       if @star_object.update(system_map_star_objects_params)
-        render json: @star_object.to_json(include: { parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
+        render json: @star_object.to_json(include: { parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
       else
         render json: { message: @star_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
