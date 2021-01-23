@@ -1,4 +1,6 @@
 class FieldValue < ApplicationRecord
+  has_paper_trail # auditing changes
+
   belongs_to :field, optional: true
   belongs_to :master, optional: true
 

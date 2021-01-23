@@ -144,6 +144,9 @@ Rails.application.routes.draw do
   put 'api/fields/' => 'fields#update'
   delete 'api/fields/:id' => 'fields#archive'
 
+  patch 'api/field-value' => 'field_value#patch'
+  delete 'api/field-value/:id' => 'field_value#delete'
+
   # flight Logs
   get 'api/flight-logs' => 'flight_logs#list'
   get 'api/flight-logs/ships' => 'flight_logs#list_ships'
