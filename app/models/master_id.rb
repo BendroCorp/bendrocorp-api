@@ -10,7 +10,8 @@ class MasterId < ApplicationRecord
 
   # fields
   has_many :field_descriptor_field_maps
-  has_many :fields, -> { order 'field_descriptor_field_maps.ordinal' }, though: :field_descriptor_field_maps
+  # has_many :fields, -> { order 'field_descriptor_field_maps.ordinal' }, though: :field_descriptor_field_maps
+  has_many :fields, though: :field_descriptor_field_maps
 
   belongs_to :update_role, class_name: 'Role', foreign_key: :update_role_id, optional: true
 end
