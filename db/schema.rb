@@ -616,6 +616,7 @@ ActiveRecord::Schema.define(version: 20210106143802) do
   create_table "field_descriptor_field_maps", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.bigint "field_descriptor_id"
     t.bigint "field_id"
+    t.integer "ordinal"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["field_descriptor_id"], name: "index_field_descriptor_field_maps_on_field_descriptor_id"
