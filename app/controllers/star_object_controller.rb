@@ -29,7 +29,7 @@ class StarObjectController < ApplicationController
       @star_object = SystemMapStarObject.where("id::text LIKE ? AND archived = false", "#{params[:uuid_segment]}%")
 
       # return the pages
-      render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+      render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, parent: {}, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
     else
       render status: 400, json: { message: 'Invalid ID segment!' }
     end
@@ -44,7 +44,7 @@ class StarObjectController < ApplicationController
   def show
     if @star_object
       if !@star_object.draft || current_user.is_in_one_role([22, 23])
-        render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, parent: {}, children: {}, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+        render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { methods: [:main_character] } } }, parent: {}, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
         return
       end
     end
