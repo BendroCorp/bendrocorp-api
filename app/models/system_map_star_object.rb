@@ -19,7 +19,7 @@ class SystemMapStarObject < ApplicationRecord
   belongs_to :primary_image, class_name: 'SystemMapImage', foreign_key: 'primary_image_id', optional: true
   accepts_nested_attributes_for :primary_image
 
-  has_many :system_map_images, class_name: 'SystemMapImage', foreign_key: 'of_star_object_id'
+  has_many :system_map_images, -> { order 'system_map_images.created_at desc' }, class_name: 'SystemMapImage', foreign_key: 'of_star_object_id'
 
   belongs_to :parent, class_name: 'SystemMapStarObject', optional: true, foreign_key: :parent_id
   has_many :children, class_name: 'SystemMapStarObject', dependent: :destroy, foreign_key: :parent_id
