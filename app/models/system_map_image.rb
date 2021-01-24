@@ -13,7 +13,7 @@ class SystemMapImage < ApplicationRecord
 
   belongs_to :of_star_object, class_name: 'SystemMapStarObject', foreign_key: :of_star_object_id, optional: true
 
-  validates :of_star_object_id, presence: true
+  # validates :of_star_object_id, presence: true
   validates :title, presence: true
   validates :created_by_id, presence: true
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true
