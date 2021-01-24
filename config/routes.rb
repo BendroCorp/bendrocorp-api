@@ -380,10 +380,6 @@ Rails.application.routes.draw do
   # put 'api/system-map/location' => 'system_map_locations#update'
   # delete 'api/system-map/location/:so_id' => 'system_map_locations#archive'
 
-  # post 'api/system-map/image' => 'system_map_images#create'
-  # put 'api/system-map/image' => 'system_map_images#update'
-  # delete 'api/system-map/image/:image_id' => 'system_map_images#archive'
-
   # get 'api/system-map/mission-giver' => 'system_map_mission_givers#index'
   # get 'api/system-map/mission-giver/:id' => 'system_map_mission_givers#show'
   # post 'api/system-map/mission-giver' => 'system_map_mission_givers#create'
@@ -422,6 +418,10 @@ Rails.application.routes.draw do
   post 'api/system-map/object' => 'star_object#create'
   put 'api/system-map/object' => 'star_object#update'
   delete 'api/system-map/object/:id' => 'star_object#archive'
+  # system map images
+  post 'api/system-map/image' => 'system_map_images#create'
+  put 'api/system-map/image' => 'system_map_images#update'
+  delete 'api/system-map/image/:image_id' => 'system_map_images#archive'
 
   # training
   get 'api/training' => 'training#list_courses'
