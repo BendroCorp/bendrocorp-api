@@ -44,7 +44,8 @@ class StarObjectController < ApplicationController
   def show
     if @star_object
       if !@star_object.draft || current_user.is_in_one_role([22, 23])
-        render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+        # render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+        render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { include: { field_descriptors: { } } } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
         return
       end
     end
