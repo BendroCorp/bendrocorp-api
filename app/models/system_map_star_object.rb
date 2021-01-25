@@ -45,7 +45,7 @@ class SystemMapStarObject < ApplicationRecord
 
   def fields
     # TODO: Figure out how to get the descriptors
-    master.type.fields #.joins(:field_descriptors)
+    master.type.fields # .joins(:field_descriptors)
   end
 
   def field_values
