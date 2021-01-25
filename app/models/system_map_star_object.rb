@@ -24,6 +24,9 @@ class SystemMapStarObject < ApplicationRecord
   belongs_to :parent, class_name: 'SystemMapStarObject', optional: true, foreign_key: :parent_id
   has_many :children, class_name: 'SystemMapStarObject', dependent: :destroy, foreign_key: :parent_id
 
+  # experimental, undo if this breaks
+  belongs_to :master, class_name: 'MasterId', optional: true, foreign_key: :id
+
   def primary_image_url
     self.primary_image.image_url_thumbnail if self.primary_image
   end
@@ -32,9 +35,9 @@ class SystemMapStarObject < ApplicationRecord
     self.primary_image.image_url if self.primary_image
   end
 
-  def master
-    MasterId.find_by id: id
-  end
+  # def master
+  #   MasterId.find_by id: id
+  # end
 
   def kind
     object_type.title if object_type
@@ -45,8 +48,6 @@ class SystemMapStarObject < ApplicationRecord
   end
 
   def field_values
-    # TODO: May need to do more here for ordering and what not
-    # TODO/TODO: There is a lot more to do here to include field data
     master.field_values
   end
 
