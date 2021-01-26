@@ -40,7 +40,7 @@ class FieldValueController < ApplicationController
               raise "Master id #{val[:master_id]} does not exist!" if master.nil?
 
               # security check
-              raise "Current user is not allowed to edit master id #{master.id}" if !current_user.is_in_role(update_value.master.update_role_id)
+              raise "Current user is not allowed to edit master id #{master.id}" if !current_user.is_in_role(master.update_role_id)
 
               # multi_value_allowed
               # fetch the field
