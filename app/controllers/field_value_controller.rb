@@ -63,11 +63,14 @@ class FieldValueController < ApplicationController
         end # end transaction
       rescue => e
         render status: 500, json: { message: e.message.to_s }
+        return
       end
 
       render json: { message: 'Field values patched!' }
+      return
     else # checking the basic request is populated properly
       render status: 400, json: { message: 'Request not properly formed' }
+      return
     end
   end
 
