@@ -12,11 +12,11 @@ class FieldValueController < ApplicationController
     # if the value set param is filled
     if @value_sets
       begin
-        raise 'You must provide an array' unless value_set.kind_of?(Array)
+        raise 'You must provide an array' unless @value_sets.kind_of?(Array)
 
         # Makes sure that all of the updates/changes happen
         FieldValue.transaction do
-          value_set.each do |val|
+          @value_sets.each do |val|
             # updates will just contain an id, field_id and value
             # shortest path
 
