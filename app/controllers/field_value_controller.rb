@@ -22,6 +22,7 @@ class FieldValueController < ApplicationController
 
             # update
             if val[:id]
+              # TODO: Do we care...or do we just create the value instead?? (if everything else is right)
               update_value = FieldValue.find_by_id(field_id: val[:id])
               raise 'Value not found. Cannot update' if val[:value].nil?
 

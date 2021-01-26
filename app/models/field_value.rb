@@ -6,5 +6,6 @@ class FieldValue < ApplicationRecord
 
   validates :field_id, presence: true
   validates :master_id, presence: true
-  validates :value, presence: true
+  # NOTE: It may seem goofy but we need to allow blank values
+  # validates :value, presence: true
 end
