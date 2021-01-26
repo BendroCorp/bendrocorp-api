@@ -23,7 +23,7 @@ class FieldValueController < ApplicationController
             # update
             if !val[:id].nil?
               # TODO: Do we care...or do we just create the value instead?? (if everything else is right)
-              update_value = FieldValue.find_by_id(field_id: val[:id])
+              update_value = FieldValue.find_by_id(field_id: val[:id].to_s)
               # raise 'Value not found. Cannot update' if val[:value].nil?
               raise 'Could not find field_value not found even though ID was present!' if update_value.nil?
 
@@ -32,7 +32,10 @@ class FieldValueController < ApplicationController
                 raise "Current user is not allowed to edit master id #{update_value.master.id}"
               end
 
-              update_value.value = val[:value]
+              # handle the value setting
+              f_value = !val[:value].nil? ? val[:value].to_s : ''
+
+              update_value.value = f_value
               update_value.save!
             else # create or multival
               # make sure the master id exists
@@ -44,11 +47,11 @@ class FieldValueController < ApplicationController
 
               # multi_value_allowed
               # fetch the field
-              create_field = Field.find(id: val[:field_id])
+              create_field = Field.find_by_id(val[:field_id].to_s)
               raise "Field not found! #{val[:field_id]}. Cannot create field." if create_field.nil?
 
               # to if multivalue allowed
-              if !create_field.multi_value_allowed && field_values.where(field_id: val[:field_id]).count > 0
+              if !create_field.multi_value_allowed && field_values.where(field_id: val[:field_id].to_s).count > 0
                 raise 'Multi value not allowed for this field'
               end
 
@@ -56,8 +59,10 @@ class FieldValueController < ApplicationController
                 raise 'Invalid create object for field value'
               end
 
+              f_value = !val[:value].nil? ? val[:value].to_s : ''
+
               # create the new value
-              create_value = FieldValue.new(master_id: val[:master_id], field_id: val[:field_id], value: val[:value])
+              create_value = FieldValue.new(master_id: val[:master_id].to_s, field_id: val[:field_id].to_s, value: f_value)
               create_value.save!
             end
           end # end value set loop
