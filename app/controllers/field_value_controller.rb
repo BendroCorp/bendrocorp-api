@@ -63,7 +63,7 @@ class FieldValueController < ApplicationController
           end # end value set loop
         end # end transaction
       rescue => e
-        render status: 500, json: { message: e.message.to_s }
+        render status: 500, json: { message: e.message.to_s, debug: e.backtrace.join("\n") }
         return
       end
 
