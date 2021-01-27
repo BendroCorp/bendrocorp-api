@@ -6,19 +6,29 @@ class Field < ApplicationRecord
   # validates :created_by_id, presence: true
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id', optional: true
   belongs_to :field_descriptor_class, optional: true
+  belongs_to :field_descriptor_field, optional: true
   has_many :field_descriptors, -> { where(archived: false).order(:ordinal) }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
 
   belongs_to :presentation_type, class_name: 'FieldDescriptor', foreign_key: :presentation_type_id, optional: true
 
   def descriptors
-    if from_class
-      return self.field_descriptor_class.field_data
-    else
-      return self.field_descriptors.order('ordinal')
-    end
+    raise 'from_class and from_field' if from_class && from_field
+
+    # if we are not getting descriptors from a class or field
+    return field_descriptors.order('ordinal') unless from_class || from_field
+
+    # if we are getting descriptors from a class
+    return field_descriptor_class.field_data if from_class
+
+    # get the descriptors from another field
+    return from_field.descriptors if from_field
   end
 
   def from_class
     true unless field_descriptor_class.nil?
+  end
+
+  def from_field
+    true unless field_descriptor_field.nil?
   end
 end

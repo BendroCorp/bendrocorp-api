@@ -6,6 +6,7 @@ class CreateFields < ActiveRecord::Migration[5.1]
       t.boolean :read_only, default: false
 
       t.belongs_to :field_descriptor_class, type: :uuid
+      t.belongs_to :field_descriptor_field, type: :uuid
 
       t.belongs_to :created_by
 
