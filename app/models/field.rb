@@ -6,7 +6,7 @@ class Field < ApplicationRecord
   # validates :created_by_id, presence: true
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id', optional: true
   belongs_to :field_descriptor_class, optional: true
-  has_many :field_descriptors, -> { where archived: false }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
+  has_many :field_descriptors, -> { where(archived: false).order(:ordinal) }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
 
   belongs_to :presentation_type, class_name: 'FieldDescriptor', foreign_key: :presentation_type_id, optional: true
 
