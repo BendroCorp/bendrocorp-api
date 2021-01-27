@@ -649,6 +649,7 @@ ActiveRecord::Schema.define(version: 20210106143802) do
 
   create_table "fields", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "name"
+    t.text "description"
     t.boolean "read_only", default: false
     t.uuid "field_descriptor_class_id"
     t.bigint "created_by_id"
