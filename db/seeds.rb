@@ -41,7 +41,8 @@ Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Co
   { id: '62ac3a07-ece3-4079-8da1-3e88617032fd', name: 'System Object Kind' },
   { id: "0f65a426-aa0e-4589-88b6-6bb54247e0bf", name: "System Map Kinds" },
   { id: "16c4cbbb-aeaa-4504-84cd-852c7757a5b8", name: "MasterId Types", read_only: true },
-  { id: "de4df4ca-b124-4171-a77b-770bdd81da72", name:	"Donation Type" }])
+  { id: "de4df4ca-b124-4171-a77b-770bdd81da72", name:	"Donation Type" },
+  { id: 'ebf80864-d8f6-4b1d-8cd2-62bfde86f2d9', name:	'Field Value Presentation Types', read_only: true }])
 
   FieldDescriptor.create([{ id:'9886a385-414d-42fd-bf06-a7da2d3aee8d',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Small',description:'Small Jump Point',ordinal:1 }, 
     { id:'e37a0432-57bc-4bcd-9449-5f9dfeddf271',field_id:'60152083-97c5-4262-9c88-2903cc8c44ad',title:'Medium',description:'Medium Jump Point',ordinal:2 }, 
@@ -106,7 +107,11 @@ Field.create([{ id: '60152083-97c5-4262-9c88-2903cc8c44ad', name: 'Jump Point Co
   { id: '209a90cd-5546-4353-83f6-36d7b025a96f', field_id: '16c4cbbb-aeaa-4504-84cd-852c7757a5b8', title: 'SystemMapStarObject', ordinal: 1, read_only: true },
   { id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", field_id: "de4df4ca-b124-4171-a77b-770bdd81da72", title:	"Operating Expenses", ordinal:	1, read_only: true },
   { id: "c6a4a515-09a1-438e-a9f5-9227d7c9ee54",	field_id: "de4df4ca-b124-4171-a77b-770bdd81da72",	title:	"Ship", ordinal:	2, read_only: true },
-  { id: "b80d9b75-ba4d-4a0d-9860-1aca23a062d3",	field_id: "de4df4ca-b124-4171-a77b-770bdd81da72",	title:	"Other", ordinal:	3, read_only: true } ])
+  { id: "b80d9b75-ba4d-4a0d-9860-1aca23a062d3",	field_id: "de4df4ca-b124-4171-a77b-770bdd81da72",	title:	"Other", ordinal:	3, read_only: true },
+  { id: '246e8225-2224-454c-a972-4af521f6736e', field_id:	'ebf80864-d8f6-4b1d-8cd2-62bfde86f2d9', title: 'String', ordinal: 1, read_only: true  },
+  { id: 'e5bd60e6-9e09-4eb3-b57a-9e22cae7a7d9', field_id:	'ebf80864-d8f6-4b1d-8cd2-62bfde86f2d9', title:	'Number', ordinal: 2, read_only: true  },
+  { id: '9be837b4-fbec-429e-bb2e-7b16fc5e0b4e', field_id: 'ebf80864-d8f6-4b1d-8cd2-62bfde86f2d9', title:	'Date', ordinal: 3, read_only: true },
+  { id: 'bcdff581-72fd-4538-b756-39802a0ed7be', field_id: 'ebf80864-d8f6-4b1d-8cd2-62bfde86f2d9', title:	'LongString', ordinal: 3, read_only: true }])
 
 page_categories_field = Field.create(id: '95ba5b0c-cbfb-4fe7-ab39-75010a30b20f', name: 'Page Categories')
 FieldDescriptor.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', field_id: page_categories_field.id, title: 'Featured', read_only: true },

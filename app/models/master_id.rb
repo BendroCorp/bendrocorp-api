@@ -11,4 +11,5 @@ class MasterId < ApplicationRecord
   belongs_to :type, class_name: 'FieldDescriptor', foreign_key: :type_id, optional: true
 
   belongs_to :update_role, class_name: 'Role', foreign_key: :update_role_id, optional: true
+  belongs_to :owner, class_name: 'User', foreign_key: :owner_id, optional: true
 end

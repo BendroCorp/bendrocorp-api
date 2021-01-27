@@ -9,6 +9,8 @@ class CreateFields < ActiveRecord::Migration[5.1]
 
       t.belongs_to :created_by
 
+      t.belongs_to :presentation_type
+
       t.boolean :archived, default: false
 
       t.integer :ordinal

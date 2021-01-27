@@ -8,6 +8,8 @@ class Field < ApplicationRecord
   belongs_to :field_descriptor_class, optional: true
   has_many :field_descriptors, -> { where archived: false }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
 
+  belongs_to :presentation_type, class_name: 'FieldDescriptor', foreign_key: :presentation_type_id, optional: true
+
   def descriptors
     if from_class
       return self.field_descriptor_class.field_data
