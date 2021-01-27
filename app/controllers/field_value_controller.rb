@@ -23,9 +23,9 @@ class FieldValueController < ApplicationController
             # update
             if !val[:id].nil?
               # TODO: Do we care...or do we just create the value instead?? (if everything else is right)
-              update_value = FieldValue.find_by_id(id: val[:id].to_s)
+              update_value = FieldValue.find_by_id(val[:id].to_s)
               # raise 'Value not found. Cannot update' if val[:value].nil?
-              raise 'Could not find field_value not found even though ID was present!' if update_value.nil?
+              raise "Could not find field_value not found even though ID was present! #{val[:id].to_s}" if update_value.nil?
 
               # security check
               if !update_value.master.update_role_id.nil? || !current_user.is_in_role(update_value.master.update_role_id)
