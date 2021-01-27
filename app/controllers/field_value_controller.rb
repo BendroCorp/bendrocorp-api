@@ -51,7 +51,7 @@ class FieldValueController < ApplicationController
               raise "Field not found! #{val[:field_id]}. Cannot create field." if create_field.nil?
 
               # to if multivalue allowed
-              if !create_field.multi_value_allowed && field_values.where(field_id: val[:field_id].to_s).count > 0
+              if !create_field.multi_value_allowed && FieldValue.where(field_id: val[:field_id].to_s).count > 0
                 raise 'Multi value not allowed for this field'
               end
 
