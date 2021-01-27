@@ -28,7 +28,7 @@ class FieldValueController < ApplicationController
               raise "Could not find field_value not found even though ID was present! #{val[:id].to_s}" if update_value.nil?
 
               # security check
-              if !update_value.master.update_role_id.nil? || !current_user.is_in_role(update_value.master.update_role_id)
+              if !update_value.master.update_role_id.nil? && !current_user.is_in_role(update_value.master.update_role_id)
                 raise "Current user is not allowed to edit master id #{update_value.master.id}"
               end
 
@@ -43,7 +43,9 @@ class FieldValueController < ApplicationController
               raise "Master id #{val[:master_id]} does not exist!" if master.nil?
 
               # security check
-              raise "Current user is not allowed to edit master id #{master.id}" if !current_user.is_in_role(master.update_role_id)
+              if !master.update_role_id.nil? && !current_user.is_in_role(master.update_role_id)
+                raise "Current user is not allowed to edit master id #{master.id}"
+              end
 
               # multi_value_allowed
               # fetch the field
