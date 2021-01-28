@@ -54,7 +54,7 @@ class FieldValueController < ApplicationController
 
               # to if multivalue allowed
               if !create_field.multi_value_allowed && FieldValue.where(field_id: val[:field_id].to_s).count > 0
-                raise 'Multi value not allowed for this field'
+                raise "Multi value not allowed for this field #{val[:field_id]}"
               end
 
               if val[:field_id].nil? || val[:master_id].nil? || val[:value].nil?
