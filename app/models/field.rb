@@ -21,7 +21,7 @@ class Field < ApplicationRecord
     return field_descriptor_class.field_data if from_class
 
     # get the descriptors from another field
-    return from_field.descriptors if from_field
+    return field_descriptor_field.descriptors if from_field
   end
 
   def from_class
