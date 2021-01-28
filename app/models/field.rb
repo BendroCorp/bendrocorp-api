@@ -6,7 +6,7 @@ class Field < ApplicationRecord
   # validates :created_by_id, presence: true
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id', optional: true
   belongs_to :field_descriptor_class, optional: true
-  belongs_to :field_descriptor_field, class_name: 'FieldDescriptor', foreign_key: :field_descriptor_field_id, optional: true
+  belongs_to :field_descriptor_field, class_name: 'Field', foreign_key: :field_descriptor_field_id, optional: true
   has_many :field_descriptors, -> { where(archived: false).order(:ordinal) }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
 
   belongs_to :presentation_type, class_name: 'FieldDescriptor', foreign_key: :presentation_type_id, optional: true
@@ -20,7 +20,8 @@ class Field < ApplicationRecord
     # if we are getting descriptors from a class
     return field_descriptor_class.field_data if from_class
 
-    # get the descriptors from another field
+    # get the descriptors from another field...
+    # this is useful if you want another name displayed
     return field_descriptor_field.descriptors if from_field
   end
 
