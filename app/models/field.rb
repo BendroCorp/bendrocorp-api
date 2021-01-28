@@ -15,7 +15,7 @@ class Field < ApplicationRecord
     raise 'from_class and from_field' if from_class && from_field
 
     # if we are not getting descriptors from a class or field
-    return field_descriptors.order('ordinal') unless from_class || from_field
+    return field_descriptors.order('ordinal') if !from_class && !from_field
 
     # if we are getting descriptors from a class
     return field_descriptor_class.field_data if from_class
