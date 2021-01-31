@@ -16,7 +16,7 @@ class PushWorker
         #   n.save!
         # end
 
-        if push_token.user_device_type_id == 2 # ios prod
+        if push_token.user_device_type_id == 1 # ios prod
           find_app = Rpush::Apnsp8::App.find_by_name(push_token.user_device_type.title)
           if find_app
             n = Rpush::Apns::Notification.new
@@ -32,7 +32,7 @@ class PushWorker
             error_message = "#{push_token.id} for #{user.user_id} tried to push to an app with the id of #{push_token.user_device_type_id}"
             EmailWorker.perform_async ceo.email, 'Attempted to send push to invalid app', error_message
           end
-        elsif push_token.user_device_type_id == 3 # android
+        elsif push_token.user_device_type_id == 2 # android
           n = Rpush::Gcm::Notification.new
           n.app = Rpush::Gcm::App.find_by_name(push_token.user_device_type.title)
           n.registration_ids = [push_token.token]
