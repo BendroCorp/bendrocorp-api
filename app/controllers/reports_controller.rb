@@ -117,11 +117,10 @@ class ReportsController < ApplicationController
             return
           end
 
+          # is this for a particular active record class
           if !@report.handler.for_class.nil?
             # get the class we are trying to handle, these classes are expected to be "Request" formatted object ActiveRecord tables 
             request_clazz = @report.handler.for_class.constantize.new
-            # if clazz.new.try(:ordinal)
-            # item.instance_eval(class_field)
 
             @report.handler.variables.each do |variable|
               # get variable value from the assigned field
@@ -148,13 +147,16 @@ class ReportsController < ApplicationController
             approval = Approval.find_by_id(approval_request.approval_id)
             approval.report_id = @report.id
             approval.save
-
+          
+          # or is this a generic request
           else
             # create the default report approval request
             approval_request = ReportApprovalRequest.new
 
             # put the approval instance in the request based on the routed user or group
+            # for user
             approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
+            # for group
             approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
 
             # lastly add the request to the current_user
@@ -182,7 +184,7 @@ class ReportsController < ApplicationController
         render status: 403, json: { message: 'The report has already been submitted for approval and cannot be updated!' }
       end
     else
-      render status: 404, json: { message: 'You are not authorized to edit this report!' }
+      render status: 404, json: { message: 'The report does not exist or you are not authorized to edit it!' }
     end
   end
 

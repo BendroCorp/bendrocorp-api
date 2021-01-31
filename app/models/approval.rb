@@ -27,7 +27,8 @@ class Approval < ApplicationRecord
   end
 
   def approval_source
-    #this will need to be updated if/when new requests are created
+    # this will need to be updated if/when new requests are created
+    # self.for_class
     if self.approval_kind_id == 1 #role_request
       RoleRequest.find_by approval_id: self.id
     elsif self.approval_kind_id == 3
@@ -74,41 +75,45 @@ class Approval < ApplicationRecord
   def approval_workflow
     # this will need to be updated if/when new requests are created
     # TODO: This needs to be re-thought
-    if self.approval_kind_id == 1 # role_request
-      1
-    elsif self.approval_kind_id == 3
-      1
-    elsif self.approval_kind_id == 6
-      1
-    elsif self.approval_kind_id == 7
-      1
-    elsif self.approval_kind_id == 11
-      1
-    elsif self.approval_kind_id == 12
-      1
-    elsif self.approval_kind_id == 16
-      1
-    elsif self.approval_kind_id == 17
-      1
-    elsif self.approval_kind_id == 18
-      1
-    elsif self.approval_kind_id == 19
-      1
-    elsif self.approval_kind_id == 20
-      1
-    elsif self.approval_kind_id == 21
-      1
-    elsif self.approval_kind_id == 22
-      1
-    elsif self.approval_kind_id == 23
-      2
-    elsif self.approval_kind_id == 24
-      1
-    end
+    # DRIVEN FROM DATA
+    self.approval_kind.workflow_id
+    # if self.approval_kind_id == 1 # role_request
+    #   1
+    # elsif self.approval_kind_id == 3
+    #   1
+    # elsif self.approval_kind_id == 6
+    #   1
+    # elsif self.approval_kind_id == 7
+    #   1
+    # elsif self.approval_kind_id == 11
+    #   1
+    # elsif self.approval_kind_id == 12
+    #   1
+    # elsif self.approval_kind_id == 16
+    #   1
+    # elsif self.approval_kind_id == 17
+    #   1
+    # elsif self.approval_kind_id == 18
+    #   1
+    # elsif self.approval_kind_id == 19
+    #   1
+    # elsif self.approval_kind_id == 20
+    #   1
+    # elsif self.approval_kind_id == 21
+    #   1
+    # elsif self.approval_kind_id == 22
+    #   1
+    # elsif self.approval_kind_id == 23
+    #   2
+    # elsif self.approval_kind_id == 24
+    #   1
+    # end
   end
 
   def approval_source_requested_item
-    #this will need to be updated if/when new requests are created
+    # this will need to be updated if/when new requests are created
+    # TODO: How to make this generic
+    # self.for_class
     if self.approval_kind_id == 1 #role_request
       r = RoleRequest.find_by approval_id: self.id
       "#{r.role.name} (Role)"
@@ -159,6 +164,7 @@ class Approval < ApplicationRecord
 
   # used when roles are not used for an approval - directs you to the owner of something (ie a ship <== pretty much the only example at the moment)
   def approval_owner
+    # self.for_class
     if self.approval_kind_id == 16
       e = OwnedShipCrewRequest.find_by approval_id: self.id
       "#{e.character.full_name} requesting to join #{e.crew.owned_ship.title} (Crew Request)"
@@ -166,6 +172,7 @@ class Approval < ApplicationRecord
   end
 
   def approval_link
+    # self.for_class
     if self.approval_kind_id == 6
       e = EventCertificationRequest.find_by approval_id: self.id
       "/events/#{e.event.id}"
