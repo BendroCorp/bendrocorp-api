@@ -48,7 +48,7 @@ class PushWorker
         else
           # error email
           ceo = Role.find_by_id(9).role_full_users[0]
-          error_message = "#{push_token.id} for #{user.user_id} tried to push to an app with the id of #{push_token.user_device_type_id}"
+          error_message = "#{push_token.id} for user id #{user_id.to_i} tried to push to an app with the id of #{push_token.user_device_type_id}"
           EmailWorker.perform_async ceo.email, 'Attempted to send push to invalid app', error_message
         end
       end
