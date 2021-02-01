@@ -38,6 +38,7 @@ class ReportsController < ApplicationController
   end
 
   # GET /reports/routes
+  # The people who a report can be directed towards
   def fetch_routes
     render json: ReportRoute.where(archived: false)
   end
