@@ -29,37 +29,40 @@ class Approval < ApplicationRecord
   def approval_source
     # this will need to be updated if/when new requests are created
     # self.for_class
-    if self.approval_kind_id == 1 #role_request
-      RoleRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 3
-      AwardRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 6
-      EventCertificationRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 7
-      OffenderReportApprovalRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 11
-      OrganizationShipRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 12
-      RoleRemovalRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 16
-      OwnedShipCrewRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 17
-      JobChangeRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 18
-      JobBoardMissionCompletionRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 19
-      JobBoardMissionCreationRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 20
-      AddSystemMapItemRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 21
-      ReportApprovalRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 22
-      PositionChangeRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 23
-      ApplicantApprovalRequest.find_by approval_id: self.id
-    elsif self.approval_kind_id == 24
-      TrainingItemCompletionRequest.find_by approval_id: self.id
-    end
+    approval_kind = approval_kind.for_class.constantize.new
+    approval_kind.find_by approval_id: id
+
+    # if self.approval_kind_id == 1 #role_request
+    #   RoleRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 3
+    #   AwardRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 6
+    #   EventCertificationRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 7
+    #   OffenderReportApprovalRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 11
+    #   OrganizationShipRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 12
+    #   RoleRemovalRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 16
+    #   OwnedShipCrewRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 17
+    #   JobChangeRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 18
+    #   JobBoardMissionCompletionRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 19
+    #   JobBoardMissionCreationRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 20
+    #   AddSystemMapItemRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 21
+    #   ReportApprovalRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 22
+    #   PositionChangeRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 23
+    #   ApplicantApprovalRequest.find_by approval_id: self.id
+    # elsif self.approval_kind_id == 24
+    #   TrainingItemCompletionRequest.find_by approval_id: self.id
+    # end
   end
 
   def approval_source_character_name
@@ -114,7 +117,19 @@ class Approval < ApplicationRecord
     # this will need to be updated if/when new requests are created
     # TODO: How to make this generic
     # self.for_class
-    if self.approval_kind_id == 1 #role_request
+
+    # cover the generic ones here
+    if approval_kind_id > 24
+      class_name = approval_kind.for_class.split(/(?=[A-Z])/).join(' ')
+      r = approval_source
+      t = r.name if r.has_attribute? :name
+      t ||= r.title if r.has_attribute? :title
+
+      t.nil? ? "#{t} (#{class_name})" : class_name
+    end
+
+    # This still needs work to make it generic
+    if self.approval_kind_id == 1 # role_request
       r = RoleRequest.find_by approval_id: self.id
       "#{r.role.name} (Role)"
     elsif self.approval_kind_id == 3
@@ -124,7 +139,7 @@ class Approval < ApplicationRecord
       e = EventCertificationRequest.find_by approval_id: self.id
       "For event ID ##{e.event.id} #{e.event.name} (Event Certification)"
     elsif self.approval_kind_id == 7
-      e = OffenderReportApprovalRequest.find_by approval_id: self.id
+      # e = OffenderReportApprovalRequest.find_by approval_id: self.id
       "New Offender Report (Offender Report Approval)"
     elsif self.approval_kind_id == 11
       e = OrganizationShipRequest.find_by approval_id: self.id
@@ -164,7 +179,15 @@ class Approval < ApplicationRecord
 
   # used when roles are not used for an approval - directs you to the owner of something (ie a ship <== pretty much the only example at the moment)
   def approval_owner
-    # self.for_class
+    # TODO: This method may need re-thinking in the future
+
+    # handle generics
+    source = approval_source
+    if approval_kind_id != 16 && source.has_attribute?(:character)
+      return source.character.full_name
+    end
+
+    # handle things that are too hard to be generic
     if self.approval_kind_id == 16
       e = OwnedShipCrewRequest.find_by approval_id: self.id
       "#{e.character.full_name} requesting to join #{e.crew.owned_ship.title} (Crew Request)"
@@ -173,21 +196,24 @@ class Approval < ApplicationRecord
 
   def approval_link
     # self.for_class
-    if self.approval_kind_id == 6
-      e = EventCertificationRequest.find_by approval_id: self.id
-      "/events/#{e.event.id}"
-    elsif self.approval_kind_id == 7
-      e = OffenderReportApprovalRequest.find_by approval_id: self.id
-      "/offender-reports/report/#{e.offender_report.id}"
-    elsif self.approval_kind_id == 18
-      e = JobBoardMissionCompletionRequest.find_by approval_id: self.id
-      "/job-board/#{e.job_board_mission.id}"
-    elsif self.approval_kind_id == 21
-      e = ReportApprovalRequest.find_by approval_id: self.id
-      "/reports/#{e.report.id}" # url_title_string
-    elsif self.approval_kind_id == 23
-      e = ApplicantApprovalRequest.find_by approval_id: self.id
-      "/profiles/#{e.application.character.first_name.downcase}-#{e.application.character.last_name.downcase}-#{e.application.character.id}"
-    end
+    link = approval_kind.object_link
+    "#{link}#{approval_source.id}" unless link.nil?
+
+    # if self.approval_kind_id == 6
+    #   e = EventCertificationRequest.find_by approval_id: self.id
+    #   "/events/#{e.event.id}"
+    # elsif self.approval_kind_id == 7
+    #   e = OffenderReportApprovalRequest.find_by approval_id: self.id
+    #   "/offender-reports/report/#{e.offender_report.id}"
+    # elsif self.approval_kind_id == 18
+    #   e = JobBoardMissionCompletionRequest.find_by approval_id: self.id
+    #   "/job-board/#{e.job_board_mission.id}"
+    # elsif self.approval_kind_id == 21
+    #   e = ReportApprovalRequest.find_by approval_id: self.id
+    #   "/reports/#{e.report.id}" # url_title_string
+    # elsif self.approval_kind_id == 23
+    #   e = ApplicantApprovalRequest.find_by approval_id: self.id
+    #   "/profiles/#{e.application.character.first_name.downcase}-#{e.application.character.last_name.downcase}-#{e.application.character.id}"
+    # end
   end
 end

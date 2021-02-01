@@ -126,7 +126,7 @@ class ReportsController < ApplicationController
               # get variable value from the assigned field
               field_variable_value = @report.fields.where(report_handler_variable_id: variable.id).first.field_value.value
 
-              # What am I doing here??
+              # filling the variable names
               request_clazz.send("#{variable.object_name}=", field_variable_value)
             end
 
@@ -147,7 +147,7 @@ class ReportsController < ApplicationController
             approval = Approval.find_by_id(approval_request.approval_id)
             approval.report_id = @report.id
             approval.save
-          
+
           # or is this a generic request
           else
             # create the default report approval request
