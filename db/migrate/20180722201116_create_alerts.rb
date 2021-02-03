@@ -1,6 +1,6 @@
 class CreateAlerts < ActiveRecord::Migration[5.1]
   def change
-    create_table :alerts do |t|
+    create_table :alerts, id: :uuid do |t|
       t.text :title
       t.text :description
       t.datetime :expires
@@ -13,8 +13,8 @@ class CreateAlerts < ActiveRecord::Migration[5.1]
       # t.belongs_to :system_object
       # t.belongs_to :settlement
       # t.belongs_to :location
-      t.belongs_to :star_object
-      t.belongs_to :alert_type
+      t.belongs_to :star_object, type: :uuid
+      t.belongs_to :alert_type, type: :uuid
       t.belongs_to :user
       t.belongs_to :approval
       t.timestamps

@@ -46,14 +46,14 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "alerts", force: :cascade do |t|
+  create_table "alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "title"
     t.text "description"
     t.datetime "expires"
     t.boolean "approved", default: false
     t.boolean "archived", default: false
-    t.bigint "star_object_id"
-    t.bigint "alert_type_id"
+    t.uuid "star_object_id"
+    t.uuid "alert_type_id"
     t.bigint "user_id"
     t.bigint "approval_id"
     t.datetime "created_at", null: false
