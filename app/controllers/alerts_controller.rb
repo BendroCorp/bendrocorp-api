@@ -7,7 +7,7 @@ class AlertsController < ApplicationController
 
   # GET api/alert
   def list
-    render status: 200, json: Alert.where("archived = ? AND expires > ?", false, Time.now)
+    render status: 200, json: Alert.where("archived = ? AND expires > ?", false, Time.now).as_json(include: { alert_type: {} })
   end
 
   # POST api/alert
@@ -15,7 +15,7 @@ class AlertsController < ApplicationController
     @alert = Alert.new(alert_params)
     @alert.user_id = current_user.id
     if @alert.save
-      render status: 201, json: @alert
+      render status: 201, json: @alert.as_json(include: { alert_type: {} })
     else
       render status: 500, json: { message: "Alert could not be created because: #{@alert.errors.full_messages.to_sentence}"}
     end
@@ -24,9 +24,9 @@ class AlertsController < ApplicationController
   # PATCH api/alert/:alert_id
   def update
     @alert = Alert.find_by id: params[:alert_id].to_i
-    if @alert != nil
+    if !@alert.nil?
       if @alert.update_attributes(alert_params)
-        render status: 200, json: @alert
+        render status: 200, json: @alert.as_json(include: { alert_type: {} })
       else
         render status: 500, json: { message: "Alert could not be created because: #{@alert.errors.full_messages.to_sentence}"}
       end
@@ -38,7 +38,7 @@ class AlertsController < ApplicationController
   # DELETE api/alert/:alert_id
   def archive
     @alert = Alert.find_by id: params[:alert_id].to_i
-    if @alert != nil
+    if !@alert.nil?
       @alert.archived = true
       if @alert.save
         render status: 200, json: { message: 'Alert archived.' }
