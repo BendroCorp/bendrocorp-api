@@ -652,15 +652,20 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "description"
     t.boolean "read_only", default: false
     t.uuid "field_descriptor_class_id"
+    t.uuid "field_descriptor_field_id"
     t.bigint "created_by_id"
+    t.bigint "presentation_type_id"
     t.boolean "archived", default: false
     t.integer "ordinal"
     t.text "additional_data"
     t.boolean "multi_value_allowed", default: false
+    t.boolean "hide_no_value", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_fields_on_created_by_id"
     t.index ["field_descriptor_class_id"], name: "index_fields_on_field_descriptor_class_id"
+    t.index ["field_descriptor_field_id"], name: "index_fields_on_field_descriptor_field_id"
+    t.index ["presentation_type_id"], name: "index_fields_on_presentation_type_id"
   end
 
   create_table "flight_log_images", force: :cascade do |t|
@@ -942,8 +947,10 @@ ActiveRecord::Schema.define(version: 20210106143802) do
   create_table "master_ids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "type_id"
     t.bigint "update_role_id"
+    t.bigint "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_master_ids_on_owner_id"
     t.index ["type_id"], name: "index_master_ids_on_type_id"
     t.index ["update_role_id"], name: "index_master_ids_on_update_role_id"
   end

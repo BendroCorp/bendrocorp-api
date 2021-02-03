@@ -18,6 +18,7 @@ class CreateFields < ActiveRecord::Migration[5.1]
       t.text :additional_data
 
       t.boolean :multi_value_allowed, default: false
+      t.boolean :hide_no_value, default: false
       t.timestamps
     end
   end
