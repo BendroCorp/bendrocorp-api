@@ -5,6 +5,8 @@ class SystemMapStarObjectValidator < ActiveModel::Validator
 end
 
 class SystemMapStarObject < ApplicationRecord
+  has_paper_trail # auditing changes
+
   validates_with SystemMapStarObjectValidator
   before_create :set_id
 

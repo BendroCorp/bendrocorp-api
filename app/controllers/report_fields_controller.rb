@@ -17,7 +17,6 @@ class ReportFieldsController < ApplicationController
   def create
     @report_field = ReportTemplateField.new(report_create_field_params)
     @report_field.name = 'New field'
-    @report_field.field_presentation_type_id = 1
     @report_field.ordinal = ReportTemplateField.where(template_id: @report_field.template_id, archived: false).count + 1
     if @report_field.save
       render json: @report_field

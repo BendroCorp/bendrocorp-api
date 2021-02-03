@@ -46,29 +46,22 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "alerts", force: :cascade do |t|
-    t.text "message"
-    t.integer "expire_hours"
+  create_table "alerts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "title"
+    t.text "description"
     t.datetime "expires"
-    t.boolean "archived"
-    t.bigint "system_id"
-    t.bigint "planet_id"
-    t.bigint "moon_id"
-    t.bigint "system_object_id"
-    t.bigint "settlement_id"
-    t.bigint "location_id"
-    t.bigint "alert_type_id"
-    t.bigint "issued_by_id"
+    t.boolean "approved", default: false
+    t.boolean "archived", default: false
+    t.uuid "star_object_id"
+    t.uuid "alert_type_id"
+    t.bigint "user_id"
+    t.bigint "approval_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["alert_type_id"], name: "index_alerts_on_alert_type_id"
-    t.index ["issued_by_id"], name: "index_alerts_on_issued_by_id"
-    t.index ["location_id"], name: "index_alerts_on_location_id"
-    t.index ["moon_id"], name: "index_alerts_on_moon_id"
-    t.index ["planet_id"], name: "index_alerts_on_planet_id"
-    t.index ["settlement_id"], name: "index_alerts_on_settlement_id"
-    t.index ["system_id"], name: "index_alerts_on_system_id"
-    t.index ["system_object_id"], name: "index_alerts_on_system_object_id"
+    t.index ["approval_id"], name: "index_alerts_on_approval_id"
+    t.index ["star_object_id"], name: "index_alerts_on_star_object_id"
+    t.index ["user_id"], name: "index_alerts_on_user_id"
   end
 
   create_table "applicant_approval_requests", force: :cascade do |t|
@@ -168,6 +161,9 @@ ActiveRecord::Schema.define(version: 20210106143802) do
 
   create_table "approval_kinds", force: :cascade do |t|
     t.text "title"
+    t.integer "workflow_id"
+    t.text "for_class"
+    t.text "object_link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
