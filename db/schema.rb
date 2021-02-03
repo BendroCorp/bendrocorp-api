@@ -47,28 +47,21 @@ ActiveRecord::Schema.define(version: 20210106143802) do
   end
 
   create_table "alerts", force: :cascade do |t|
-    t.text "message"
-    t.integer "expire_hours"
+    t.text "title"
+    t.text "description"
     t.datetime "expires"
-    t.boolean "archived"
-    t.bigint "system_id"
-    t.bigint "planet_id"
-    t.bigint "moon_id"
-    t.bigint "system_object_id"
-    t.bigint "settlement_id"
-    t.bigint "location_id"
+    t.boolean "approved", default: false
+    t.boolean "archived", default: false
+    t.bigint "star_object_id"
     t.bigint "alert_type_id"
-    t.bigint "issued_by_id"
+    t.bigint "user_id"
+    t.bigint "approval_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["alert_type_id"], name: "index_alerts_on_alert_type_id"
-    t.index ["issued_by_id"], name: "index_alerts_on_issued_by_id"
-    t.index ["location_id"], name: "index_alerts_on_location_id"
-    t.index ["moon_id"], name: "index_alerts_on_moon_id"
-    t.index ["planet_id"], name: "index_alerts_on_planet_id"
-    t.index ["settlement_id"], name: "index_alerts_on_settlement_id"
-    t.index ["system_id"], name: "index_alerts_on_system_id"
-    t.index ["system_object_id"], name: "index_alerts_on_system_object_id"
+    t.index ["approval_id"], name: "index_alerts_on_approval_id"
+    t.index ["star_object_id"], name: "index_alerts_on_star_object_id"
+    t.index ["user_id"], name: "index_alerts_on_user_id"
   end
 
   create_table "applicant_approval_requests", force: :cascade do |t|
@@ -168,6 +161,9 @@ ActiveRecord::Schema.define(version: 20210106143802) do
 
   create_table "approval_kinds", force: :cascade do |t|
     t.text "title"
+    t.integer "workflow_id"
+    t.text "for_class"
+    t.text "object_link"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -652,7 +648,9 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "description"
     t.boolean "read_only", default: false
     t.uuid "field_descriptor_class_id"
+    t.uuid "field_descriptor_field_id"
     t.bigint "created_by_id"
+    t.bigint "presentation_type_id"
     t.boolean "archived", default: false
     t.integer "ordinal"
     t.text "additional_data"
@@ -661,6 +659,8 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_fields_on_created_by_id"
     t.index ["field_descriptor_class_id"], name: "index_fields_on_field_descriptor_class_id"
+    t.index ["field_descriptor_field_id"], name: "index_fields_on_field_descriptor_field_id"
+    t.index ["presentation_type_id"], name: "index_fields_on_presentation_type_id"
   end
 
   create_table "flight_log_images", force: :cascade do |t|
@@ -942,8 +942,10 @@ ActiveRecord::Schema.define(version: 20210106143802) do
   create_table "master_ids", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "type_id"
     t.bigint "update_role_id"
+    t.bigint "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_master_ids_on_owner_id"
     t.index ["type_id"], name: "index_master_ids_on_type_id"
     t.index ["update_role_id"], name: "index_master_ids_on_update_role_id"
   end

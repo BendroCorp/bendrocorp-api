@@ -13,7 +13,7 @@ class AlertsController < ApplicationController
   # POST api/alert
   def create
     @alert = Alert.new(alert_params)
-    @alert.expires = Time.now + 7.hours
+    @alert.user_id = current_user.id
     if @alert.save
       render status: 201, json: @alert
     else
@@ -25,7 +25,6 @@ class AlertsController < ApplicationController
   def update
     @alert = Alert.find_by id: params[:alert_id].to_i
     if @alert != nil
-      @alert.expires = Time.now + 7.hours
       if @alert.update_attributes(alert_params)
         render status: 200, json: @alert
       else
@@ -53,6 +52,6 @@ class AlertsController < ApplicationController
 
   private
   def alert_params
-    params.require(:alert).permit(:message, :expire_hours, :system_id, :planet_id, :moon_id)
+    params.require(:alert).permit(:title, :description, :expires, :star_object_id)
   end
 end
