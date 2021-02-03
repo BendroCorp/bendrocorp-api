@@ -655,6 +655,7 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.integer "ordinal"
     t.text "additional_data"
     t.boolean "multi_value_allowed", default: false
+    t.boolean "hide_no_value", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["created_by_id"], name: "index_fields_on_created_by_id"
