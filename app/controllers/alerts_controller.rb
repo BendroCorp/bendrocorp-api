@@ -23,7 +23,6 @@ class AlertsController < ApplicationController
 
   # PATCH api/alert/:alert_id
   def update
-    @alert = Alert.find_by id: params[:alert_id].to_i
     if !@alert.nil?
       if @alert.update_attributes(alert_params)
         render status: 200, json: @alert.as_json(include: { alert_type: {} })
@@ -37,7 +36,6 @@ class AlertsController < ApplicationController
 
   # DELETE api/alert/:alert_id
   def archive
-    @alert = Alert.find_by id: params[:alert_id].to_i
     if !@alert.nil?
       @alert.archived = true
       if @alert.save
@@ -53,5 +51,15 @@ class AlertsController < ApplicationController
   private
   def alert_params
     params.require(:alert).permit(:title, :description, :expires, :star_object_id)
+  end
+
+  # Use callbacks to share common setup or constraints between actions.
+  def set_alert
+    # try to find the object
+    @alert = SystemMapStarObject.find(params[:alert][:id]) if params[:alert]
+    @alert ||= SystemMapStarObject.find(params[:id])
+
+    # return the object as long as its not archived
+    @alert unless @alert.archived
   end
 end

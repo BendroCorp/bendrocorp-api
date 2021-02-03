@@ -30,7 +30,7 @@ Rails.application.routes.draw do
   # Alerts
   get 'api/alert' => 'alerts#list'
   post 'api/alert' => 'alerts#create'
-  patch 'api/alert/:alert_id' => 'alerts#update'
+  patch 'api/alert/' => 'alerts#update'
   delete 'api/alert/:alert_id' => 'alerts#archive'
 
   # applications
