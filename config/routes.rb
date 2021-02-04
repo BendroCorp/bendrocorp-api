@@ -32,7 +32,7 @@ Rails.application.routes.draw do
   get 'api/alert/:id' => 'alerts#show'
   post 'api/alert' => 'alerts#create'
   put 'api/alert/' => 'alerts#update'
-  delete 'api/alert/:alert_id' => 'alerts#archive'
+  delete 'api/alert/:id' => 'alerts#archive'
 
   # applications
   post 'api/apply' => 'applications#create'
