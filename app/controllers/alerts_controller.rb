@@ -31,7 +31,7 @@ class AlertsController < ApplicationController
     end
   end
 
-  # PATCH api/alert/:alert_id
+  # PUT api/alert/:alert_id
   def update
     if !@alert.nil?
       @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
