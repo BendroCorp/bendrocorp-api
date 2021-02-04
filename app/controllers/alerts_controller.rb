@@ -63,7 +63,7 @@ class AlertsController < ApplicationController
 
   private
   def alert_params
-    params.require(:alert).permit(:title, :description, :expires, :star_object_id, :alert_type_id, :expires_ms)
+    params.require(:alert).permit(:title, :description, :star_object_id, :alert_type_id)
   end
 
   # Use callbacks to share common setup or constraints between actions.
