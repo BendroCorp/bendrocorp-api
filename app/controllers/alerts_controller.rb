@@ -5,6 +5,8 @@ class AlertsController < ApplicationController
     a.require_one_role([2])
   end
 
+  before_action :set_alert, only: [:show, :update, :archive]
+
   # GET api/alert
   def list
     render status: 200, json: Alert.where("archived = ? AND (expires > ? OR expires IS NULL)", false, Time.now).order('created_at desc').as_json(include: { star_object: { methods: [:kind, :primary_image_url] }, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
