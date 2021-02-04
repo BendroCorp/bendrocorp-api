@@ -67,8 +67,8 @@ class AlertsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_alert
     # try to find the object
-    @alert = SystemMapStarObject.find(params[:alert][:id]) if params[:alert]
-    @alert ||= SystemMapStarObject.find(params[:id])
+    @alert = Alert.find_by_id(params[:alert][:id]) if params[:alert]
+    @alert ||= Alert.find_by_id(params[:id])
 
     # return the object as long as its not archived
     @alert unless @alert.archived
