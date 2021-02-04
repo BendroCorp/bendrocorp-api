@@ -2,7 +2,7 @@ class AlertsController < ApplicationController
   before_action :require_user
   before_action :require_member
   before_action only: [:archive, :update, :create] do |a|
-    a.require_one_role([19])
+    a.require_one_role([2])
   end
 
   # GET api/alert
