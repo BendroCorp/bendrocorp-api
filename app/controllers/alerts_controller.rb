@@ -7,7 +7,7 @@ class AlertsController < ApplicationController
 
   # GET api/alert
   def list
-    render status: 200, json: Alert.where("archived = ? AND expires > ?", false, Time.now).order('created_at desc').as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
+    render status: 200, json: Alert.where("archived = ? AND (expires > ? OR expires IS NULL)", false, Time.now).order('created_at desc').as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
   end
 
   # GET api/alert/:id
@@ -23,7 +23,7 @@ class AlertsController < ApplicationController
   def create
     @alert = Alert.new(alert_params)
     @alert.user_id = current_user.id
-    @alert.expires = Time.at(params[:expires][:expires_ms] / 1000.0)
+    @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
     if @alert.save
       render status: 201, json: @alert.as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
     else
@@ -34,7 +34,7 @@ class AlertsController < ApplicationController
   # PATCH api/alert/:alert_id
   def update
     if !@alert.nil?
-      @alert.expires = Time.at(params[:expires][:expires_ms] / 1000.0)
+      @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
       if @alert.update_attributes(alert_params)
         render status: 200, json: @alert.as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
       else
