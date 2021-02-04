@@ -41,6 +41,10 @@ class SystemMapStarObject < ApplicationRecord
   #   MasterId.find_by id: id
   # end
 
+  def title_with_kind
+    "#{title} (#{kind})"
+  end
+
   def kind
     object_type.title if object_type
   end

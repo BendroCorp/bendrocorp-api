@@ -20,7 +20,7 @@ class StarObjectController < ApplicationController
     fetched ||= SystemMapStarObject.where(archived: false) if current_user.is_in_one_role([22, 23])
 
     # return the results
-    render json: fetched.to_json(include: { object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full])
+    render json: fetched.to_json(include: { object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full])
   end
 
   # GET /api/system-map/object/search/:uuid_segment
@@ -30,7 +30,7 @@ class StarObjectController < ApplicationController
 
       # return the pages
       # render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
-      render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+      render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
     else
       render status: 400, json: { message: 'Invalid ID segment!' }
     end
@@ -46,7 +46,7 @@ class StarObjectController < ApplicationController
     if @star_object
       if !@star_object.draft || current_user.is_in_one_role([22, 23])
         # render json: @star_object.to_json(include: { system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
-        render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+        render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
         return
       end
     end
@@ -70,7 +70,7 @@ class StarObjectController < ApplicationController
     end
 
     if @star_object.save
-      render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+      render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
     else
       render json: { message: @star_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
@@ -92,7 +92,7 @@ class StarObjectController < ApplicationController
 
       # update the object
       if @star_object.update(system_map_star_objects_params)
-        render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
+        render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
       else
         render json: { message: @star_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
       end
