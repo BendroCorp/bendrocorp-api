@@ -9,4 +9,7 @@ class Alert < ApplicationRecord
   validates :user_id, presence: true
   belongs_to :user, optional: true
   belongs_to :approval, optional: true
+
+  validates :alert_type_id, presence: true
+  belongs_to :alert_type, optional: true
 end
