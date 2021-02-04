@@ -7,13 +7,13 @@ class AlertsController < ApplicationController
 
   # GET api/alert
   def list
-    render status: 200, json: Alert.where("archived = ? AND (expires > ? OR expires IS NULL)", false, Time.now).order('created_at desc').as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
+    render status: 200, json: Alert.where("archived = ? AND (expires > ? OR expires IS NULL)", false, Time.now).order('created_at desc').as_json(include: { star_object: {}, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
   end
 
   # GET api/alert/:id
   def show
     if !@alert.nil?
-      render status: 200, json: @alert.as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
+      render status: 200, json: @alert.as_json(include: { star_object: {}, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
     else
       render status: 404, json: { message: 'Alert not found.' }
     end
@@ -25,7 +25,7 @@ class AlertsController < ApplicationController
     @alert.user_id = current_user.id
     @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
     if @alert.save
-      render status: 201, json: @alert.as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
+      render status: 201, json: @alert.as_json(include: { star_object: {}, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
     else
       render status: 500, json: { message: "Alert could not be created because: #{@alert.errors.full_messages.to_sentence}"}
     end
@@ -36,7 +36,7 @@ class AlertsController < ApplicationController
     if !@alert.nil?
       @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
       if @alert.update_attributes(alert_params)
-        render status: 200, json: @alert.as_json(include: { alert_type: {}, user: { only:[:id], methods: [:main_character] } })
+        render status: 200, json: @alert.as_json(include: { star_object: {}, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
       else
         render status: 500, json: { message: "Alert could not be created because: #{@alert.errors.full_messages.to_sentence}"}
       end
