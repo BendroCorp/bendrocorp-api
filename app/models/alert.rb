@@ -11,5 +11,5 @@ class Alert < ApplicationRecord
   belongs_to :approval, optional: true
 
   validates :alert_type_id, presence: true
-  belongs_to :alert_type, optional: true
+  belongs_to :alert_type, class_name: 'FieldDescriptor', foreign_key: :alert_type_id, optional: true
 end
