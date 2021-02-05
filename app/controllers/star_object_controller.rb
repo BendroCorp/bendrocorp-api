@@ -61,7 +61,8 @@ class StarObjectController < ApplicationController
 
     # primary image
     if !params[:star_object][:new_primary_image].nil?
-      if @star_object.primary_image != nil
+      if !@star_object.primary_image.nil?
+        @star_object.primary_image.title = params[:star_object][:title]
         @star_object.primary_image.image = params[:star_object][:new_primary_image][:base64]
         @star_object.primary_image.image_file_name = params[:star_object][:new_primary_image][:name]
       else
@@ -82,7 +83,8 @@ class StarObjectController < ApplicationController
     if @star_object
       # primary image
       if !params[:star_object][:new_primary_image].nil?
-        if @star_object.primary_image != nil
+        if !@star_object.primary_image.nil?
+          @star_object.primary_image.title = params[:star_object][:title]
           @star_object.primary_image.image = params[:star_object][:new_primary_image][:base64]
           @star_object.primary_image.image_file_name = params[:star_object][:new_primary_image][:name]
         else
