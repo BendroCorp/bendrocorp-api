@@ -10,7 +10,7 @@ class KaidenEventAnnouncerWorker
       discordNewsUri = ENV["NEWS_WEBHOOK_LINK"] # spectrum-news
 
       # content to post
-      content = "@everyone An operation and its full details have been posted to the Employee Portal! You can get more information here: https://my.bendrocorp.com/events/#{event.id}"
+      content = "@everyone An operation and its full details have been posted to the Employee Portal! You can get more information here: https://bendrocorp.app/events/#{event.id}"
 
       # send to both hooks
       result = HTTParty.post(discordUri,
