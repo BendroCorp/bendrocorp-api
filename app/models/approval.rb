@@ -29,7 +29,7 @@ class Approval < ApplicationRecord
   def approval_source
     # this will need to be updated if/when new requests are created
     # self.for_class
-    
+
     # guard
     raise "for_class null on approval kind for approval id: #{id}" if approval_kind.for_class.nil?
 
@@ -38,7 +38,7 @@ class Approval < ApplicationRecord
       approval_kind_class.find_by approval_id: id
     rescue => e
       raise "#{e.message} - class: #{approval_kind.for_class}"
-    end    
+    end
 
     # if self.approval_kind_id == 1 #role_request
     #   RoleRequest.find_by approval_id: self.id
