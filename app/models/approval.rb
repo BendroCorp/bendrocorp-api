@@ -34,7 +34,7 @@ class Approval < ApplicationRecord
     raise "for_class null on approval kind for approval id: #{id}" if approval_kind.for_class.nil?
 
     begin
-      approval_kind_class = approval_kind.for_class.constantize.new
+      approval_kind_class = approval_kind.for_class.constantize #.new
       approval_kind_class.find_by approval_id: id
     rescue => e
       raise "#{e.message} - class: #{approval_kind.for_class}"
