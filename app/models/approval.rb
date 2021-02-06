@@ -29,8 +29,16 @@ class Approval < ApplicationRecord
   def approval_source
     # this will need to be updated if/when new requests are created
     # self.for_class
-    approval_kind_class = approval_kind.for_class.constantize.new
-    approval_kind_class.find_by approval_id: id
+    
+    # guard
+    raise "for_class null on approval kind for approval id: #{id}" if approval_kind.for_class.nil?
+
+    begin
+      approval_kind_class = approval_kind.for_class.constantize.new
+      approval_kind_class.find_by approval_id: id
+    rescue => e
+      raise "#{e.message} - class: #{approval_kind.for_class}"
+    end    
 
     # if self.approval_kind_id == 1 #role_request
     #   RoleRequest.find_by approval_id: self.id
