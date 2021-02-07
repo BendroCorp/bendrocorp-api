@@ -84,11 +84,12 @@ class ReportsController < ApplicationController
               field_id: template_field.field_id,
               required: template_field.required,
               ordinal: template_field.ordinal,
-              report_handler_variable_id: template_field.report_handler_variable_id
+              report_handler_variable_id: template_field.report_handler_variable_id,
+              field_value: ReportFieldValue.new(report_id: @report.id)
             )
           end
 
-          # save the field back
+          # save the field back after we build the field
           if @report.save!
             render json: @report, status: :created
           else
