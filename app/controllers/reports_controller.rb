@@ -56,45 +56,48 @@ class ReportsController < ApplicationController
     # valid template?
     if @report.template && (!@report.template.role || current_user.is_in_role(48) || current_user.is_in_role(@report.template.role_id))
 
-      # fill in values from template
-      @report.template_name = @report.template.name
-      @report.template_description = @report.template.description
+      # Makes sure that all of the updates/changes happen
+      # Report.transaction do
+        # fill in values from template
+        @report.template_name = @report.template.name
+        @report.template_description = @report.template.description
 
-      # set created by
-      @report.created_by_id = current_user.id
+        # set created by
+        @report.created_by_id = current_user.id
 
-      # just grab the first available handler for a draft
-      @report.handler_id = @report.template.handler_id
+        # just grab the first available handler for a draft
+        @report.handler_id = @report.template.handler_id
 
-      # get default routing - if present
-      @report.report_for_id = @report.template.report_for_id if !@report.template.report_for_id.nil? && @report.template.report_for_id != 0
+        # get default routing - if present
+        @report.report_for_id = @report.template.report_for_id if !@report.template.report_for_id.nil? && @report.template.report_for_id != 0
 
-      # save the new report
-      if @report.save
-        # add fields
-        @report.template.fields.each do |template_field|
-          @report.fields << ReportField.new(
-            report_id: @report.id, 
-            name: template_field.name,
-            description: template_field.description,
-            validator: template_field.validator,
-            field_presentation_type_id: template_field.field_presentation_type_id,
-            field_id: template_field.field_id,
-            required: template_field.required,
-            ordinal: template_field.ordinal,
-            report_handler_variable_id: template_field.report_handler_variable_id
-          )
-        end
+        # save the new report
+        if @report.save!
+          # add fields
+          @report.template.fields.each do |template_field|
+            @report.fields << ReportField.new(
+              report_id: @report.id,
+              name: template_field.name,
+              description: template_field.description,
+              validator: template_field.validator,
+              field_presentation_type_id: template_field.field_presentation_type_id,
+              field_id: template_field.field_id,
+              required: template_field.required,
+              ordinal: template_field.ordinal,
+              report_handler_variable_id: template_field.report_handler_variable_id
+            )
+          end
 
-        # save the field back
-        if @report.save
-          render json: @report, status: :created
+          # save the field back
+          if @report.save!
+            render json: @report, status: :created
+          else
+            render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
+          end
         else
           render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
         end
-      else
-        render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
-      end
+      # end # end of transaction
     else
       render status: 400, json: { message: 'Template invalid or missing' }
     end
