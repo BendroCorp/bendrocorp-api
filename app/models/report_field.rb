@@ -1,6 +1,6 @@
 class ReportField < ApplicationRecord
   before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
-  after_create :create_value, if: Proc.new { |report_field| report_field.field_value.nil? }
+  # after_create :create_value, if: Proc.new { |report_field| report_field.field_value.nil? }
 
   validates :report_id, presence: true
   belongs_to :report, class_name: 'Report', foreign_key: 'report_id', optional: true
