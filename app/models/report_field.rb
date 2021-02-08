@@ -17,7 +17,8 @@ class ReportField < ApplicationRecord
   validates :field_presentation_type_id, presence: true
   validates :ordinal, presence: true
 
-  private def create_value
+  private
+  def create_value
     self.field_value = ReportFieldValue.new(report_id: report_id, field_id: id)
     self.save
   end

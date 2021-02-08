@@ -57,7 +57,7 @@ class ReportsController < ApplicationController
     if @report.template && (!@report.template.role || current_user.is_in_role(48) || current_user.is_in_role(@report.template.role_id))
 
       # Makes sure that all of the updates/changes happen
-      # Report.transaction do
+      Report.transaction do
         # fill in values from template
         @report.template_name = @report.template.name
         @report.template_description = @report.template.description
@@ -91,6 +91,11 @@ class ReportsController < ApplicationController
 
           # save the field back after we build the field
           if @report.save!
+            # create the value entries
+            @report.fields.each do |field|
+              ReportFieldValue.create(field_id: field.id, report_id: @report.id)
+            end
+
             render json: @report, status: :created
           else
             render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
@@ -98,7 +103,7 @@ class ReportsController < ApplicationController
         else
           render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
         end
-      # end # end of transaction
+      end # end of transaction
     else
       render status: 400, json: { message: 'Template invalid or missing' }
     end
