@@ -63,7 +63,7 @@ class ReportsController < ApplicationController
         @report.template_description = @report.template.description
 
         # set created by
-        @report.created_by_id = current_user.id
+        @report.user_id = current_user.id
 
         # just grab the first available handler for a draft
         @report.handler_id = @report.template.handler_id
@@ -158,33 +158,43 @@ class ReportsController < ApplicationController
             approval.report_id = @report.id
             approval.save
 
-          # or is this a generic request
-          else
-            # create the default report approval request
-            approval_request = ReportApprovalRequest.new
+            @report.approval_id = approval.id
 
+          # or is this a generic report request
+          else
             # put the approval instance in the request based on the routed user or group
             # for user
-            approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
+            @report.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
             # for group
-            approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
+            @report.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
 
-            # lastly add the request to the current_user
-            approval_request.user_id = current_user.id
-            approval_request.report = @report
+            # create the default report approval request
+            # approval_request = ReportApprovalRequest.new
 
-            # save back the approval request
-            approval_request.save
+            # # put the approval instance in the request based on the routed user or group
+            # # for user
+            # approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
+            # # for group
+            # approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
 
-            # update the approval with the report_id
-            approval = Approval.find_by_id(approval_request.approval_id)
-            approval.report_id = @report.id
-            approval.save
+            # # lastly add the request to the current_user
+            # approval_request.user_id = current_user.id
+            # approval_request.report = @report
+
+            # # save back the approval request
+            # approval_request.save
+
+            # # update the approval with the report_id
+            # approval = Approval.find_by_id(approval_request.approval_id)
+            # approval.report_id = @report.id
+            # approval.save
           end
 
           # mark the report as not a draft
           @report.draft = false
-        end
+        end # if the incoming params changes report to non-draft
+
+        # attempt to update the report
         if @report.update_attributes(report_update_params)
           render json: @report.as_json(include: { fields: { include: { field_value: {} } } } )
         else

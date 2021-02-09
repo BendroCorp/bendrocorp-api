@@ -9,7 +9,22 @@ class Report < ApplicationRecord
   validates :template_id, presence: true
   belongs_to :template, class_name: 'ReportTemplate', foreign_key: 'template_id', optional: true
 
-  belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id'
-
   belongs_to :report_for, class_name: 'ReportRoute', foreign_key: 'report_for_id', optional: true
+
+  validates :user_id, presence: true
+  belongs_to :user, optional: true
+
+  belongs_to :approval, optional: true
+
+  # what happens when the approval is approved
+  def approval_completion
+    self.approved = true
+    self.save
+  end
+
+  # what happens when the approval is denied
+  def approval_denied
+    self.draft = true
+    self.save
+  end
 end

@@ -1428,17 +1428,19 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "template_name"
     t.text "template_description"
     t.bigint "handler_id"
-    t.bigint "created_by_id"
+    t.bigint "user_id"
+    t.bigint "approval_id"
     t.uuid "report_for_id"
     t.boolean "draft", default: true
     t.boolean "approved", default: false
     t.boolean "archived", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["created_by_id"], name: "index_reports_on_created_by_id"
+    t.index ["approval_id"], name: "index_reports_on_approval_id"
     t.index ["handler_id"], name: "index_reports_on_handler_id"
     t.index ["report_for_id"], name: "index_reports_on_report_for_id"
     t.index ["template_id"], name: "index_reports_on_template_id"
+    t.index ["user_id"], name: "index_reports_on_user_id"
   end
 
   create_table "research_project_members", force: :cascade do |t|
