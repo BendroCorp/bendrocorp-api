@@ -34,7 +34,7 @@ class ReportsController < ApplicationController
     # uniq items only
     reports_final.uniq!
 
-    render json: reports_final.as_json(include: { handler: {}, template: {}, created_by: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
+    render json: reports_final.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
   end
 
   # GET /reports/routes
@@ -46,6 +46,18 @@ class ReportsController < ApplicationController
   # GET /reports/handlers
   def fetch_handlers
     render json: ReportHandler.where(archived: false).as_json(include: { variables: {} })
+  end
+
+  def show
+    # check to make sure the report exists
+    if @report
+      if @report.user_id == current_user.id || current_user.is_in_role(49) || (report.report_for && (report.report_for.for_user_id == current_user.id || current_user.is_in_role(report.report_for.for_role_id)))
+        render json: @report.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
+        return
+      end
+    end
+
+    render status: :not_found, json: { message: 'Report not found or you do not have the rights to view it!' }
   end
 
   # POST /reports
