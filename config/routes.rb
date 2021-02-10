@@ -291,6 +291,7 @@ Rails.application.routes.draw do
     get 'reports/handlers' => 'reports#fetch_handlers'
     post 'reports' => 'reports#create'
     put 'reports' => 'reports#update'
+    get 'reports/:id' => 'reports#show'
     delete 'reports/:id' => 'reports#destroy'
   end
 

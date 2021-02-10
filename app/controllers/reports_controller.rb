@@ -48,6 +48,7 @@ class ReportsController < ApplicationController
     render json: ReportHandler.where(archived: false).as_json(include: { variables: {} })
   end
 
+  # GET /reports/:id
   def show
     # check to make sure the report exists
     if @report
