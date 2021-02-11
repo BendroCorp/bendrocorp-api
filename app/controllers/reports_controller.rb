@@ -34,7 +34,7 @@ class ReportsController < ApplicationController
     # uniq items only
     reports_final.uniq!
 
-    render json: reports_final.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: {} } } } )
+    render json: reports_final.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
   end
 
   # GET /reports/routes

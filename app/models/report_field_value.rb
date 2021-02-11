@@ -6,4 +6,11 @@ class ReportFieldValue < ApplicationRecord
   belongs_to :field, class_name: 'ReportField', foreign_key: 'field_id', optional: true
 
   # validates :value, presence: true
+
+  def descriptor_value
+    if !field.field.nil? && !value.nil?
+      # try to find and return a descriptor value
+      FieldDescriptor.find_by_id(value)
+    end
+  end
 end
