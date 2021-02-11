@@ -34,7 +34,7 @@ class ReportsController < ApplicationController
     # uniq items only
     reports_final.uniq!
 
-    render json: reports_final.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
+    render json: reports_final.as_json(include: { report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
   end
 
   # GET /reports/routes
@@ -53,7 +53,7 @@ class ReportsController < ApplicationController
     # check to make sure the report exists
     if @report
       if @report.user_id == current_user.id || current_user.is_in_role(49) || (report.report_for && (report.report_for.for_user_id == current_user.id || current_user.is_in_role(report.report_for.for_role_id)))
-        render json: @report.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: {} } } } )
+        render json: @report.as_json(include: { report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
         return
       end
     end
@@ -109,7 +109,7 @@ class ReportsController < ApplicationController
               ReportFieldValue.create(field_id: field.id) # , report_id: @report.id
             end
 
-            render json: @report.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: {} } } } ), status: :created
+            render json: @report.as_json(include: { report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } ), status: :created
           else
             render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
           end
@@ -209,7 +209,7 @@ class ReportsController < ApplicationController
 
         # attempt to update the report
         if @report.update_attributes(report_update_params)
-          render json: @report.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: {} } } } )
+          render json: @report.as_json(include: { report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
         else
           render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
         end
