@@ -1,5 +1,6 @@
 class Report < ApplicationRecord
   before_create { self.id = SecureRandom.uuid if self.id == nil && ENV["RAILS_ENV"] != 'production' }
+
   has_many :fields, class_name: 'ReportField', foreign_key: 'report_id'
   accepts_nested_attributes_for :fields
 

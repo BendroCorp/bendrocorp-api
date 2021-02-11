@@ -106,7 +106,7 @@ class ReportsController < ApplicationController
           if @report.save!
             # create the value entries
             @report.fields.each do |field|
-              ReportFieldValue.create(field_id: field.id, report_id: @report.id)
+              ReportFieldValue.create(field_id: field.id) # , report_id: @report.id
             end
 
             render json: @report, status: :created

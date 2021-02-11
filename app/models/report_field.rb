@@ -5,7 +5,7 @@ class ReportField < ApplicationRecord
   validates :report_id, presence: true
   belongs_to :report, class_name: 'Report', foreign_key: 'report_id', optional: true
 
-  has_one :field_value, class_name: 'ReportFieldValue', foreign_key: 'report_id'
+  has_one :field_value, class_name: 'ReportFieldValue', foreign_key: 'field_id'
   accepts_nested_attributes_for :field_value
 
   belongs_to :field, optional: true
