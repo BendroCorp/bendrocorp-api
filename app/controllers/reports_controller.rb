@@ -109,7 +109,7 @@ class ReportsController < ApplicationController
               ReportFieldValue.create(field_id: field.id) # , report_id: @report.id
             end
 
-            render json: @report, status: :created
+            render json: @report.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } ), status: :created
           else
             render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
           end
@@ -209,7 +209,7 @@ class ReportsController < ApplicationController
 
         # attempt to update the report
         if @report.update_attributes(report_update_params)
-          render json: @report.as_json(include: { fields: { include: { field_value: {} } } } )
+          render json: @report.as_json(include: { handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field_value: {} } } } )
         else
           render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
         end
