@@ -171,8 +171,8 @@ class Approval < ApplicationRecord
       e = AddSystemMapItemRequest.find_by approval_id: self.id
       "#{e.object_title} (#{e.object_kind}) (System Object Item Creation)"
     elsif self.approval_kind_id == 21
-      e = ReportApprovalRequest.find_by approval_id: self.id
-      "For report by #{e.report.created_by.main_character.full_name} (#{e.report.template_name}) (Report Approval)"
+      e = Report.find_by approval_id: self.id
+      "For report by #{e.user.main_character.full_name} (#{e.report.template_name}) (Report Approval)"
     elsif self.approval_kind_id == 22
       e = PositionChangeRequest.find_by approval_id: self.id
       "#{e.character.full_name} to #{e.job.title} (Position Change Request)"
