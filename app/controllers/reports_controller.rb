@@ -131,91 +131,73 @@ class ReportsController < ApplicationController
         return
       end
 
-      # make sure the report is a draft, otherwise block further editing
-      if @report.draft == true
-        if params[:report][:draft] == false
-          # make sure that the report has been routed or is handled by a class handler
-          if @report.report_for.nil? && @report.handler.for_class.nil?
-            render status: 400, json: { message: 'You must select a route for your report!' }
-            return
-          end
-
-          # is this for a particular active record class
-          if !@report.handler.for_class.nil?
-            # get the class we are trying to handle, these classes are expected to be "Request" formatted object ActiveRecord tables 
-            request_clazz = @report.handler.for_class.constantize.new
-
-            @report.handler.variables.each do |variable|
-              # get variable value from the assigned field
-              field_variable_value = @report.fields.where(report_handler_variable_id: variable.id).first.field_value.value
-
-              # filling the variable names
-              request_clazz.send("#{variable.object_name}=", field_variable_value)
-            end
-
-            # create an approval object for that approval
-            # NOTE/TODO: Do we deprecate the old way of doing this??
-            request_clazz.approval_id = new_approval(@report.handler.approval_kind_id)
-            request_clazz.user_id = current_user.id
-
-            # attempt to save the request class
-            # strong valdiation is required here on the model itself
-            if !request_clazz.save
-              cancel_approval(request_clazz.approval_id)
-              render status: 500, json: { message: "Report could not be submitted because: #{request_clazz.errors.full_messages.to_sentence}" }
+      # transaction to make sure that all of these complex things actually happen
+      Report.transaction do
+        # make sure the report is a draft, otherwise block further editing
+        if @report.draft == true
+          if params[:report][:draft] == false
+            # make sure that the report has been routed or is handled by a class handler
+            if @report.report_for.nil? && @report.handler.for_class.nil?
+              render status: 400, json: { message: 'You must select a route for your report!' }
               return
             end
 
-            # update the approval with the report_id
-            approval = Approval.find_by_id(approval_request.approval_id)
-            approval.report_id = @report.id
-            approval.save
+            # is this for a particular active record class
+            if !@report.handler.for_class.nil?
+              # get the class we are trying to handle, these classes are expected to be "Request" formatted object ActiveRecord tables 
+              request_clazz = @report.handler.for_class.constantize.new
 
-            @report.approval_id = approval.id
+              @report.handler.variables.each do |variable|
+                # get variable value from the assigned field
+                field_variable_value = @report.fields.where(report_handler_variable_id: variable.id).first.field_value.value
 
-          # or is this a generic report request
+                # filling the variable names
+                request_clazz.send("#{variable.object_name}=", field_variable_value)
+              end
+
+              # create an approval object for that approval
+              # NOTE/TODO: Do we deprecate the old way of doing this??
+              request_clazz.approval_id = new_approval(@report.handler.approval_kind_id)
+              request_clazz.user_id = current_user.id
+
+              # attempt to save the request class
+              # strong valdiation is required here on the model itself
+              if !request_clazz.save
+                cancel_approval(request_clazz.approval_id)
+                render status: 500, json: { message: "Report could not be submitted because: #{request_clazz.errors.full_messages.to_sentence}" }
+                return
+              end
+
+              # update the approval with the report_id
+              approval = Approval.find_by_id(approval_request.approval_id)
+              approval.report_id = @report.id
+              approval.save
+
+              @report.approval_id = approval.id
+
+            # or is this a generic report request
+            else
+              # put the approval instance in the request based on the routed user or group
+              # for user
+              @report.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
+              # for group
+              @report.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil?
+            end
+
+            # mark the report as not a draft
+            @report.draft = false
+          end # if the incoming params changes report to non-draft
+
+          # attempt to update the report
+          if @report.update_attributes(report_update_params)
+            render json: @report.as_json(include: { approval: {}, report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
           else
-            # put the approval instance in the request based on the routed user or group
-            # for user
-            @report.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
-            # for group
-            @report.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
-
-            # create the default report approval request
-            # approval_request = ReportApprovalRequest.new
-
-            # # put the approval instance in the request based on the routed user or group
-            # # for user
-            # approval_request.approval_id = new_approval(21, @report.report_for.for_user_id) unless @report.report_for.for_user_id.nil? 
-            # # for group
-            # approval_request.approval_id = new_approval(21, 0, @report.report_for.for_role_id) unless @report.report_for.for_role_id.nil? 
-
-            # # lastly add the request to the current_user
-            # approval_request.user_id = current_user.id
-            # approval_request.report = @report
-
-            # # save back the approval request
-            # approval_request.save
-
-            # # update the approval with the report_id
-            # approval = Approval.find_by_id(approval_request.approval_id)
-            # approval.report_id = @report.id
-            # approval.save
+            render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
           end
-
-          # mark the report as not a draft
-          @report.draft = false
-        end # if the incoming params changes report to non-draft
-
-        # attempt to update the report
-        if @report.update_attributes(report_update_params)
-          render json: @report.as_json(include: { approval: {}, report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
         else
-          render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity
+          render status: 403, json: { message: 'The report has already been submitted for approval and cannot be updated!' }
         end
-      else
-        render status: 403, json: { message: 'The report has already been submitted for approval and cannot be updated!' }
-      end
+      end # end of transaction block
     else
       render status: 404, json: { message: 'The report does not exist or you are not authorized to edit it!' }
     end
