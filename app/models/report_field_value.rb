@@ -10,7 +10,8 @@ class ReportFieldValue < ApplicationRecord
   def descriptor_value
     if !field.field.nil? && !value.nil?
       # check and see if the field is for a class, then attempt to return that class
-      field.field.descriptors.select { |e| e[:id] == value }.first
+      # field.field.descriptors.select { |e| e[:id] == value }.first
+      v.field.field.descriptors.select { |v| v[:id].to_s == value }.first
     end
   end
 end
