@@ -169,7 +169,7 @@ class ReportsController < ApplicationController
               end
 
               # update the approval with the report_id
-              approval = Approval.find_by_id(approval_request.approval_id)
+              approval = Approval.find_by_id(request_clazz.approval_id)
               approval.report_id = @report.id
               approval.save
 
