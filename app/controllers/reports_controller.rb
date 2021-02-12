@@ -10,8 +10,8 @@ class ReportsController < ApplicationController
   # GET /reports
   def index
     # get reports that I have access to
-    reports = Report.where(archived: false) if current_user.is_in_role(49)
-    reports ||= Report.where('user_id = ? AND archived = false', current_user.id)
+    reports = Report.where(archived: false).order(created_at: :desc) if current_user.is_in_role(49)
+    reports ||= Report.where('user_id = ? AND archived = false', current_user.id).order(created_at: :desc)
 
     # reports which are for me
     reports_for_me = Report.where(archived: false).map do |report|
