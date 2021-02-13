@@ -12,4 +12,14 @@ class Alert < ApplicationRecord
 
   validates :alert_type_id, presence: true
   belongs_to :alert_type, class_name: 'FieldDescriptor', foreign_key: :alert_type_id, optional: true
+
+  def approval_completion
+    self.approved = true
+    self.save
+  end
+
+  def approval_denied
+    # delete ?
+    # self.destroy
+  end
 end
