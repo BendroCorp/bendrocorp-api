@@ -18,8 +18,8 @@ class KaidenEventAnnouncerWorker
         PushWorker.perform_async(
           user.id,
           "A new event #{event.name} has been posted on BendroCorp!",
-          apns_category: 'CALENDAR_EVENT',
-          data: { event_id: event.id }
+          'CALENDAR_EVENT',
+          { event_id: event.id }
         )
       end
 

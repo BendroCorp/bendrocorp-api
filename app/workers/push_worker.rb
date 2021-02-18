@@ -1,10 +1,10 @@
 class PushWorker
   include Sidekiq::Worker
 
-  DEFAULT_DATA_SET = {}
-  DEFAULT_APNS_CATEGORY = 'GENERIC'
+  DEFAULT_DATA_SET = {}.freeze
+  DEFAULT_APNS_CATEGORY = 'GENERIC'.freeze
 
-  def perform(user_id, message, data: DEFAULT_DATA_SET, apns_category: DEFAULT_APNS_CATEGORY)
+  def perform(user_id, message, apns_category = DEFAULT_APNS_CATEGORY, data = DEFAULT_DATA_SET)
     user = User.find_by_id(user_id.to_i)
     if user
       user.user_push_tokens.each do |push_token|

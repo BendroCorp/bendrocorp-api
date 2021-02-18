@@ -18,8 +18,8 @@ class DormantApprovalWorker
         PushWorker.perform_async(
           approver.user.id,
           "We still need your feedback for approval ##{approver.approval.id}. The approval is dormant and requires your attention.",
-          data: { approver_id: approval_approver.id },
-          apns_category: 'APPROVAL_CHANGE'
+          'APPROVAL_CHANGE',
+          { approver_id: approval_approver.id }
         )
 
         # update notification date

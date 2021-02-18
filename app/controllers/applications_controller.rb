@@ -215,7 +215,7 @@ class ApplicationsController < ApplicationController
             ) #to, subject, message
 
             # push for the user
-            PushWorker.perform_async(@character.user_id, "Your application status has been changed to: #{@character.application.application_status.title}")
+            send_push_notification(@character.user_id, "Your application status has been changed to: #{@character.application.application_status.title}")
 
             # email hr, directors and execs with the updated status
             email_groups([2, 3, 7], "Application Status Update for #{@character.full_name}",

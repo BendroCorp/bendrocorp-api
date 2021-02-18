@@ -24,8 +24,8 @@ class DormantApplicationWorker
           PushWorker.perform_async(
             user.id,
             "The application for #{app.character.full_name} has been dormant for two days. Let's try to get him moved along!",
-            apns_category: 'PROFILE_NOTICE',
-            data: { profile_id: character.id }
+            'PROFILE_NOTICE',
+            { profile_id: character.id }
           )
 
           # queue the email

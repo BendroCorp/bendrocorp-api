@@ -14,8 +14,8 @@ class ApprovalBoundWorker
           PushWorker.perform_async(
             approver.user.id,
             'You have a new Approval Request',
-            apns_category: 'APPROVAL',
-            data: { approver_id: approver.id } # approver id not approval id? Oversight?
+            'APPROVAL',
+            { approver_id: approver.id } # approver id not approval id? Oversight?
           )
 
           # send emails

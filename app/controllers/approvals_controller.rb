@@ -88,7 +88,7 @@ class ApprovalsController < ApplicationController
         approval_approver.approval_type_id = 6 # not needed status
         if approval_approver.save
           # notify the approver
-          PushWorker.perform_async(
+          send_push_notification(
             approval_approver.user_id,
             "Your approval has been marked 'Not Needed' for #{approval_approver.approval.id} by #{current_user.main_character.full_name}",
             data: { approver_id: approval_approver.id },
@@ -130,7 +130,7 @@ class ApprovalsController < ApplicationController
                 approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been approved via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
                 # send_push_notification approver.user.id, approver_push_text
-                PushWorker.perform_async(
+                send_push_notification(
                   approver.user.id,
                   approver_push_text,
                   apns_category: 'APPROVAL_CHANGE',
@@ -193,7 +193,7 @@ class ApprovalsController < ApplicationController
               approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been completed via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
               # send_push_notification
-              PushWorker.perform_async(
+              send_push_notification(
                 approver.user.id,
                 approver_push_text,
                 apns_category: 'APPROVAL_CHANGE',
@@ -356,7 +356,7 @@ class ApprovalsController < ApplicationController
           approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{approval.id} #{approval.approval_kind.title} to which you are an approver has been approved.</p><p>#{approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
           # send_push_notification approver.user.id, approver_push_text
-          PushWorker.perform_async(
+          send_push_notification(
             approver.user.id,
             approver_push_text,
             apns_category: 'APPROVAL_CHANGE',

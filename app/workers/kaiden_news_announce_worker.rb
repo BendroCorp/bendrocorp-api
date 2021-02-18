@@ -21,8 +21,8 @@ class KadenNewsAnnounceWorker
           PushWorker.perform_async(
             user.id,
             push_content,
-            apns_category: 'VIEW_ARTICLE',
-            data: { article_id: story.id }
+            'VIEW_ARTICLE',
+            { article_id: story.id }
           )
         end
 

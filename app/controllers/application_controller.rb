@@ -285,14 +285,15 @@ class ApplicationController < ActionController::API
 
     # actually send the notifications
     unique_user_ids.each do |user_id|
-      PushWorker.perform_async(user_id, message, data: data, apns_category: apns_category)
+      PushWorker.perform_async(user_id, message, apns_category, data)
     end
   end
 
-  # DEPRECATED - directly call the worker instead
-  # def send_push_notification user_id, message
-  #   PushWorker.perform_async user_id, message
-  # end
+  # Send a push notification to single user
+  def send_push_notification(user_id, message, data: nil, apns_category: nil)
+    # send the push
+    PushWorker.perform_async(user_id, message, apns_category, data)
+  end
 
   # Create a key in redis
   def create_redis_key(*params)

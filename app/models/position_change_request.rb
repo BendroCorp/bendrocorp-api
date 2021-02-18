@@ -27,8 +27,8 @@ class PositionChangeRequest < ApplicationRecord
           PushWorker.perform_async(
             exec_user.id,
             "#{self.character.full_name} has been #{self.job.title} from BendroCorp",
-            apns_category: 'PROFILE_NOTICE',
-            data: { profile_id: character.id }
+            'PROFILE_NOTICE',
+            { profile_id: character.id }
           )
           email_body = "<p>Hello #{exec_user.main_character.first_name},</p><p>This message is notify you that #{self.character.full_name} moved to a #{self.job.title} status.</p><p>As a result they have lost their membership to BendroCorp.</p><p>This action was requested by: #{self.user.main_character.full_name}, #{self.user.main_character.current_job_title}.</p>"
           EmailWorker.perform_async exec_user.email, "Member #{self.job.title} by Change Request", email_body

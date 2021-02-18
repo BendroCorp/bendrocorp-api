@@ -13,8 +13,8 @@ class KaidenEventStartWarningWorker
         PushWorker.perform_async(
           user.id,
           "The #{event.name} event is starting in #{((event.start_date.to_time - Time.now.to_time) / 1.minute).round} minutes. Looking forward to seeing you there!",
-          apns_category: 'CALENDAR_EVENT',
-          data: { event_id: event.id }
+          'CALENDAR_EVENT',
+          { event_id: event.id }
         )
       end
 

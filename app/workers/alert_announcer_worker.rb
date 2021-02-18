@@ -6,8 +6,8 @@ class AlertAnnouncerWorker
       PushWorker.perform_async(
         user.id,
         "The event #{event.name} events are overdue for their attendance certification",
-        apns_category: 'CALENDAR_EVENT',
-        data: { event_id: event.id }
+        'CALENDAR_EVENT',
+        { event_id: event.id }
       )
 
       alert.published = true
