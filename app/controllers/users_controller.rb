@@ -225,8 +225,8 @@ class UsersController < ApplicationController
     send_push_notification(
       current_user.id,
       'This is a test. You sent this to your devices. 😊 🍻',
-      apns_category: 'SELF_TEST'
-      # data: { article_id: story.id }
+      apns_category: 'SELF_TEST',
+      data: { profile_id: current_user.main_character.id }
     )
     render status: 200, json: { message: 'Self push succeeded! ;)' }
   end
