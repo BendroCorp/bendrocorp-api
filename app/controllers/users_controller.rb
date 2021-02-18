@@ -221,7 +221,13 @@ class UsersController < ApplicationController
 
   # GET api/user/push
   def push_self
-    send_push_notification current_user.id, "This is a test. You sent this to your devices. :)"
+    # send the push
+    PushWorker.perform_async(
+      current_user.id,
+      'This is a test. You sent this to your devices. 😊 🍻',
+      apns_category: 'SELF_TEST'
+      # data: { article_id: story.id }
+    )
     render status: 200, json: { message: 'Self push succeeded! ;)' }
   end
 

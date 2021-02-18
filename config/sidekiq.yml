@@ -41,3 +41,6 @@
   event_regen_worker:
     every: 5m
     class: EventRegenWorker
+  alert_announcer_worker:
+    every: 2m
+    class: AlertAnnouncerWorker
