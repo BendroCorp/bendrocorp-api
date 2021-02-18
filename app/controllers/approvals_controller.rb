@@ -67,78 +67,99 @@ class ApprovalsController < ApplicationController
   # POST api/approvals/approver
   # :approval_id, :user_id
   def add_approver
-    approval_approver = ApprovalApprover.new(approval_id: params[:approval_id].to_i, user_id: params[:user_id].to_i, approval_type_id: 1)
-    if approval_approver.save
-      render status: 200, json: { message: 'Approver added.' }
-    else
-      render status: 500, json: { message: "Approver could not be added because: #{approval_approver.errors.full_messages.to_sentence}" }
+    ApprovalApprover.transaction do
+      approval_approver = ApprovalApprover.new(approval_id: params[:approval_id].to_i, user_id: params[:user_id].to_i, approval_type_id: 1)
+      if approval_approver.save
+        render status: 200, json: { message: 'Approver added.' }
+      else
+        render status: 500, json: { message: "Approver could not be added because: #{approval_approver.errors.full_messages.to_sentence}" }
+      end
     end
   end
 
   # DELETE api/approvals/approver/:approver_id
   def not_needed_approver
-    approval_approver = ApprovalApprover.find_by_id(params[:approver_id])
-    puts approval_approver.inspect
-    approval = Approval.find_by_id(approval_approver.approval_id)
-    # make sure we found the object and that 
-    if approval_approver && !(approval.denied || approval.approved)
-      approval_approver.approval_type_id = 6
-      if approval_approver.save
-        check_for_approval_completion approval, true
-        render status: 200, json: { message: 'Approver status changed to no longer required.' }
+    ApprovalApprover.transaction do
+      approval_approver = ApprovalApprover.find_by_id(params[:approver_id])
+      puts approval_approver.inspect
+      approval = Approval.find_by_id(approval_approver.approval_id)
+      # make sure we found the object and that 
+      if approval_approver && !(approval.denied || approval.approved)
+        approval_approver.approval_type_id = 6 # not needed status
+        if approval_approver.save
+          # notify the approver
+          PushWorker.perform_async(
+            approval_approver.user_id,
+            "Your approval has been marked 'Not Needed' for #{approval_approver.approval.id} by #{current_user.main_character.full_name}",
+            data: { approver_id: approval_approver.id },
+            apns_category: 'APPROVAL_CHANGE'
+          )
+
+          check_for_approval_completion approval, true
+          render status: 200, json: { message: 'Approver status changed to no longer required.' }
+        else
+          render status: 500, json: { message: "Approver status could not be changed because: #{approval_approver.errors.full_messages.to_sentence}" }
+        end
       else
-        render status: 500, json: { message: "Approver status could not be changed because: #{approval_approver.errors.full_messages.to_sentence}" }
+        render status: 404, json: { message: 'Approval approver not found or the approval has already been completed!' }
       end
-    else
-      render status: 404, json: { message: 'Approval approver not found or the approval has already been completed!' }
     end
   end
 
   # post api/approvals/override/
   # This override endpoint is meant for broad use to clear the queue. Should be used with great care!
   def approval_override
-    if current_user.isinrole(9) # only the CEO may use this endpoint
-      if current_user.db_user.two_factor_valid params[:code].to_i # must use two factor to use this method
-        @approvals = Approval.where denied: false, approved: false
-        @approvals.each do |approval|
-          @approvers = approval.approval_approvers.where('approval_type_id < 4')
-          @approvers.each do |approver|
-            approver.approval_type_id = 6 # feedback not needed
-            approver.save!
-          end
-
-          # set approval to approved
-          @approval.approved = true
-
-          if @approval.save
-            # notify the approvers of the status of the approval
-            @approvers.to_a.each do |approver|
-              approverPushText = "NOTICE: Approval ##{@approval.id} #{@approval.approval_kind.title} has been approved via CEO override and your feedback is no longer needed."
-              approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been approved via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
-
-              send_push_notification approver.user.id, approverPushText
-              send_email approver.user.email, 'Approval Overriden', approverEmailText
+    Approval.transaction do
+      if current_user.isinrole(9) # only the CEO may use this endpoint
+        if current_user.db_user.two_factor_valid params[:code].to_i # must use two factor to use this method
+          @approvals = Approval.where denied: false, approved: false
+          @approvals.each do |approval|
+            @approvers = approval.approval_approvers.where('approval_type_id < 4')
+            @approvers.each do |approver|
+              approver.approval_type_id = 6 # feedback not needed
+              approver.save!
             end
 
-            # if there is a report attached deal with it as well
-            if approval.report
-              approval.report.draft = true if approval.denied
-              approval.report.approved = true if approval.approved
-              approval.save
-            end
+            # set approval to approved
+            @approval.approved = true
 
-            # run the completetion workflow
-            run_approval_workflow @approval
+            if @approval.save
+              # notify the approvers of the status of the approval
+              @approvers.to_a.each do |approver|
+                approver_push_text = "Approval ##{@approval.id} #{@approval.approval_kind.title} has been approved via CEO override and your feedback is no longer needed."
+                approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been approved via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
+
+                # send_push_notification approver.user.id, approver_push_text
+                PushWorker.perform_async(
+                  approver.user.id,
+                  approver_push_text,
+                  apns_category: 'APPROVAL_CHANGE',
+                  data: { approver_id: approver.id } # approver id not approval id? Oversight?
+                )
+                # send email
+                send_email(approver.user.email, 'Approval Overriden', approver_email_text)
+              end
+
+              # if there is a report attached deal with it as well
+              if approval.report
+                approval.report.draft = true if approval.denied
+                approval.report.approved = true if approval.approved
+                approval.save
+              end
+
+              # run the completetion workflow
+              run_approval_workflow @approval
+            end
           end
+
+          # return 200 ok
+          render status: 200, json: { message: 'Completed approval overrides!' }
+        else
+          render status: 403, json: { message: 'Improper authorization code provided!' }
         end
-
-        # return 200 ok
-        render status: 200, json: { message: 'Completed approval overrides!' }
       else
-        render status: 403, json: { message: 'Improper authorization code provided!' }
+        render status: 403, json: { message: 'You are not authorized to use this endpoint!' }
       end
-    else
-      render status: 403, json: { message: 'You are not authorized to use this endpoint!' }
     end
   end
 
@@ -168,11 +189,18 @@ class ApprovalsController < ApplicationController
           if @approval.save
             # notify the approvers of the status of the approval
             @approvers.to_a.each do |approver|
-              approverPushText = "NOTICE: Approval ##{@approval.id} #{@approval.approval_kind.title} has been completed via CEO override and your feedback is no longer needed."
-              approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been completed via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
+              approver_push_text = "Approval ##{@approval.id} #{@approval.approval_kind.title} has been completed via CEO override and your feedback is no longer needed."
+              approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{@approval.id} #{@approval.approval_kind.title} to which you are an approver has been completed via override by the CEO and your feedback is no longer needed.</p><p>#{@approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
-              send_push_notification approver.user.id, approverPushText
-              send_email approver.user.email, 'Approval Overriden', approverEmailText
+              # send_push_notification
+              PushWorker.perform_async(
+                approver.user.id,
+                approver_push_text,
+                apns_category: 'APPROVAL_CHANGE',
+                data: { approver_id: approver.id } # approver id not approval id? Oversight?
+              )
+              # send email
+              send_email(approver.user.email, 'Approval Overriden', approver_email_text)
             end
 
             # if there is a report attached deal with it as well
@@ -324,11 +352,17 @@ class ApprovalsController < ApplicationController
 
         # notify the approvers of the status of the approval
         approval.approval_approvers.to_a.each do |approver|
-          approverPushText = "Approval ##{approval.id} #{approval.approval_kind.title} has been approved!"
-          approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{approval.id} #{approval.approval_kind.title} to which you are an approver has been approved.</p><p>#{approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
+          approver_push_text = "Approval ##{approval.id} #{approval.approval_kind.title} has been approved!"
+          approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{approval.id} #{approval.approval_kind.title} to which you are an approver has been approved.</p><p>#{approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
-          send_push_notification approver.user.id, approverPushText
-          send_email approver.user.email, "Approval Approved", approverEmailText
+          # send_push_notification approver.user.id, approver_push_text
+          PushWorker.perform_async(
+            approver.user.id,
+            approver_push_text,
+            apns_category: 'APPROVAL_CHANGE',
+            data: { approver_id: approver.id } # approver id not approval id? Oversight?
+          )
+          send_email approver.user.email, "Approval Approved", approver_email_text
         end
 
         # email the user here
@@ -353,11 +387,11 @@ class ApprovalsController < ApplicationController
       # notify the approvers of the denial
       # notify the approvers of the status of the approval
       approval.approval_approvers.to_a.each do |approver|
-        approverPushText = "Approval ##{approval.id} #{approval.approval_kind.title} has been denied!"
-        approverEmailText = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{approval.id} #{approval.approval_kind.title} to which you are an approver has been denied.</p><p>#{approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
+        approver_push_text = "Approval ##{approval.id} #{approval.approval_kind.title} has been denied!"
+        approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{approval.id} #{approval.approval_kind.title} to which you are an approver has been denied.</p><p>#{approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
-        send_push_notification approver.user.id, approverPushText
-        send_email approver.user.email, "Approval Approved", approverEmailText
+        send_push_notification approver.user.id, approver_push_text
+        send_email approver.user.email, "Approval Approved", approver_email_text
       end
 
       # email the user that the request was denied

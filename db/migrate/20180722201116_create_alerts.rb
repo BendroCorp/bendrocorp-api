@@ -5,6 +5,7 @@ class CreateAlerts < ActiveRecord::Migration[5.1]
       t.text :description
       t.datetime :expires
       t.boolean :approved, default: false
+      t.boolean :published, default: false
       t.boolean :archived, default: false
 
       # t.belongs_to :system

@@ -11,7 +11,12 @@ class ApprovalBoundWorker
 
         approval.approval_approvers.each do |approver|
           # send push notifications
-          PushWorker.perform_async approver.user.id, "You have a new Approval Request"
+          PushWorker.perform_async(
+            approver.user.id,
+            'You have a new Approval Request',
+            apns_category: 'APPROVAL',
+            data: { approver_id: approver.id } # approver id not approval id? Oversight?
+          )
 
           # send emails
           EmailWorker.perform_async(approver.user.email, "New Approval Request",

@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "description"
     t.datetime "expires"
     t.boolean "approved", default: false
+    t.boolean "published", default: false
     t.boolean "archived", default: false
     t.uuid "star_object_id"
     t.uuid "alert_type_id"

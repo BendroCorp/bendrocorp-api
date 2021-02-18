@@ -20,15 +20,21 @@ class DormantApplicationWorker
 
         # loop through the users
         users_to_notify.each do |user|
-          # body
-          email_body = "<p>Hey #{user.main_character.first_name},</p><p>The following membership application(s) are stagnate and need to be addressed:</p><p>#{dormation_applications_text}</p><p>It is important that BendroCorp takes applicants seriously and does not let applications stagnate. If we are waiting on the applicant to accept the interview then please disregard this notice.</p>"
+          # send a push notification
+          PushWorker.perform_async(
+            user.id,
+            "The application for #{app.character.full_name} has been dormant for two days. Let's try to get him moved along!",
+            apns_category: 'PROFILE_NOTICE',
+            data: { profile_id: character.id }
+          )
 
           # queue the email
-          EmailWorker.perform_async user.email, "Dormant Application", email_body
+          email_body = "<p>Hey #{user.main_character.first_name},</p><p>The following membership application(s) are stagnate and need to be addressed:</p><p>#{dormation_applications_text}</p><p>It is important that BendroCorp takes applicants seriously and does not let applications stagnate. If we are waiting on the applicant to accept the interview then please disregard this notice.</p>"
+          EmailWorker.perform_async user.email, 'Dormant Application', email_body
         end
 
       else
-        raise "DormantApplicationWorker could not find any users to notify!"
+        raise 'DormantApplicationWorker could not find any users to notify...that cannot be right!'
       end
     end
   end

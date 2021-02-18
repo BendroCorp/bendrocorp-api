@@ -9,7 +9,7 @@ class AlertsController < ApplicationController
 
   # GET api/alert
   def list
-    render status: 200, json: Alert.where("archived = ? AND (expires > ? OR expires IS NULL)", false, Time.now).order('created_at desc').as_json(include: { star_object: { methods: [:kind, :title_with_kind, :primary_image_url] }, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
+    render status: 200, json: Alert.where("archived = ? AND approved = ? AND (expires > ? OR expires IS NULL)", false, true, Time.now).order('created_at desc').as_json(include: { star_object: { methods: [:kind, :title_with_kind, :primary_image_url] }, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
   end
 
   # GET api/alert/:id
@@ -25,6 +25,7 @@ class AlertsController < ApplicationController
   def create
     @alert = Alert.new(alert_params)
     @alert.user_id = current_user.id
+    @alert.approved = true # if its made this way its automatically approved
     @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
     if @alert.save
       render status: 201, json: @alert.as_json(include: { star_object: { methods: [:kind, :title_with_kind, :primary_image_url] }, alert_type: {}, user: { only:[:id], methods: [:main_character] } })

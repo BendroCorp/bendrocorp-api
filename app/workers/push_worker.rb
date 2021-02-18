@@ -1,7 +1,7 @@
 class PushWorker
   include Sidekiq::Worker
 
-  def perform(user_id, message)
+  def perform(user_id, message, data: nil, apns_category: nil)
     user = User.find_by_id(user_id.to_i)
     if user
       user.user_push_tokens.each do |push_token|
@@ -24,7 +24,8 @@ class PushWorker
             n.device_token = push_token.token # 64-character hex string
             n.alert = message
             puts n
-            # n.data = { foo: :bar }
+            n.data = data if data # { foo: :bar }
+            n.category = apns_category if apns_category
             n.save!
           else
             # error email

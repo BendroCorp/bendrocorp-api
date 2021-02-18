@@ -9,8 +9,22 @@ class KaidenEventAnnouncerWorker
       discordUri = ENV["WEBHOOK_LINK"] # general
       discordNewsUri = ENV["NEWS_WEBHOOK_LINK"] # spectrum-news
 
+      # push to members
+      User.all.each do |user|
+        # only members
+        next unless user.isinrole(0)
+
+        # send the push
+        PushWorker.perform_async(
+          user.id,
+          "A new event #{event.name} has been posted on BendroCorp!",
+          apns_category: 'CALENDAR_EVENT',
+          data: { event_id: event.id }
+        )
+      end
+
       # content to post
-      content = "@everyone An operation and its full details have been posted to the Employee Portal! You can get more information here: https://bendrocorp.app/events/#{event.id}"
+      content = "@everyone A new event has been posted to the BendroCorp app! You can get more information here: https://bendrocorp.app/events/#{event.id}"
 
       # send to both hooks
       result = HTTParty.post(discordUri,

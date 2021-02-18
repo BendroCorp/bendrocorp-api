@@ -8,6 +8,7 @@ class ApplicationsController < ApplicationController
     a.require_one_role([9, 12])
   end
 
+  # Create a new application
   # POST api/apply
   def create
     # make sure that the current user isn't already a member and that thier application hasn't already been logged
@@ -83,7 +84,20 @@ class ApplicationsController < ApplicationController
               if @character.save
                 SiteLog.create(module: 'Application', submodule: 'Application Approval Creation Success', message: "Application approvals successfully created for #{@character.id}", site_log_type_id: 1)
                 # mail Exec, Directors and HR
-                email_groups([2,3,7], "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
+                # new application bosses notices
+                boss_role_ids = [2, 3, 7]
+                new_app_message = "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile."
+
+                # push to group
+                send_push_notification_to_groups(
+                  boss_role_ids,
+                  new_app_message,
+                  apns_category: 'PROFILE_NOTICE',
+                  data: { profile_id: character.id }
+                )
+
+                # email to group
+                email_groups(boss_role_ids, "New Application", "#{@character.full_name} has just applied to be a member of BendroCorp. His application is available for review on the application tab on his profile.")
                 render status: 200, json: @character.application.as_json(include: { application_status: { } })
               else
                 puts @character.errors.full_messages.inspect
@@ -200,9 +214,21 @@ class ApplicationsController < ApplicationController
             "<p>Hello #{@character.user.username}!</p><p>Your application status has been changed to: <strong>#{@character.application.application_status.title}</strong></p><p>#{@character.application.application_status.description}</p>"
             ) #to, subject, message
 
+            # push for the user
+            PushWorker.perform_async(@character.user_id, "Your application status has been changed to: #{@character.application.application_status.title}")
+
             # email hr, directors and execs with the updated status
-            email_groups([2,3,7], "Application Status Update for #{@character.full_name}",
+            email_groups([2, 3, 7], "Application Status Update for #{@character.full_name}",
             "<p>#{@character.user.username}'s application status for #{@character.full_name} has been changed to: <strong>#{@character.application.application_status.title}</strong></p><p>#{@character.application.application_status.description}</p>"
+            )
+
+            # push for execs
+            # push to group
+            send_push_notification_to_groups(
+              [2, 3, 7],
+              "#{@character.user.username}'s application status for #{@character.full_name} has been changed to: #{@character.application.application_status.title}",
+              apns_category: 'PROFILE_NOTICE',
+              data: { profile_id: character.id }
             )
 
             # if application level is 4 (ie. Executive Review) send out approval notices to those who have NOT yet responded
@@ -223,16 +249,31 @@ class ApplicationsController < ApplicationController
 
             # Kaden announce started 360 review
             if @character.application.application_status_id == 2
-              KaidenAnnounceWorker.perform_async("A '360' Review has started for #{@character.full_name}. Please head over to https://my.bendrocorp.com/profiles/#{@character.first_name.downcase}-#{@character.last_name.downcase}-#{@character.id} and click on the Application tab to leave your feedback on the applicant!")
+              send_push_notification_to_members(
+                "A '360' Review has started for #{@character.full_name}. Please leave your feedback on the applicant!",
+                apns_category: 'VIEW_APPLICATION',
+                data: { profile_id: character.id }
+              )
+              KaidenAnnounceWorker.perform_async("A '360' Review has started for #{@character.full_name}. Please head over to https://bendrocorp.app/profiles/#{@character.id} and tap on the Application section to leave your feedback on the applicant!")
             end
 
             # Kaden announce ended 360 review
             if @character.application.application_status_id == 3
+              send_push_notification_to_members(
+                "The '360' Review for #{@character.full_name} has been closed. Thank you to everyone who participated!",
+                apns_category: 'PROFILE_NOTICE',
+                data: { profile_id: character.id }
+              )
               KaidenAnnounceWorker.perform_async("The '360' Review for #{@character.full_name} has been closed. Thank you to everyone who participated!")
             end
 
             if @character.application.application_status_id == 6
-              KaidenAnnounceWorker.perform_async("#{@character.full_name} has been accepted as a Member of BendroCorp. Everyone please make sure to give a warm welcome!")
+              send_push_notification_to_members(
+                "#{@character.full_name} has been accepted as a member of BendroCorp. Everyone please make sure to give a warm welcome!",
+                apns_category: 'PROFILE_NOTICE',
+                data: { profile_id: character.id }
+              )
+              KaidenAnnounceWorker.perform_async("#{@character.full_name} has been accepted as a member of BendroCorp. Everyone please make sure to give a warm welcome!")
             end
 
             render status: 200, json: { message: 'Successfully updated application status!' }

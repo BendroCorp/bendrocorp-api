@@ -111,8 +111,8 @@ class ApplicationController < ActionController::API
 
   # before_action
   # do not use this without first using require_user
-  def require_role(roleId)
-    if !(current_user && current_user.isinrole(roleId))
+  def require_role(role_id)
+    if !(current_user && current_user.isinrole(role_id))
       # Email if this is a logged in user trying to access part of the api they shouldn't be in
       if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production' && current_user
         vMessage = "#{current_user.id} tried to access an endpoint which they do not have access to: #{request.original_url}. Please take appropriate action."
@@ -126,10 +126,10 @@ class ApplicationController < ActionController::API
     end
   end
 
-  def require_one_role(roleIdArray)
+  def require_one_role(role_id_array)
     isInRole = false
-    roleIdArray.each do |roleId|
-      isInRole = true if (current_user && current_user.isinrole(roleId))
+    role_id_array.each do |role_id|
+      isInRole = true if (current_user && current_user.isinrole(role_id))
     end
 
     if !isInRole
@@ -223,31 +223,31 @@ class ApplicationController < ActionController::API
   end
 
   def email_members(subject, message)
-    users = User.all #.where("is_member = ?", true)
+    users = User.all
     users.each do |user|
       send_email(user.email, subject, message) if user.isinrole(0)
     end
   end
 
   # eventually this goes into a background process
-  def email_groups(roleIdArray, subject, message)
-    emailsArray = Array.new
-    roleIdArray.each do |roleId|
-      role = Role.find_by id: roleId
+  def email_groups(role_id_array, subject, message)
+    emails_array = Array.new
+    role_id_array.each do |role_id|
+      role = Role.find_by id: role_id
       if role != nil
-        #role.users.where("is_member = ?", true).each do |user|
+        # role.users.where("is_member = ?", true).each do |user|
         User.all.each do |user|
-          emailsArray << user.email if user.isinrole(roleId) && user.isinrole(0)
+          emails_array << user.email if user.isinrole(role_id) && user.isinrole(0)
           #
-        end #loop to get user emails
-      end #check to make sure role exists
-    end #group loop
+        end # loop to get user emails
+      end # check to make sure role exists
+    end # group loop
 
     # Remove any duplicates
-    uniqueEmails = emailsArray.uniq{|x| x}
+    unique_emails = emails_array.uniq { |x| x }
 
     # actually send the email(s)
-    uniqueEmails.each do |emaily|
+    unique_emails.each do |emaily|
       send_email(emaily, subject, message)
     end
   end
@@ -259,16 +259,40 @@ class ApplicationController < ActionController::API
     EmailWorker.perform_async to_in, subject_in, message_in
   end
 
-  def send_push_notification_to_members message
+  # Triggers push worker to a send a notifcation to all members
+  def send_push_notification_to_members(message, data: nil, apns_category: nil)
     User.all.each do |user|
-      send_push_notification user.id, message if user.isinrole(0)
+      PushWorker.perform_async(user.id, message, data: data, apns_category: apns_category) if user.isinrole(0)
+    end
+  end
+
+  # Send a push notification to everyone in the selected groups
+  def send_push_notification_to_groups(role_id_array, message, data: nil, apns_category: nil)
+    user_id_array = []
+    role_id_array.each do |role_id|
+      role = Role.find_by id: role_id
+      if role != nil
+        # role.users.where("is_member = ?", true).each do |user|
+        User.all.each do |user|
+          user_id_array << user.id if user.isinrole(role_id) && user.isinrole(0)
+          #
+        end # loop to get user emails
+      end # check to make sure role exists
+    end # group loop
+
+    # uniq them
+    unique_user_ids.uniq!
+
+    # actually send the notifications
+    unique_user_ids.each do |user_id|
+      PushWorker.perform_async(user_id, message, data: data, apns_category: apns_category)
     end
   end
 
   # DEPRECATED - directly call the worker instead
-  def send_push_notification user_id, message
-    PushWorker.perform_async user_id, message
-  end
+  # def send_push_notification user_id, message
+  #   PushWorker.perform_async user_id, message
+  # end
 
   # Create a key in redis
   def create_redis_key(*params)

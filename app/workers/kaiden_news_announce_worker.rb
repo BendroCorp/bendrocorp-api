@@ -14,7 +14,16 @@ class KadenNewsAnnounceWorker
 
         # push to members
         User.all.each do |user|
-          PushWorker.perform_async user.id, push_content if user.isinrole(0)
+          # only members
+          next unless user.isinrole(0)
+
+          # send the push
+          PushWorker.perform_async(
+            user.id,
+            push_content,
+            apns_category: 'VIEW_ARTICLE',
+            data: { article_id: story.id }
+          )
         end
 
         # send to both hooks
