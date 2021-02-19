@@ -9,7 +9,7 @@ class UsersController < ApplicationController
 
   # GET api/user
   def list
-    render status: 200, json: User.where('id <> 0').as_json(only: [:id, :username, :rsi_handle], include: { discord_identity: { }, roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
+    render status: 200, json: User.where('id <> 0').order(:id).as_json(only: [:id, :username, :rsi_handle], include: { discord_identity: { }, roles: { include: { nested_roles: { include: { role_nested: { } } } } } }, methods: [:main_character])
   end
 
   # GET api/user/me | /userinfo
@@ -220,14 +220,32 @@ class UsersController < ApplicationController
   end
 
   # GET api/user/push
+  # GET api/user/push/:user_id
   def push_self
-    # send the push
-    send_push_notification(
-      current_user.id,
-      'This is a test. You sent this to your devices. 😊 🍻',
-      apns_category: 'SELF_TEST',
-      data: { profile_id: current_user.main_character.id }
-    )
+    if params[:user_id] && current_user.is_in_role(9) # only the ceo can push to others
+      user = User.find_by_id(params[:user_id])
+      if !user.nil?
+        # send the push
+        send_push_notification(
+          user.id,
+          'This is a test. You sent this to your devices. 😊 🍻',
+          apns_category: 'SELF_TEST',
+          data: { profile_id: user.main_character.id }
+        )
+      else
+        render status: :not_found, json: { message: 'User not found!' }
+        return
+      end
+    else
+      # send the push
+      send_push_notification(
+        current_user.id,
+        'This is a test. You sent this to your devices. 😊 🍻',
+        apns_category: 'SELF_TEST',
+        data: { profile_id: current_user.main_character.id }
+      )
+    end
+
     render status: 200, json: { message: 'Self push succeeded! ;)' }
   end
 
