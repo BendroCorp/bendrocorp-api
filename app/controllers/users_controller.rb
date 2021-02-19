@@ -228,7 +228,7 @@ class UsersController < ApplicationController
         # send the push
         send_push_notification(
           user.id,
-          'This is a test. You sent this to your devices. 😊 🍻',
+          "This is a test. #{current_user.main_character.full_name} sent this to your devices. 😊 🍻 ",
           apns_category: 'SELF_TEST',
           data: { profile_id: user.main_character.id }
         )
