@@ -30,7 +30,7 @@
     every: 5m
     class: KadenNewsAnnounceWorker
   approval_bound_worker:
-    every: 3m
+    every: 1m
     class: ApprovalBoundWorker
   dormant_discord_completion_worker:
     every: 1h
