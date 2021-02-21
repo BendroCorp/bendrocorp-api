@@ -136,6 +136,14 @@ class ReportsController < ApplicationController
         # make sure the report is a draft, otherwise block further editing
         if @report.draft == true
           if params[:report][:draft] == false
+            # check to make sure any default values are assigned if applicable
+            @report.fields.each do |field|
+              if !field.default_value.nil? && (field.field_value.value.nil? || field.field_value.value == '')
+                field.field_value.value = field.default_value
+                field.save!
+              end
+            end
+
             # make sure that the report has been routed or is handled by a class handler
             if @report.report_for.nil? && @report.handler.for_class.nil?
               render status: 400, json: { message: 'You must select a route for your report!' }
