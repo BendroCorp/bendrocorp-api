@@ -1,4 +1,6 @@
 class OffenderReport < ApplicationRecord
+  has_paper_trail
+
   validates :infractions_committed, presence: true#, :length => { :minimum => 1 }
 
   validates :created_by_id, presence: true
