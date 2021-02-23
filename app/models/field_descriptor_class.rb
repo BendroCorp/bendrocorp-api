@@ -17,6 +17,7 @@ class FieldDescriptorClass < ApplicationRecord
     # check to see if the class has an ordinal or archived attribute
     has_ordinal = true if clazz.attribute_method? :ordinal
     has_archived = true if clazz.attribute_method? :archived
+    has_approved = true if clazz.attribute_method? :approved
 
     # has an ordinal
     results = clazz.all.order('ordinal') if !has_ordinal && has_archived
@@ -26,6 +27,9 @@ class FieldDescriptorClass < ApplicationRecord
 
     # has ordinal and archived
     results = clazz.where(archived: false).order('ordinal') if has_ordinal && has_archived
+
+    # if it has approvals
+    results = results.where(approved: true) if has_approved
 
     # TODO: Find a way to make this work
     # if restrict_by_owner
