@@ -2,6 +2,8 @@ puts ""
 puts "Seeding things..."
 puts ""
 
+# TODO add ApprovalWorkflow
+
 UserDeviceType.create([{ id: 1, title: 'ios_app' } ])
 ChatRoom.create([{ id: 1, title: 'General'}])
 
@@ -348,7 +350,8 @@ approval_types = ApprovalType.create([{ id: 1, title: 'Pending', description: 'N
 
 ApprovalWorkflow.create([{ id: 1, title: 'Standard', description: 'Standard all or nothing approval workflow'},
                          { id: 2, title: 'Standard - Applicant', description: 'This approval is similiar to standard except that it is meant to exclusively handle applicant approvals' },
-                         { id: 3, title: 'Standard - Do Nothing', description: 'This approval is similiar to standard except that nothing happens if the approval passes' }])
+                         { id: 3, title: 'Standard - Do Nothing', description: 'This approval is similiar to standard except that nothing happens if the approval passes' },
+                         { id: 4, title: 'Standard - Single Consent', description: 'The same as the standard flow except that it allows single consent of an approval' }])
 #page = Page.create([{ title: 'Test page',
 #                      subtitle: 'This is a catchy sub title',
 #                      content: 'This is some page content its kinda cool and will allow HTML. Trust will be important here.',

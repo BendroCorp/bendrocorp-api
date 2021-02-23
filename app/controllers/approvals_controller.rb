@@ -235,7 +235,7 @@ class ApprovalsController < ApplicationController
   # handles the approval approved and denied workflows
   private
   def check_for_approval_completion approval, skipRender = false
-    if approval.approval_approvers.where('approval_type_id > 3').count >= 1 && !approval.single_consent
+    if approval.approval_approvers.where('approval_type_id > 3').count >= 1 && approval.full_consent
 
       approversCount = approval.approval_approvers.count
       approved = approval.approval_approvers.where(approval_type_id: 4).count
@@ -346,7 +346,7 @@ class ApprovalsController < ApplicationController
     # run the normal approval workflow
     if approval.approved == true && !approval.denied == true
       # TODO: Data drive this more!!
-      if approval.approval_workflow == 1 # standard workflow
+      if approval.approval_workflow == 1 || approval.approval_workflow == 4 # standard workflow
         # push notification to the approval creator
         send_push_notification approval.approval_source.user.id, "Approval ##{approval.id} #{approval.approval_kind.title} Approved"
 
