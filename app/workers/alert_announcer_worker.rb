@@ -14,7 +14,7 @@ class AlertAnnouncerWorker
       PushWorker.perform_async(
         user.id,
         push_message,
-        'VIEW_ALERT',
+        'ALERT_NOTICE',
         { alert: alert.id }
       )
 
