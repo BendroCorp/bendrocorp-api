@@ -145,7 +145,7 @@ class ApplicationController < ActionController::API
     @approval_kind = ApprovalKind.find(approval_kind_id.to_i)
     if @approval_kind != nil
       new_approval = Approval.new(approval_kind_id: @approval_kind.id) #approval kind id
-      new_approval.full_consent = @approval_kind.approval_workflow_id != 4
+      new_approval.full_consent = @approval_kind.workflow_id != 4
 
       users_array = Array.new
       approval_kind_roles = @approval_kind.roles
