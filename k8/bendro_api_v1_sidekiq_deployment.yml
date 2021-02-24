@@ -15,7 +15,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: bendro-krakend-deployment
-        image: docker.pkg.github.com/bendrocorp/bendrocorp-api/bendrocorp-api-v1:latest
+        image: ghcr.io/bendrocorp/bendrocorp-api-v1:latest
         env:
         - name: RACK_ENV
           valueFrom:
@@ -134,4 +134,4 @@ spec:
         command: [ "bundle" ]
         args: [ "exec", "sidekiq"]
       imagePullSecrets:
-        - name: dockerconfigjson-github-com
+        - name: github-docker-secret
