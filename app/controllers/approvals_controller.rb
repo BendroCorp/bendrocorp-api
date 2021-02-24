@@ -391,7 +391,7 @@ class ApprovalsController < ApplicationController
         approver_email_text = "<p>#{approver.user.main_character.first_name},</p><p>Approval ##{approval.id} #{approval.approval_kind.title} to which you are an approver has been denied.</p><p>#{approval.approval_approvers.map { |approver_inner| "#{approver_inner.user.main_character.full_name}: #{approver_inner.approval_type.title}" }.join('<br>')}</p>"
 
         send_push_notification approver.user.id, approver_push_text
-        send_email approver.user.email, "Approval Approved", approver_email_text
+        send_email approver.user.email, "Approval Denied", approver_email_text
       end
 
       # email the user that the request was denied
