@@ -75,7 +75,7 @@ jobs:
       uses: matootie/dokube@v1.3.3
       with:
         personalAccessToken: ${{ secrets.DIGITALOCEAN_TOKEN }}
-        clusterName: bubble-kube2
+        clusterName: bubble-kube-2
 
     # apply ymls
     # make sure any deployment changes are applied
