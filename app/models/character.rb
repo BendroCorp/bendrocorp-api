@@ -1,4 +1,6 @@
 class Character < ActiveRecord::Base
+  has_paper_trail
+
   #validation_code
   validates :first_name, presence: true, length: { minimum:3, maximum: 70 }
   validates :last_name, presence: true, length: { minimum:3, maximum: 70 }

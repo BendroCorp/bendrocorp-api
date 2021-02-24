@@ -1343,11 +1343,13 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "name"
     t.text "description"
     t.text "validator"
+    t.text "default_value"
     t.integer "field_presentation_type_id"
     t.uuid "field_id"
     t.uuid "report_handler_variable_id"
     t.boolean "required"
     t.integer "ordinal"
+    t.boolean "hidden"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["field_id"], name: "index_report_fields_on_field_id"
@@ -1391,12 +1393,14 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.text "name"
     t.text "description"
     t.text "validator"
+    t.text "default_value"
     t.integer "field_presentation_type_id"
     t.uuid "field_id"
     t.uuid "report_handler_variable_id"
     t.boolean "required", default: false
     t.integer "ordinal"
     t.boolean "archived", default: false
+    t.boolean "hidden", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["field_id"], name: "index_report_template_fields_on_field_id"
