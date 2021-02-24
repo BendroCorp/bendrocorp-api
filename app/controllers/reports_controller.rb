@@ -97,6 +97,7 @@ class ReportsController < ApplicationController
               field_id: template_field.field_id,
               required: template_field.required,
               ordinal: template_field.ordinal,
+              hidden: template_field.hidden,
               report_handler_variable_id: template_field.report_handler_variable_id,
               # field_value: ReportFieldValue.new(report_id: @report.id)
             )
