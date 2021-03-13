@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyText
+  description: MyText
+  parent: one
+  ordinal: 1
+  archived: false
+
+two:
+  title: MyText
+  description: MyText
+  parent: two
+  ordinal: 1
+  archived: false

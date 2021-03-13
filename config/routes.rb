@@ -268,6 +268,9 @@ Rails.application.routes.draw do
   get 'api/profile/:profile_id' => 'profiles#show'
   patch 'api/profile' => 'profiles#update'
 
+  # profile groups
+  resources :profile_group_members, path: 'api/profile-group/:group_id/member'
+  resources :profile_groups, path: 'api/profile-group'
 
   # reports
   scope 'api', as: 'api' do

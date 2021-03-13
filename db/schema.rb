@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210106143802) do
+ActiveRecord::Schema.define(version: 20210227050640) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -415,26 +415,6 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_discord_identities_on_user_id"
-  end
-
-  create_table "division_groups", force: :cascade do |t|
-    t.text "title"
-    t.text "description"
-    t.integer "ordinal"
-    t.bigint "division_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["division_id"], name: "index_division_groups_on_division_id"
-  end
-
-  create_table "division_in_groups", force: :cascade do |t|
-    t.text "group_member_title"
-    t.bigint "character_id"
-    t.bigint "division_group_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["character_id"], name: "index_division_in_groups_on_character_id"
-    t.index ["division_group_id"], name: "index_division_in_groups_on_division_group_id"
   end
 
   create_table "divisions", force: :cascade do |t|
@@ -1318,6 +1298,30 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.index ["character_id"], name: "index_position_change_requests_on_character_id"
     t.index ["job_id"], name: "index_position_change_requests_on_job_id"
     t.index ["user_id"], name: "index_position_change_requests_on_user_id"
+  end
+
+  create_table "profile_group_members", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "member_title"
+    t.bigint "character_id"
+    t.uuid "profile_group_id"
+    t.boolean "ordinal"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["character_id"], name: "index_profile_group_members_on_character_id"
+    t.index ["profile_group_id"], name: "index_profile_group_members_on_profile_group_id"
+  end
+
+  create_table "profile_groups", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "title"
+    t.text "description"
+    t.text "banner_color"
+    t.uuid "parent_id"
+    t.integer "ordinal"
+    t.integer "depth"
+    t.boolean "archived"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_profile_groups_on_parent_id"
   end
 
   create_table "report_approval_requests", force: :cascade do |t|
@@ -2581,4 +2585,6 @@ ActiveRecord::Schema.define(version: 20210106143802) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "profile_group_members", "characters"
+  add_foreign_key "profile_group_members", "profile_groups"
 end

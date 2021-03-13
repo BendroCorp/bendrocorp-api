@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  member_title: MyText
+  character: one
+  profile_group: one
+  ordinal: false
+
+two:
+  member_title: MyText
+  character: two
+  profile_group: two
+  ordinal: false

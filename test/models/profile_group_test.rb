@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class DivisionInGroupTest < ActiveSupport::TestCase
+class ProfileGroupTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
