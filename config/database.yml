@@ -15,8 +15,8 @@ development:
   host: localhost
   adapter:  postgresql
   pool: 5
-  database: bendrocorp_test_db
-  username: bendro_admin # not prod user
+  database: b_dev_db
+  username: b_admin # not prod user
   password: Password12345 # definitely not prod password
 
 # Warning: The database defined as "test" will be erased and
