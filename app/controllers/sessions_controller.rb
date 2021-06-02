@@ -47,7 +47,7 @@ class SessionsController < ApplicationController
               # render status: 500, json: { message: "Error occured while trying to access user data."}
               end
             end
-            SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed.", site_log_type_id: 1)
+            SiteLog.create(module: 'Session', submodule: 'Auth Failure', message: "User ##{@user.id} could not authenticated. Authorization failed. #{params[:session][:code]}", site_log_type_id: 1)
             render status: 404, json: { message: "User not found or incorrect credentials were provided." }
           end
         else
