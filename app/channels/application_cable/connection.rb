@@ -8,7 +8,7 @@ module ApplicationCable
 
     private
       def find_verified_user
-        secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
+        secret = (Digest::SHA256.hexdigest Rails.application.credentials[Rails.env.to_sym][:secret_key_base])[0..32]
         decoded_token = JWT.decode request.params[:token], secret, true, { algorithm: 'HS256' }
         verified_user = TokenUser.new(decoded_token[0])
         puts verified_user

@@ -2,8 +2,8 @@ class Character < ActiveRecord::Base
   has_paper_trail
 
   #validation_code
-  validates :first_name, presence: true, length: { minimum:3, maximum: 70 }
-  validates :last_name, presence: true, length: { minimum:3, maximum: 70 }
+  validates :first_name, presence: true, length: { minimum: 3, maximum: 70 }
+  validates :last_name, presence: true, length: { minimum: 3, maximum: 70 }
   validates :description, presence: true
   validates :background, presence: true
   # validates :application_id, presence: true
@@ -25,11 +25,7 @@ class Character < ActiveRecord::Base
   # hr stuff
   has_many :service_notes
 
-  # http://josephndungu.com/tutorials/ajax-file-upload-with-dropezonejs-and-paperclip-rails
-  # http://stackoverflow.com/questions/3219787/how-do-i-tell-paperclip-to-not-save-the-original-file :D
-  # http://railscasts.com/episodes/134-paperclip
-  # http://stackoverflow.com/questions/8876340/paperclip-resize-and-crop-to-rectangle
-  has_attached_file :avatar, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :original => "200x200#" },
+  has_attached_file :avatar_old, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :original => "200x200#" },
                     #content_type: { content_type: ["image/jpg", "image/jpeg", "image/png"] },
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",
                     #:url  => "/bendrocorp/#{Rails.env}/character/:id/:style/:basename.:extension",
@@ -38,12 +34,24 @@ class Character < ActiveRecord::Base
                     :path => "/bendrocorp/#{Rails.env}/character/:id/:style/avatar-:id.:extension",
                     :default_url => "/assets/imgs/missing-avatar.png"
 
-	validates_attachment 	:avatar,
+	validates_attachment 	:avatar_old,
 				:content_type => { :content_type => /\Aimage\/.*\Z/ },
 				:size => { :less_than => 10.megabyte }
 
+  has_one_attached :avatar
+  # validates :avatar, blob: { content_type: ['image/png', 'image/jpg', 'image/jpeg'], size_range: 0..10.megabytes }
+
+  # DEPRECATED - only here for migrating off of Paperclip
+  def paperclip_original_uri
+    self.avatar_old.url(:original)
+  end
+
   def avatar_url
-    self.avatar.url(:original).split('?')[0]
+    avatar.url.sub(/\?.*/, '') if avatar.attached?
+  end
+
+  def avatar_thumbnail_url
+    avatar.variant({ resize: '100x100^', quality: '100%' }).processed.url.sub(/\?.*/, '') if avatar.attached?
   end
 
   accepts_nested_attributes_for :application

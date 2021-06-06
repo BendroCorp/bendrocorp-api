@@ -224,6 +224,7 @@ Rails.application.routes.draw do
   get 'api/offender-report/infractions' => 'offender_reports#list_infractions'
   get 'api/offender-report/force-levels' => 'offender_reports#list_force_levels'
   get 'api/offender-reports/verify/:rsi_handle' => 'offender_reports#verify_rsi_handle'
+  get 'api/offender-reports/search/:rsi_handle' => 'offender_reports#profile_search'
   get 'api/offender-report/offender/:offender_id' => 'offender_reports#fetch_offender'
   get 'api/offender-report/:report_id' => 'offender_reports#fetch'
   post 'api/offender-report' => 'offender_reports#create'

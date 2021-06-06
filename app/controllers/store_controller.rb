@@ -174,15 +174,6 @@ class StoreController < ApplicationController
                 @order.added_shipping_cost = 0
               end
 
-              # if its dollars we need to make a stripe charge
-              if ENV['RAILS_ENV'] == 'development'
-                puts 'Using Test Stripe env'
-                Stripe.api_key = "sk_test_5XT6Ve3VgDkohMPptPsRtm6t"
-              else
-                puts 'Using Production Stripe env'
-                Stripe.api_key = ENV["STRIPE_API_KEY"]
-              end
-
               # Token is created using Checkout or Elements!
               # Get the payment token ID submitted by the form:
               token = params[:stripe_token][:id]
@@ -240,20 +231,11 @@ class StoreController < ApplicationController
             end
           else
             # Need to reverse any charges if an error occured
-            if pt != nil
+            unless pt.nil?
               pt.destroy
             end
 
-            if charge.id != nil
-              # if its dollars we need to make a stripe charge
-              if ENV['RAILS_ENV'] == 'development'
-                puts 'Using Test Stripe env'
-                Stripe.api_key = "sk_test_5XT6Ve3VgDkohMPptPsRtm6t"
-              else
-                puts 'Using Production Stripe env'
-                Stripe.api_key = ENV["STRIPE_API_KEY"]
-              end
-
+            unless charge.id.nil?
               # refund the user's card
               refund = Stripe::Refund.create(
                 charge: charge.id
@@ -277,15 +259,7 @@ class StoreController < ApplicationController
       # NOTE: The order status must be completed to be refunded
       if @order.status_id == 4
         if @order.cart.cart_currency_type.id == 1
-          # if its dollars we need to make a stripe charge
-          if ENV['RAILS_ENV'] == 'development'
-            puts 'Using Test Stripe env'
-            Stripe.api_key = "sk_test_5XT6Ve3VgDkohMPptPsRtm6t"
-          else
-            puts 'Using Production Stripe env'
-            Stripe.api_key = ENV["STRIPE_API_KEY"]
-          end
-
+          # if the transaction id is null
           if @order.stripe_transaction_id != nil
             # Charge the user's card:
             refund = Stripe::Refund.create(

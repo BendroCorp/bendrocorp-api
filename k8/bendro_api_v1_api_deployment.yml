@@ -37,102 +37,11 @@ spec:
             secretKeyRef:
               name: bendro-v1-api-secrets
               key: RAILS_SERVE_STATIC_FILES
-        - name: REDIS_URL
+        - name: RAILS_MASTER_KEY
           valueFrom:
             secretKeyRef:
               name: bendro-v1-api-secrets
-              key: REDIS_URL
-        - name: BENDROCORP_SQLPASS
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: BENDROCORP_SQLPASS
-        - name: BENDROCORP_SQLURI
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: BENDROCORP_SQLURI
-        - name: BENDROCORP_SQLUSER
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: BENDROCORP_SQLUSER
-        - name: DISCORD_BOT_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: DISCORD_BOT_CLIENT_ID
-        - name: DISCORD_BOT_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: DISCORD_BOT_CLIENT_SECRET
-        - name: DISCORD_MESSAGES
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: DISCORD_MESSAGES
-        #
-        - name: NEWS_WEBHOOK_LINK
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: NEWS_WEBHOOK_LINK
-        - name: WEBHOOK_LINK
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: WEBHOOK_LINK
-        - name: ADMIN_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: ADMIN_EMAIL
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: AWS_ACCESS_KEY_ID
-        - name: AWS_REGION
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: AWS_REGION
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: AWS_SECRET_ACCESS_KEY
-        - name: S3_BUCKET_NAME
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: S3_BUCKET_NAME
-        - name: SECRET_KEY_BASE
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: SECRET_KEY_BASE
-        - name: SENDGRID_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: SENDGRID_API_KEY
-        - name: STRIPE_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: STRIPE_API_KEY
-        - name: USPS_USER
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: USPS_USER
-        - name: STRIPE_WEBHOOK_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: bendro-v1-api-secrets
-              key: STRIPE_WEBHOOK_SECRET
+              key: RAILS_MASTER_KEY
         ports:
         - containerPort: 3000
         imagePullPolicy: Always

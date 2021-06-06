@@ -2,36 +2,39 @@ include SendGrid # required to access the helper methods
 class ApplicationController < ActionController::API
   # Capture and handle any errors
   include Error::ErrorHandler
-  before_action :add_allow_credentials_headers
+  # before_action :add_allow_credentials_headers
 
-  # Handle CORS requests
-  def add_allow_credentials_headers
-  	# https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#section_5
-  	#
-  	# Because we want our front-end to send cookies to allow the API to be authenticated
-  	# (using 'withCredentials' in the XMLHttpRequest), we need to add some headers so
-  	# the browser will not reject the response
-  	# https://stackoverflow.com/questions/17858178/allow-anything-through-cors-policy
+  # # Handle CORS requests
+  # def add_allow_credentials_headers
+  # 	# https://developer.mozilla.org/en-US/docs/Web/HTTP/Access_control_CORS#section_5
+  # 	#
+  # 	# Because we want our front-end to send cookies to allow the API to be authenticated
+  # 	# (using 'withCredentials' in the XMLHttpRequest), we need to add some headers so
+  # 	# the browser will not reject the response
+  # 	# https://stackoverflow.com/questions/17858178/allow-anything-through-cors-policy
 
-  	# TODO: Need to add an allowed origins table - not totally sure on this still
-  	response.headers['Access-Control-Allow-Origin'] = '*' # this eventually needs to be restricted
-  	response.headers['Access-Control-Allow-Methods'] = 'POST, PATCH, PUT, DELETE, GET, OPTIONS'
-  	response.headers['Access-Control-Request-Method'] = '*'
-  	response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, HTTP_AUTHORIZATION, HTTP_X_AUTHORIZATION'
-  end
+  # 	# TODO: Need to add an allowed origins table - not totally sure on this still
+  # 	response.headers['Access-Control-Allow-Origin'] = '*' # this eventually needs to be restricted
+  # 	response.headers['Access-Control-Allow-Methods'] = 'POST, PATCH, PUT, DELETE, GET, OPTIONS'
+  # 	response.headers['Access-Control-Request-Method'] = '*'
+  # 	response.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization, HTTP_AUTHORIZATION, HTTP_X_AUTHORIZATION'
+  # end
 
-	# https://stackoverflow.com/questions/32500073/request-header-field-access-control-allow-headers-is-not-allowed-by-itself-in-pr
-  def options
-	   render :status => 200, :'Access-Control-Allow-Headers' => 'accept, content-type, authorization, HTTP_AUTHORIZATION, HTTP_X_AUTHORIZATION'
-  end
+	# # https://stackoverflow.com/questions/32500073/request-header-field-access-control-allow-headers-is-not-allowed-by-itself-in-pr
+  # def options
+	#    render :status => 200, :'Access-Control-Allow-Headers' => 'accept, content-type, authorization, HTTP_AUTHORIZATION, HTTP_X_AUTHORIZATION'
+  # end
 
   def true?(obj)
     obj.to_s == "true"
   end
 
-  def make_token(length = 50)
-    o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
-    Digest::SHA256.hexdigest (0...length).map { o[rand(o.length)] }.join
+  def make_token(length = 100)
+    # o = [('a'..'z'), ('A'..'Z')].map { |i| i.to_a }.flatten
+    # Digest::SHA256.hexdigest(0...length).map { o[rand(o.length)] }.join
+    o = [('a'..'z'), ('A'..'Z')].map(&:to_a).flatten
+    string = (0...length).map { o[rand(o.length)] }.join
+    Digest::SHA256.hexdigest(string)
   end
 
   # Create a JWT token set
@@ -41,10 +44,10 @@ class ApplicationController < ActionController::API
   # @return { id_token, refresh_token }
   def make_jwt user, offline_access = false, create_refresh = true
     # secret guard
-    throw 'Secret could not be retrieved for tokenization!' if Rails.application.secrets.secret_key_base == nil || Rails.application.secrets.secret_key_base.length < 10 # secret will be longer than this
+    throw 'Secret could not be retrieved for tokenization!' if Rails.application.credentials[Rails.env.to_sym][:secret_key_base] == nil || Rails.application.credentials[Rails.env.to_sym][:secret_key_base].length < 10 # secret will be longer than this
 
     # get our secret
-    secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
+    secret = (Digest::SHA256.hexdigest Rails.application.credentials[Rails.env.to_sym][:secret_key_base])[0..32]
 
     # form our payload
     payload = {
@@ -59,7 +62,7 @@ class ApplicationController < ActionController::API
     }
 
     # if the user has a character include that information
-    if user.main_character
+    unless user.main_character.nil?
       payload[:character_id] = user.main_character.id
       payload[:given_name] = user.main_character.first_name
       payload[:family_name] = user.main_character.last_name
@@ -70,7 +73,7 @@ class ApplicationController < ActionController::API
     # set the expiration
     # NOTE: Expiration is currently set for six hours down from 12 hours since we are adding in refresh tokens
     payload[:exp] = (Time.now.to_i + (6 * 3600)).to_i if !offline_access
-    # 
+    #
     payload[:exp] = (Time.now.to_i + (1 * 3600)).to_i if offline_access
 
     token = JWT.encode payload, secret, 'HS256'
@@ -82,7 +85,7 @@ class ApplicationController < ActionController::API
   def current_user
     if bearer_token
       # get our secret
-      secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
+      secret = (Digest::SHA256.hexdigest Rails.application.credentials[Rails.env.to_sym][:secret_key_base])[0..32]
       begin
         # decode
         decoded_token = JWT.decode bearer_token, secret, true, { algorithm: 'HS256' }

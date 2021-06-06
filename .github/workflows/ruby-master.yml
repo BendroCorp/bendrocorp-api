@@ -16,6 +16,9 @@ jobs:
   master-build:
 
     runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      RAILS_MASTER_KEY: ${{ secrets.RAILS_MASTER_KEY }}
 
     steps:
     - name: Allow unsecure commands - cause we have to...
@@ -57,6 +60,12 @@ jobs:
         echo VERSION=$VERSION
         docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
         docker push $IMAGE_ID:$VERSION
+
+    - name: Switch env to production
+      run: echo "RAILS_ENV=production" >> $GITHUB_ENV
+
+    - name: Run Migrations
+      run: rails db:migrate
     
     - name: Update Deployment Version
       run: |

@@ -38,12 +38,12 @@ class ProfilesController < ApplicationController
       if current_user.isinrole(7) || @character.application.application_status_id < 6
         # applicant_approval_request.approval.approval_approvers
         if current_user.isinrole(7)
-          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { applicant_approval_request: { include: { approval: { include: { approval_approvers: { methods: [:approver_response, :character_name] } } } } }, comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
+          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :avatar_thumbnail_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { applicant_approval_request: { include: { approval: { include: { approval_approvers: { methods: [:approver_response, :character_name] } } } } }, comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
         else
-          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
+          render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :avatar_thumbnail_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } }, application: { include: { comments: { methods: [:commenter_name, :avatar_url] }, application_status: { }, job: { }, interview: { } } } })
         end
       else
-        render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } } })
+        render status: 200, json: @character.as_json(methods: [:rsi_handle, :full_name, :avatar_url, :avatar_thumbnail_url, :current_job], include: { user: { only: [:id], include: { badges:{ } } }, attendences: { }, awards: { methods: [:image_url] }, jobs: { }, owned_ships: { include: { ship: { } } } })
       end
     else
       render status: 404, json: { message: 'Profile not found!' }
@@ -87,7 +87,7 @@ class ProfilesController < ApplicationController
     if @character
       # Security check
       # the character is owned by the current user or the user is in the HR role
-      if current_user.id === @character.user_id || current_user.isinrole(7) # HR
+      if current_user.id == @character.user_id || current_user.isinrole(7) # HR
         page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{params[:character][:handle].downcase}")
         if page.code == 200
           @character.user.rsi_handle = params[:character][:handle]
@@ -116,9 +116,28 @@ class ProfilesController < ApplicationController
       if current_user.id == @character.user_id || current_user.isinrole(7) # HR
 
         # check for an avatar update
+        # if params[:character][:new_avatar]
+        #   @character.avatar = params[:character][:new_avatar][:base64]
+        #   @character.avatar_file_name = params[:character][:new_avatar][:name]
+        # end
+
         if params[:character][:new_avatar]
-          @character.avatar = params[:character][:new_avatar][:base64]
-          @character.avatar_file_name = params[:character][:new_avatar][:name]
+          data = params[:character][:new_avatar][:base64].split(',')[1]
+
+          image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+          pipeline = ImageProcessing::MiniMagick.source(image)
+          resized_image = pipeline.convert('png').resize_to_fill!(200, 200)
+
+          image_blob = ActiveStorage::Blob.create_after_upload!(
+            io: File.open(resized_image.path),
+            filename: "#{@character.id}.png",
+            content_type: 'image/png'
+          )
+
+          @character.avatar.attach(image_blob)
+
+          # queue image sizer jobs as required
+          ImageSizerJob.perform_later(@character, 'avatar', { resize: '100x100^', quality: '100%' })
         end
 
         # save the character back

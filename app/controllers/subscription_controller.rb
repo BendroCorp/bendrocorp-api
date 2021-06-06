@@ -62,7 +62,7 @@ class SubscriptionController < ApplicationController
     # https://dev.to/maxencehenneron/handling-stripe-webhooks-with-ruby-on-rails-4bb7
     # https://stripe.com/docs/billing/subscriptions/fixed-price#set-up-webhook-monitoring
 
-    webhook_secret = ENV['STRIPE_WEBHOOK_SECRET']
+    webhook_secret = Rails.application.credentials.stripe_webhook_secret
     payload = request.body.read
     if !webhook_secret.empty?
       # Retrieve the event by verifying the signature using the raw body and secret if webhook signing is configured.

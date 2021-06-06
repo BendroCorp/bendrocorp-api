@@ -48,7 +48,7 @@ class OffenderScraperWorker
         offender.save!
 
         # Next go scrape the handle off RSI
-        scrape_results = scrape offender.offender_handle.to_s
+        scrape_results = RSIHandleScraper.scrape(rsi_handle: offender.offender_handle.to_s)
 
         if scrape_results
           # TODO: Verify the scrape results. This will make sure that if CIG changes anything on the page that everything doesn't explode
@@ -104,107 +104,5 @@ class OffenderScraperWorker
       puts ""
     end
   end
-
-  private
-  def scrape rsi_handle
-    # It will be a sad day when CIG does something else with this page
-    page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{rsi_handle}")
-
-    if page.code == 200
-
-      parse_page = Nokogiri::HTML(page)
-
-      final_hash = {}
-      #line break :)
-      puts
-      puts "RSI Handle Scrape Results"
-
-      # get their info
-      toon_raw = parse_page.css('.profile').css('.inner').css('.info').css('.entry').css('.value').map.to_a
-      toon_raw.each do |a|
-        # 0 - Full Name
-        # 1 - Handle
-        # 2 - forum title
-      end
-
-      # get picture
-      toon_pic = ""
-      thumb_element = parse_page.css('.profile').css('.inner').css('.thumb img')
-
-      if thumb_element
-        toon_pic = thumb_element.attr('src')
-      end
-
-      final_hash[:toon_name] = toon_raw[0].text if toon_raw[0]
-      final_hash[:toon_handle] = toon_raw[1].text if toon_raw[1]
-      final_hash[:toon_forum_title] = toon_raw[2].text if toon_raw[2]
-      final_hash[:toon_pic] = toon_pic if toon_pic
-
-      #org info
-      # 0 - Org Title
-      # 1 - Spectrum ID
-      # 2 - Member Rank
-      org_info_raw = []
-      org_info_raw = parse_page.css('.main-org').css('.inner').css('.info').css('.entry').css('.value').map.to_a
-
-      if org_info_raw.count > 0 && /^[a-zA-Z0-9_.-]*$/.match(org_info_raw[1].text)
-        #org Rank
-        org_rank = parse_page.css('.main-org').css('.inner').css('.info').css('.ranking').css('.active').map.count
-
-
-        final_hash[:org_rank] = org_rank
-        final_hash[:org_title] = org_info_raw[0].text if org_info_raw[0]
-        final_hash[:org_spectrum_id] = org_info_raw[1].text if org_info_raw[1]
-        final_hash[:org_member_rank] = org_info_raw[2].text if org_info_raw[2]
-
-        # get the org info
-        #
-
-        page_org = HTTParty.get("https://robertsspaceindustries.com/orgs/" + org_info_raw[1])
-
-        parse_page_org = Nokogiri::HTML(page_org)
-
-        org_image = parse_page_org.css('#organization').css('.inner').css('.logo img').attr('src')
-        final_hash[:org_logo] = org_image
-
-        parse_page_org.css('#organization').css('.inner').css('.logo').css('.count').map do |a|
-          final_hash[:org_member_count] = a.text.sub(/ members$/, '').to_i
-        end
-
-
-        parse_page_org.css('#organization').css('.inner').css('.tags').css('li').css('.model').map do |a|
-          final_hash[:org_model] = a.text
-        end
-
-        parse_page_org.css('#organization').css('.inner').css('.tags').css('li').css('.commitment').map do |a|
-          final_hash[:org_commitment] = a.text
-        end
-
-        parse_page_org.css('#organization').css('.inner').css('.tags').css('li').css('.roleplay').map do |a|
-          final_hash[:org_roleplay] = a.text
-        end
-
-        final_hash[:org_focus] = []
-        parse_page_org.css('#organization').css('.inner').css('.focus').css('li img').map do |a|
-
-          final_hash[:org_focus] << a.attr('alt')
-
-          #final_hash[:org_roleplay] = a.text
-        end
-      else
-        puts "Offender has no org"
-      end
-
-      #output hash
-      final_hash.each do |key, value|
-          puts "#{key} : #{value}"
-      end
-
-      # return the final hash object
-      final_hash
-
-    else
-      puts "Thats not actually an RSI handle..."
-    end
-  end
+  
 end

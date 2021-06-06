@@ -217,19 +217,19 @@ class PageEntriesController < ApplicationController
 
   # GET 'api/pages/:page_id/images'
   def create_image
-    image_upload = ImageUpload.create(title: 'Upload', uploaded_by_id: current_user.id, image: params[:image])
+    # image_upload = ImageUpload.create(title: 'Upload', uploaded_by_id: current_user.id, image: params[:image])
 
-    page_image = PageImage.create(page_id: params[:page_id], image_upload_id: image_upload.id)
+    # page_image = PageImage.create(page_id: params[:page_id], image_upload_id: image_upload.id)
 
-    if page_image.save
-      if ENV['RAILS_ENV'] == 'production'
-        render json: { path: image_upload.image_url }, status: :created
-      else
-        render status: 200
-      end
-    else
-      render status: 400, json: { message: "Page could not be updated because: #{@page.errors.full_messages.to_sentence}" }
-    end
+    # if page_image.save
+    #   if ENV['RAILS_ENV'] == 'production'
+    #     render json: { path: image_upload.image_url }, status: :created
+    #   else
+    #     render status: 200
+    #   end
+    # else
+    #   render status: 400, json: { message: "Page could not be updated because: #{@page.errors.full_messages.to_sentence}" }
+    # end
   end
 
   # DELETE api/pages/:page_id/images

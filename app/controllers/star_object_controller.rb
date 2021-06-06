@@ -60,17 +60,52 @@ class StarObjectController < ApplicationController
     @star_object = SystemMapStarObject.create(system_map_star_objects_params)
 
     # primary image
-    if !params[:star_object][:new_primary_image].nil?
+    if params[:star_object][:new_primary_image]
+      # get the image data
+      data = params[:star_object][:new_primary_image][:base64].split(',')[1]
+
+      # create and perform a base resize on the image
+      image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+      pipeline = ImageProcessing::MiniMagick.source(image)
+      resized_image = pipeline.convert('png').resize_to_fit!(1920, 1080)
+      # resized_image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+      # resized_image = resized_image.resize "1920x1080>"
+      # resized_image = resized_image.format "png"
+
+      # transform the data into the ActiveStorage blob
+      image_blob = ActiveStorage::Blob.create_after_upload!(
+        io: File.open(resized_image.path), #resized_image.path
+        filename: "#{@star_object.id}.png",
+        content_type: 'image/png'
+      )
+
+      # check to see if this object lacks a primary image
       if !@star_object.primary_image.nil?
-        @star_object.primary_image.title = params[:star_object][:title]
-        @star_object.primary_image.image = params[:star_object][:new_primary_image][:base64]
-        @star_object.primary_image.image_file_name = params[:star_object][:new_primary_image][:name]
-      else
-        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:star_object][:new_primary_image][:base64], image_file_name: params[:star_object][:new_primary_image][:name], title: @star_object.title, description: @star_object.title)
+        # attach the new image blob
+        @star_object.primary_image.image.attach(image_blob)
+      else # if this star object never had a primary image
+        # create a new image and attach the blob
+        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: image_blob, title: @star_object.title, description: @star_object.title)
       end
     end
 
+    # if !params[:star_object][:new_primary_image].nil?
+    #   if !@star_object.primary_image.nil?
+    #     @star_object.primary_image.title = params[:star_object][:title]
+    #     @star_object.primary_image.image = params[:star_object][:new_primary_image][:base64]
+    #     @star_object.primary_image.image_file_name = params[:star_object][:new_primary_image][:name]
+    #   else
+    #     @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:star_object][:new_primary_image][:base64], image_file_name: params[:star_object][:new_primary_image][:name], title: @star_object.title, description: @star_object.title)
+    #   end
+    # end
+
     if @star_object.save
+      # if we updated the image then run a background job to create images variants
+      if params[:star_object][:new_primary_image]
+        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
+        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '200x200^', quality: '100%', gravity: 'center' })
+      end
+
       render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
     else
       render json: { message: @star_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
@@ -82,18 +117,44 @@ class StarObjectController < ApplicationController
     # make sure the object was found/exists
     if @star_object
       # primary image
-      if !params[:star_object][:new_primary_image].nil?
-        if !@star_object.primary_image.nil?
-          @star_object.primary_image.title = params[:star_object][:title]
-          @star_object.primary_image.image = params[:star_object][:new_primary_image][:base64]
-          @star_object.primary_image.image_file_name = params[:star_object][:new_primary_image][:name]
-        else
-          @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: params[:star_object][:new_primary_image][:base64], image_file_name: params[:star_object][:new_primary_image][:name], title: @star_object.title, description: @star_object.title)
-        end
+      # primary image
+    if params[:star_object][:new_primary_image]
+      # get the image data
+      data = params[:star_object][:new_primary_image][:base64].split(',')[1]
+
+      # create and perform a base resize on the image
+      image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+      pipeline = ImageProcessing::MiniMagick.source(image)
+      resized_image = pipeline.convert('png').resize_to_fit!(1920, 1080)
+      # resized_image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+      # resized_image = resized_image.resize "1920x1080>"
+      # resized_image = resized_image.format "png"
+
+      # transform the data into the ActiveStorage blob
+      image_blob = ActiveStorage::Blob.create_after_upload!(
+        io: File.open(resized_image.path), #resized_image.path
+        filename: "#{@star_object.id}.png",
+        content_type: 'image/png'
+      )
+
+      # check to see if this object lacks a primary image
+      if !@star_object.primary_image.nil?
+        # attach the new image blob
+        @star_object.primary_image.image.attach(image_blob)
+      else # if this star object never had a primary image
+        # create a new image and attach the blob
+        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: image_blob, title: @star_object.title, description: @star_object.title)
       end
+    end
 
       # update the object
       if @star_object.update(system_map_star_objects_params)
+        # if we updated the image then run a background job to create images variants
+        if params[:star_object][:new_primary_image]
+          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
+          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '200x200^', quality: '100%', gravity: 'center' })
+        end
+
         render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
       else
         render json: { message: @star_object.errors.full_messages.to_sentence }, status: :unprocessable_entity
