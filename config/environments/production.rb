@@ -1,6 +1,19 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # s3 for paperclip file uploads
+  config.paperclip_defaults = {
+    storage: :s3,
+    :s3_protocol => :https,
+    s3_region: Rails.application.credentials.dig(:aws, :region),
+    s3_credentials: {
+      bucket: Rails.application.credentials.dig(:aws, :bucket),
+      access_key_id: Rails.application.credentials.dig(:aws, :access_key_id),
+      secret_access_key: Rails.application.credentials.dig(:aws, :secret_access_key),
+      s3_region: Rails.application.credentials.dig(:aws, :region),
+    }
+  }
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 
