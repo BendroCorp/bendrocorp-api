@@ -8,14 +8,14 @@ class SystemMapImage < ApplicationRecord
   validates :created_by_id, presence: true
   belongs_to :created_by, :class_name => 'User', :foreign_key => 'created_by_id', optional: true
 
-  has_attached_file :image_old, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :big => "200x200#", :original => "1920x1080>" },
+  has_attached_file :image, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :big => "200x200#", :original => "1920x1080>" },
                     #content_type: { content_type: ["image/jpg", "image/jpeg", "image/png"] },
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",
                     #:path => ":rails_root/public/assets/system-map/:id/:style/:basename.:extension",
                     :path => "/bendrocorp/#{Rails.env}/system-map/:id/:style/:basename.:extension",
                     :default_url => "/assets/imgs/missing-system-map.png"
 
-	validates_attachment 	:image_old,
+	validates_attachment 	:object_image,
 				:content_type => { :content_type => /\Aimage\/.*\Z/ },
 				:size => { :less_than => 10.megabyte }
 
@@ -25,22 +25,22 @@ class SystemMapImage < ApplicationRecord
   def image_url
     # self.image.url(:original)
     # rails_blob_path(image, only_path: true) if image.attached?
-    image.url.sub(/\?.*/, '') if image.attached?
+    object_image.url.sub(/\?.*/, '') if object_image.attached?
   end
 
   def image_url_thumbnail
     # self.image.url(:big) # possible perm change, temp for now
     # rails_blob_path(image.sized(:big), only_path: true) if image.attached?
-    image.variant({ resize: '100x100^', quality: '100%' }).processed.url.sub(/\?.*/, '') if image.attached?
+    object_image.variant({ resize: '100x100^', quality: '100%' }).processed.url.sub(/\?.*/, '') if object_image.attached?
   end
 
   def image_url_big
     # NOTE may need to adjust which version this returns
-    image.variant({ resize: '200x200^', quality: '100%' }).processed.url.sub(/\?.*/, '') if image.attached?
+    object_image.variant({ resize: '200x200^', quality: '100%' }).processed.url.sub(/\?.*/, '') if object_image.attached?
   end
 
   # DEPRECATED - only here for migrating off of Paperclip
   def paperclip_original_uri
-    self.image_old.url(:original)
+    self.image.url(:original)
   end
 end

@@ -1,11 +1,14 @@
 class MigratePaperclipToActiveStorage < ActiveRecord::Migration[6.1]
   def change
+    puts 'Attempting to migrate old images'
+    puts "Current env is #{ENV["RAILS_ENV"]}"
     # Migrate profiles
     icount = 0
     Character.all.each do |character|
       uri = character.paperclip_original_uri
       # uri = 'https://decider.com/wp-content/uploads/2020/12/the-mandalorian-14-boba-fett-headshot.jpg?quality=80&strip=all&w=1200'
-
+      puts uri
+      # not the right URI: /system/characters/avatars/000/000/001/original/rindzer.png >://
       next if uri.nil? && !uri.include?("missing") && !character.avatar.attached?
       # https://github.com/janko/image_processing/blob/master/doc/minimagick.md#resize_to_fill
       # actually make the move
@@ -24,7 +27,7 @@ class MigratePaperclipToActiveStorage < ActiveRecord::Migration[6.1]
       character.save
 
       # queue image sizer jobs as required
-      ImageSizerJob.perform_later(character, 'avatar', { resize: '100x100^', quality: '100%' })
+      # ImageSizerJob.perform_later(character, 'avatar', { resize: '100x100^', quality: '100%' })
     end
 
     puts "Migrated #{icount} character avatars"

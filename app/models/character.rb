@@ -25,7 +25,7 @@ class Character < ActiveRecord::Base
   # hr stuff
   has_many :service_notes
 
-  has_attached_file :avatar_old, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :original => "200x200#" },
+  has_attached_file :avatar, :styles => { :mini => "25x25#", :small => "50x50#", :thumbnail => "100x100#", :original => "200x200#" },
                     #content_type: { content_type: ["image/jpg", "image/jpeg", "image/png"] },
                     #:url  => "/assets/avatars/:id/:style/:basename.:extension",
                     #:url  => "/bendrocorp/#{Rails.env}/character/:id/:style/:basename.:extension",
@@ -34,16 +34,16 @@ class Character < ActiveRecord::Base
                     :path => "/bendrocorp/#{Rails.env}/character/:id/:style/avatar-:id.:extension",
                     :default_url => "/assets/imgs/missing-avatar.png"
 
-	validates_attachment 	:avatar_old,
+	validates_attachment 	:avatar,
 				:content_type => { :content_type => /\Aimage\/.*\Z/ },
 				:size => { :less_than => 10.megabyte }
 
-  has_one_attached :avatar
+  has_one_attached :avatar_image
   # validates :avatar, blob: { content_type: ['image/png', 'image/jpg', 'image/jpeg'], size_range: 0..10.megabytes }
 
   # DEPRECATED - only here for migrating off of Paperclip
   def paperclip_original_uri
-    self.avatar_old.url(:original)
+    self.avatar.url(:original).split('?')[0]
   end
 
   def avatar_url

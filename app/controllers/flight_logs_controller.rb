@@ -157,10 +157,10 @@ class FlightLogsController < ApplicationController
       content_type: 'image/png'
     )
 
-    upload = ImageUpload.create(title: image[:title], description: image[:description], uploaded_by_id: current_user.id, image: image_blob)
+    upload = ImageUpload.create(title: image[:title], description: image[:description], uploaded_by_id: current_user.id, upload_image: image_blob)
 
-    ImageSizerJob.perform_later(upload, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
-    ImageSizerJob.perform_later(upload, 'image', { resize: '25x25^', quality: '100%', gravity: 'center' })
+    ImageSizerJob.perform_later(upload, 'upload_image', { resize: '100x100^', quality: '100%', gravity: 'center' })
+    ImageSizerJob.perform_later(upload, 'upload_image', { resize: '25x25^', quality: '100%', gravity: 'center' })
 
     # return the result
     upload
