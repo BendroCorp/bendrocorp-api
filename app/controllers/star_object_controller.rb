@@ -82,10 +82,10 @@ class StarObjectController < ApplicationController
       # check to see if this object lacks a primary image
       if !@star_object.primary_image.nil?
         # attach the new image blob
-        @star_object.primary_image.object_image.attach(image_blob)
+        @star_object.primary_image.image.attach(image_blob)
       else # if this star object never had a primary image
         # create a new image and attach the blob
-        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, object_image: image_blob, title: @star_object.title, description: @star_object.title)
+        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: image_blob, title: @star_object.title, description: @star_object.title)
       end
     end
 
@@ -102,8 +102,8 @@ class StarObjectController < ApplicationController
     if @star_object.save
       # if we updated the image then run a background job to create images variants
       if params[:star_object][:new_primary_image]
-        ImageSizerJob.perform_later(@star_object.primary_image, 'object_image', { resize: '100x100^', quality: '100%', gravity: 'center' })
-        ImageSizerJob.perform_later(@star_object.primary_image, 'object_image', { resize: '200x200^', quality: '100%', gravity: 'center' })
+        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
+        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '200x200^', quality: '100%', gravity: 'center' })
       end
 
       render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
@@ -140,10 +140,10 @@ class StarObjectController < ApplicationController
       # check to see if this object lacks a primary image
       if !@star_object.primary_image.nil?
         # attach the new image blob
-        @star_object.primary_image.object_image.attach(image_blob)
+        @star_object.primary_image.image.attach(image_blob)
       else # if this star object never had a primary image
         # create a new image and attach the blob
-        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, object_image: image_blob, title: @star_object.title, description: @star_object.title)
+        @star_object.primary_image = SystemMapImage.create(created_by_id: current_user.id, image: image_blob, title: @star_object.title, description: @star_object.title)
       end
     end
 
@@ -151,8 +151,8 @@ class StarObjectController < ApplicationController
       if @star_object.update(system_map_star_objects_params)
         # if we updated the image then run a background job to create images variants
         if params[:star_object][:new_primary_image]
-          ImageSizerJob.perform_later(@star_object.primary_image, 'object_image', { resize: '100x100^', quality: '100%', gravity: 'center' })
-          ImageSizerJob.perform_later(@star_object.primary_image, 'object_image', { resize: '200x200^', quality: '100%', gravity: 'center' })
+          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
+          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '200x200^', quality: '100%', gravity: 'center' })
         end
 
         render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
