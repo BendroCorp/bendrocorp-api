@@ -13,15 +13,15 @@ module Error
               outro = "<p><b><strong>Please do not reply to this email.</strong></b><p/><p>Sincerely,</p><p>Kaden Aayhan<br />Assistant to the CEO<br />BendroCorp, Inc.</p><p>Corp Plaza 11, Platform R3Q<br />Crusader, Stanton</p>"
 
               # additional data -
-              additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "AWS Access Key Id"
-              additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "Check your key and signing method"
+              # additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "AWS Access Key Id"
+              # additional_data = "AWS Key: #{ENV.fetch('AWS_ACCESS_KEY_ID')}, AWS Secret: #{ENV.fetch('AWS_SECRET_ACCESS_KEY')}" if e.message.to_s.include? "Check your key and signing method"
 
               # message
               message_in = "<p>The following error occured on the BendroCorp site:</p> <p>#{e.message.to_s}</p><p>#{e.backtrace.join("\n <br />")}</p><p>#{additional_data}</p>"
 
               # the actual email itself
               from = Email.new(email: 'no-reply@bendrocorp.com')
-              to = Email.new(email: ENV['ADMIN_EMAIL'])
+              to = Email.new(email: Rails.application.credentials.admin_email)
               subject = "BendroCorp - Error Message - #{e.message.to_s}"
               content = Content.new(type: 'text/html', value: message_in + outro)
               mail = SendGrid::Mail.new(from, subject, to, content) # https://github.com/sendgrid/sendgrid-ruby/issues/67
@@ -87,7 +87,7 @@ module Error
 
           # the actual email itself
           from = Email.new(email: 'no-reply@bendrocorp.com')
-          to = Email.new(email: ENV['ADMIN_EMAIL'])
+          to = Email.new(email: Rails.application.credentials.admin_email)
           subject = "BendroCorp - Error Message - Worker Error"
           worker_error_message = message_in + "<p>Hash: #{hash}</p>"
 

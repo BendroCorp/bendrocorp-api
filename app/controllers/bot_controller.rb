@@ -46,7 +46,7 @@ class BotController < ApplicationController
   private
   def make_bot_token bot_id, bot_name
     # get our secret
-    secret = (Digest::SHA256.hexdigest Rails.application.secrets.secret_key_base)[0..32]
+    secret = (Digest::SHA256.hexdigest Rails.application.credentials[Rails.env.to_sym][:secret_key_base])[0..32]
 
     use_tfa = false
     use_roles = [-1]

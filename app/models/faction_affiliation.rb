@@ -8,17 +8,17 @@ class FactionAffiliation < ApplicationRecord
   belongs_to :primary_image, class_name: 'ImageUpload', foreign_key: 'primary_image_id', optional: true
 
   def primary_image_url
-    if self.primary_image != nil
-      self.primary_image.image_url_large
-    else
-      #if this is null its need to be corrected
-      self.primary_image = ImageUpload.new
-      self.save
-      self.primary_image.image_url_large
-    end
+    # if self.primary_image != nil
+    #   self.primary_image.image_url_large
+    # else
+    #   #if this is null its need to be corrected
+    #   self.primary_image = ImageUpload.new
+    #   self.save
+    #   self.primary_image.image_url_large
+    # end
   end
 
   def primary_image_url_full
-    self.primary_image.image_url if self.primary_image
+    # self.primary_image.image_url if self.primary_image
   end
 end

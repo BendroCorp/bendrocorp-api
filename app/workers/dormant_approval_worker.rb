@@ -44,7 +44,7 @@ class DormantApprovalWorker
 
       # Post to the discord channel
       discord_admin_message = "Dormant approval check performed with #{dormant_approvals_count} results: #{dormant_approvals.map { |approver| approver.user.main_character.full_name }.join(', ')}. Please harass the above individuals if they do not finish their approvals in a timely manner."
-      HTTParty.post(ENV["DISCORD_MESSAGES"],
+      HTTParty.post(Rails.application.credentials[:discord][:messages],
         :body => { :content => discord_admin_message}.to_json, :headers => { 'Content-Type' => 'application/json' } )
     end
 

@@ -113,8 +113,8 @@ class UsersController < ApplicationController
 
     if params[:code]
       # guild_id = '123161736181317632'
-      client_id = '630786822863061014'
-      client_secret = ENV["DISCORD_BOT_CLIENT_SECRET"]
+      client_id = Rails.application.credentials[:discord][:bot_client_id]
+      client_secret = Rails.application.credentials[:discord][:bot_client_secret]
 
       body_string = "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=https%3A%2F%2Fmy.bendrocorp.com%2Fdiscord_callback&scope=guilds.join+email+identify" if ENV["RAILS_ENV"] != nil && ENV["RAILS_ENV"] == 'production'
       body_string ||= "client_id=#{client_id}&client_secret=#{client_secret}&grant_type=authorization_code&code=#{params[:code]}&redirect_uri=http%3A%2F%2Flocalhost%3A4200%2Fdiscord_callback&scope=guilds.join+email+identify"

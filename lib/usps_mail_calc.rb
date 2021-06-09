@@ -30,7 +30,7 @@ class USPSMail
       mailService = 'PRIORITY'
     end
 
-    usps_url= "http://production.shippingapis.com/ShippingAPI.dll?API=RateV4&xml=<RateV4Request USERID=\"#{ENV['USPS_USER']}\"><Revision>2</Revision><Package ID=\"1ST\"><Service>#{mailService}</Service><FirstClassMailType>#{mailType}</FirstClassMailType><ZipOrigination>#{@origin_postalcode}</ZipOrigination><ZipDestination>#{@dest_postalcode}</ZipDestination><Pounds>0</Pounds><Ounces>#{@total_weight}</Ounces><Container/><Size>REGULAR</Size><Machinable>true</Machinable></Package></RateV4Request>"
+    usps_url= "http://production.shippingapis.com/ShippingAPI.dll?API=RateV4&xml=<RateV4Request USERID=\"#{Rails.application.credentials.usps_user}\"><Revision>2</Revision><Package ID=\"1ST\"><Service>#{mailService}</Service><FirstClassMailType>#{mailType}</FirstClassMailType><ZipOrigination>#{@origin_postalcode}</ZipOrigination><ZipDestination>#{@dest_postalcode}</ZipDestination><Pounds>0</Pounds><Ounces>#{@total_weight}</Ounces><Container/><Size>REGULAR</Size><Machinable>true</Machinable></Package></RateV4Request>"
 
     response = HTTParty.get(usps_url)
     if response.code != 404

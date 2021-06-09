@@ -8,5 +8,5 @@ test:
 
 production:
   adapter: redis
-  url: <%= ENV["REDIS_URL"] %>
+  url: <%= Rails.application.credentials.dig(:production, :redis_url) %>
   channel_prefix: bendrocorp-api_production

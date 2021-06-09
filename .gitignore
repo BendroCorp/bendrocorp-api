@@ -24,6 +24,9 @@
 !/log/.keep
 !/tmp/.keep
 
+# Ignore uploaded files in development.
+/storage/*
+!/storage/.keep
 .byebug_history
 
 # Credentials
@@ -32,3 +35,4 @@
 
 # random
 dump.rdb
+/config/master.key

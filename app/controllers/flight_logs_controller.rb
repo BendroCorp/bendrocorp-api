@@ -75,9 +75,10 @@ class FlightLogsController < ApplicationController
         puts "New log id: #{@log.id} "
         if params["new_image_uploads"].to_a.count > 0
           params["new_image_uploads"].to_a.each do |image|
-            img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)
-            @log.image_uploads << img
-            @log.save
+            # img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)
+            # @log.image_uploads << img
+            # @log.save
+            @log.image_uploads << attach_image(image)
           end
         end
         render status: 200, json: @log
@@ -98,9 +99,10 @@ class FlightLogsController < ApplicationController
         if @log.update_attributes(flight_log_params)
           if params["new_image_uploads"].to_a.count > 0
             params["new_image_uploads"].to_a.each do |image|
-              img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)
-              @log.image_uploads << img
-              @log.save
+              # img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)
+              # @log.image_uploads << img
+              # @log.save
+              @log.image_uploads << attach_image(image)
             end
           end
           render status: 200, json: @log
@@ -136,6 +138,34 @@ class FlightLogsController < ApplicationController
   end
 
   private
+
+  def attach_image image_data
+    data = image_data[:image][:base64].split(',')[1]
+
+    # create and perform a base resize on the image
+    image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+    pipeline = ImageProcessing::MiniMagick.source(image)
+    resized_image = pipeline.convert('png').resize_to_fit!(1920, 1080)
+    # resized_image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+    # resized_image = resized_image.resize "1920x1080>"
+    # resized_image = resized_image.format "png"
+
+    # transform the data into the ActiveStorage blob
+    image_blob = ActiveStorage::Blob.create_after_upload!(
+      io: File.open(resized_image.path), #resized_image.path
+      filename: "#{@star_object.id}.png",
+      content_type: 'image/png'
+    )
+
+    upload = ImageUpload.create(title: image[:title], description: image[:description], uploaded_by_id: current_user.id, image: image_blob)
+
+    ImageSizerJob.perform_later(upload, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
+    ImageSizerJob.perform_later(upload, 'image', { resize: '25x25^', quality: '100%', gravity: 'center' })
+
+    # return the result
+    upload
+  end
+
   def can_create_log owned_ship_id
     @owned_ships = []
 

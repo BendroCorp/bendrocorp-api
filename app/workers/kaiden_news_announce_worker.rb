@@ -6,8 +6,8 @@ class KadenNewsAnnounceWorker
 
   def perform(*args)
     RpNewsStory.where(published: true, kaiden_announced: false).each do |story|
-      discordNewsUri = ENV["NEWS_WEBHOOK_LINK"] # spectrum-news
-      if discordNewsUri
+      discord_news_uri = Rails.application.credentials[:discord][:news_webhook_link] # spectrum-news
+      if discord_news_uri
         # content to post
         content = "@everyone A new spectrum news article has been published: #{story.title}! Read it here: https://my.bendrocorp.com/news/#{story.id}"
         push_content = "A new spectrum news article has been published: #{story.title}!"
@@ -27,7 +27,7 @@ class KadenNewsAnnounceWorker
         end
 
         # send to both hooks
-        result = HTTParty.post(discordNewsUri,
+        result = HTTParty.post(discord_news_uri,
           body: { content: content }.to_json, headers: { 'Content-Type' => 'application/json' } )
         if result.code == 204
           story.kaiden_announced = true

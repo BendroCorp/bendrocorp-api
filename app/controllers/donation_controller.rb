@@ -82,26 +82,16 @@ class DonationController < ApplicationController
       # save the donation on our side
       if @new_donation.save
         begin
-          # start the process of creating a charge
-          # # Get the stripe key
-          # if ENV['RAILS_ENV'] == 'production'
-          #   puts 'Using Production Stripe env'
-          #   Stripe.api_key = ENV["STRIPE_API_KEY"]
-          # else
-          #   puts 'Using Test Stripe env'
-          #   Stripe.api_key = "sk_test_5XT6Ve3VgDkohMPptPsRtm6t"
-          # end
-
           # Token is created using Checkout or Elements!
           # Get the payment token ID submitted by the form:
           token = params[:donation][:card_token]
 
           # Charge the user's card:
           charge = Stripe::Charge.create(
-            :amount => (@new_donation.amount * 100).to_i, # the charge unit in cents - https://stripe.com/docs/currencies#zero-decimal
-            :currency => "usd",
-            :description => "Donation to BendroCorp for #{@new_donation.donation_item.title} by #{current_user.username}",
-            :source => token,
+            amount: (@new_donation.amount * 100).to_i, # the charge unit in cents - https://stripe.com/docs/currencies#zero-decimal
+            currency: 'usd',
+            description: "Donation to BendroCorp for #{@new_donation.donation_item.title} by #{current_user.username}",
+            source: token
           )
 
           if charge.id != nil

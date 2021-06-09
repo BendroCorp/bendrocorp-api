@@ -6,12 +6,11 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.1.6'
+gem 'rails', '~> 6.1.3'
 
 # Use Puma as the app server
-gem 'puma', '~> 3.12'
+gem 'puma', '~> 5.0'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 # gem 'jbuilder', '~> 2.5'
 # Use Redis adapter to run Action Cable in production
@@ -23,7 +22,10 @@ gem 'bcrypt', '~> 3.1.7'
 # gem 'capistrano-rails', group: :development
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
+
+# Use Active Storage variant
+gem 'image_processing', '~> 1.2'
 
 # jobs
 gem 'sidekiq'
@@ -40,6 +42,13 @@ gem 'rb-readline'
 
 # one time password library
 gem 'rotp'
+
+# apple auth
+gem 'apple_auth'
+
+# using the sendgrid api for action mailer rather than smtp
+# https://github.com/eddiezane/sendgrid-actionmailer
+gem 'sendgrid-actionmailer'
 
 # SendGrid for sending emails
 gem 'mail'
@@ -58,6 +67,7 @@ gem 'have-i-been-pwned'
 gem 'jwt'
 
 # auditing
+# https://github.com/paper-trail-gem/paper_trail
 gem 'paper_trail'
 
 # file attachments
@@ -68,9 +78,18 @@ gem 'aws-sdk' #, '~> 2.3'
 # prod database
 gem 'pg'
 
+# rate limiting...and other stuff
+# https://github.com/rack/rack-attack
+gem 'rack-attack'
+
 # for web requsts to other apis and scraping :)
 gem 'nokogiri'
 gem 'httparty'
+
+gem 'mini_magick'
+
+# active storage
+gem 'activestorage-validator'
 
 group :test do
  gem 'sqlite3'
