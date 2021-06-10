@@ -18,6 +18,7 @@ require "rails/test_unit/railtie"
 Bundler.require(*Rails.groups)
 
 puts ENV['RAILS_ENV']
+puts ENV['RAILS_MASTER_KEY']
 
 module BendrocorpApi
   class Application < Rails::Application
