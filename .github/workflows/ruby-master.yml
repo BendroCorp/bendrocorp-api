@@ -65,7 +65,7 @@ jobs:
       run: echo "RAILS_ENV=production" >> $GITHUB_ENV
 
     - name: Check ImageMagick version
-      run: convert -version && ls -l /etc/ImageMagick-6 && cat etc/ImageMagick-6/policy.xml | grep HTTPS
+      run: convert -version && ls -l /etc/ImageMagick-6 && cat /etc/ImageMagick-6/policy.xml | grep HTTPS
 
     - name: Run Migrations
       run: rails db:migrate
