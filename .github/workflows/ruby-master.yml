@@ -64,6 +64,9 @@ jobs:
     - name: Switch env to production
       run: echo "RAILS_ENV=production" >> $GITHUB_ENV
 
+    - name: Check im version
+      run: convert -version && cat etc/ImageMagick-7/policy.xml
+
     - name: Run Migrations
       run: rails db:migrate
     
