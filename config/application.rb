@@ -19,6 +19,7 @@ Bundler.require(*Rails.groups)
 
 puts ENV['RAILS_ENV']
 puts ENV['RAILS_MASTER_KEY'] # debug remove
+puts ENV['RAILS_MASTER_KEY'].to_s.length
 
 module BendrocorpApi
   class Application < Rails::Application
