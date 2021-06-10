@@ -70,7 +70,7 @@ jobs:
     # - name: Fix ImageMagick Policy (temp)
     #   run: sudo sed -i -e 's/domain=\"delegate\" rights=\"none\" pattern=\"HTTPS\"/domain=\"coder\" rights=\"read | write\" pattern=\"HTTPS\"/g' /etc/ImageMagick-6/policy.xml
     - name: Fix ImageMagick Policy (temp)
-      run: sed -i '/pattern=\"HTTPS\"/d' /etc/ImageMagick-6/policy.xml
+      run: sudo sed -i '/pattern=\"HTTPS\"/d' /etc/ImageMagick-6/policy.xml
 
     - name: Re-Check ImageMagick policy (temp)
       run: cat /etc/ImageMagick-6/policy.xml | grep HTTPS
