@@ -68,7 +68,7 @@ jobs:
       run: convert -version && cat /etc/ImageMagick-6/policy.xml | grep HTTPS
 
     - name: Fix ImageMagick Policy (temp)
-      run: sudo sed -i -e 's/<policy domain="delegate" rights="none" pattern="HTTPS" />/<policy domain="delegate" rights="write" pattern="HTTPS" />/g' /etc/ImageMagick-6/policy.xml
+      run: sudo sed -i -e 's/\<policy domain=\"delegate\" rights=\"none\" pattern=\"HTTPS\" \/>/\<policy domain=\"delegate\" rights=\"write\" pattern=\"HTTPS\" \/>\/g' /etc/ImageMagick-6/policy.xml
 
     - name: Re-Check ImageMagick policy (temp)
       run: cat /etc/ImageMagick-6/policy.xml | grep HTTPS
