@@ -26,6 +26,9 @@ module BendrocorpApi
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.1
 
+    # temp fix hopefully - https://stackoverflow.com/questions/24545602/rails-unable-to-autoload-constant-from-file-despite-being-defined-in-that-file
+    config.autoloader = :classic
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
