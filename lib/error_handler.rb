@@ -30,8 +30,8 @@ module Error
               puts 'Send email:'
               puts mail_json
               puts
-              if ENV['SENDGRID_API_KEY'] != nil
-                sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])#
+              if Rails.application.credentials.sendgrid_api_key != nil
+                sg = SendGrid::API.new(api_key: Rails.application.credentials.sendgrid_api_key)
                 response = sg.client.mail._("send").post(request_body: mail_json)
 
                 puts "SendGrid response code:"
@@ -103,8 +103,8 @@ module Error
           puts 'Send email:'
           puts mail_json
           puts
-          if ENV['SENDGRID_API_KEY'] != nil
-            sg = SendGrid::API.new(api_key: ENV['SENDGRID_API_KEY'])#
+          if Rails.application.credentials.sendgrid_api_key != nil
+            sg = SendGrid::API.new(api_key: Rails.application.credentials.sendgrid_api_key)#
             response = sg.client.mail._("send").post(request_body: mail_json)
 
             puts "SendGrid response code:"
