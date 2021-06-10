@@ -25,9 +25,6 @@ class MigratePaperclipToActiveStorage < ActiveRecord::Migration[6.1]
 
       character.avatar.attach(image_blob)
       character.save
-
-      # queue image sizer jobs as required
-      # ImageSizerJob.perform_later(character, 'avatar', { resize: '100x100^', quality: '100%' })
     end
 
     puts "Migrated #{icount} character avatars"
