@@ -13,7 +13,7 @@ class DiscordIdentity < ApplicationRecord
   # Retrieve an access token for the Discord Identity
   def access_token
     # client info
-    client_id = Rails.application.credentials.[:discord][:bot_client_id]
+    client_id = Rails.application.credentials[:discord][:bot_client_id]
     client_secret = Rails.application.credentials[:discord][:bot_client_secret]
 
     # get an access token w/ refresh_token
