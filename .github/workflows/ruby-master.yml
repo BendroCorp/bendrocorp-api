@@ -72,8 +72,8 @@ jobs:
     - name: Fix ImageMagick Policy (temp)
       run: sudo sed -i '/pattern=\"HTTPS\"/d' /etc/ImageMagick-6/policy.xml
 
-    - name: Re-Check ImageMagick policy (temp)
-      run: cat /etc/ImageMagick-6/policy.xml | grep HTTPS
+    - name: Re-Check ImageMagick policy
+      run: cat /etc/ImageMagick-6/policy.xml
 
     - name: Run Migrations
       run: rails db:migrate
