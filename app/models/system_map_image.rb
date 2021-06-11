@@ -31,12 +31,12 @@ class SystemMapImage < ApplicationRecord
   def image_url_thumbnail
     # self.image.url(:big) # possible perm change, temp for now
     # rails_blob_path(image.sized(:big), only_path: true) if image.attached?
-    image.variant({ resize_to_fit: [100, 100] }).processed.url.sub(/\?.*/, '') if image.attached?
+    image.variant({ resize_to_fill: [100, 100] }).processed.url.sub(/\?.*/, '') if image.attached?
   end
 
   def image_url_big
     # NOTE may need to adjust which version this returns
-    image.variant({ resize_to_fit: [200, 200] }).processed.url.sub(/\?.*/, '') if image.attached?
+    image.variant({ resize_to_fill: [200, 200] }).processed.url.sub(/\?.*/, '') if image.attached?
   end
 
   # DEPRECATED - only here for migrating off of Paperclip

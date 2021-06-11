@@ -51,7 +51,7 @@ class Character < ActiveRecord::Base
   end
 
   def avatar_thumbnail_url
-    avatar.variant({ resize_to_fit: [100, 100] }).processed.url.sub(/\?.*/, '') if avatar.attached?
+    avatar.variant({ resize_to_fill: [100, 100] }).processed.url.sub(/\?.*/, '') if avatar.attached?
   end
 
   accepts_nested_attributes_for :application

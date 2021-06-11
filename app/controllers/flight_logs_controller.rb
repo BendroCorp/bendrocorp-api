@@ -161,8 +161,8 @@ class FlightLogsController < ApplicationController
 
     # ImageSizerJob.perform_later(upload, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
     # ImageSizerJob.perform_later(upload, 'image', { resize: '25x25^', quality: '100%', gravity: 'center' })
-    ImageSizerJob.perform_later(upload, 'image', { resize_to_fit: [100, 100] })
-    ImageSizerJob.perform_later(upload, 'image', { resize_to_fit: [25, 25] })
+    ImageSizerJob.perform_later(upload, 'image', { resize_to_fill: [100, 100] })
+    ImageSizerJob.perform_later(upload, 'image', { resize_to_fill: [25, 25] })
 
     # return the result
     upload
