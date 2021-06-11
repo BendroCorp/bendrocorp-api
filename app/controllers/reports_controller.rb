@@ -15,7 +15,8 @@ class ReportsController < ApplicationController
 
     # reports which are for me
     reports_for_me = Report.where(archived: false).map do |report|
-      report if report.report_for && (report.report_for.for_user_id == current_user.id || current_user.is_in_role(report.report_for.for_role_id))
+      report if report.report_for &&
+      ((!report.report_for.for_user_id.nil? && report.report_for.for_user_id == current_user.id) || (!report.report_for.for_role_id.nil? && current_user.is_in_role(report.report_for.for_role_id)))
     end
 
     reports_final = []
