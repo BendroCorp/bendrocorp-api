@@ -102,8 +102,10 @@ class StarObjectController < ApplicationController
     if @star_object.save
       # if we updated the image then run a background job to create images variants
       if params[:star_object][:new_primary_image]
-        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
-        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '200x200^', quality: '100%', gravity: 'center' })
+        # ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize_to_fit: '100x100^', quality: '100%', gravity: 'center' })
+        # ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize_to_fit: '200x200^', quality: '100%', gravity: 'center' })
+        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize_to_fit: [100, 100] })
+        ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize_to_fit: [200,200] })
       end
 
       render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])
@@ -151,8 +153,8 @@ class StarObjectController < ApplicationController
       if @star_object.update(system_map_star_objects_params)
         # if we updated the image then run a background job to create images variants
         if params[:star_object][:new_primary_image]
-          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '100x100^', quality: '100%', gravity: 'center' })
-          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize: '200x200^', quality: '100%', gravity: 'center' })
+          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize_to_fit: [100, 100] })
+          ImageSizerJob.perform_later(@star_object.primary_image, 'image', { resize_to_fit: [200,200] })
         end
 
         render json: @star_object.to_json(include: { master: { include: { type: { include: { fields: { methods: [:descriptors] } }} } }, system_map_images: { methods: [:image_url_thumbnail, :image_url], include: { created_by: { only:[:id], methods: [:main_character] } } }, parent: { methods: [:kind, :primary_image_url] }, children: { methods: [:kind, :primary_image_url] }, object_type: {} }, methods: [:kind, :title_with_kind, :primary_image_url, :primary_image_url_full, :fields, :field_values])

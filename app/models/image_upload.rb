@@ -21,13 +21,13 @@ class ImageUpload < ApplicationRecord
 
   def image_url_mini
     # self.image.url(:mini)
-    image.variant({ resize: '25x25^', quality: '100%' }).processed.url.sub(/\?.*/, '') if image.attached?
+    image.variant({ resize_to_fit: [25, 25] }).processed.url.sub(/\?.*/, '') if image.attached?
   end
 
   def image_url_thumbnail
     # self.image.url(:thumbnail)
     # rails_blob_path(image.sized(:thumbnail), only_path: true) if image.attached?
-    image.variant({ resize: '100x100^', quality: '100%' }).processed.url.sub(/\?.*/, '') if image.attached?
+    image.variant({ resize_to_fit: [100, 100] }).processed.url.sub(/\?.*/, '') if image.attached?
   end
 
   def image_url_original

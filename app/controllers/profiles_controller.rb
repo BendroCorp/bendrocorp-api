@@ -137,7 +137,8 @@ class ProfilesController < ApplicationController
           @character.avatar.attach(image_blob)
 
           # queue image sizer jobs as required
-          ImageSizerJob.perform_later(@character, 'avatar', { resize: '100x100^', quality: '100%' })
+          # ImageSizerJob.perform_later(@character, 'avatar', { resize: '100x100^', quality: '100%' }) resize_to_fit: [100, 100]
+          ImageSizerJob.perform_later(@character, 'avatar', { resize_to_fit: [100, 100] }) 
         end
 
         # save the character back

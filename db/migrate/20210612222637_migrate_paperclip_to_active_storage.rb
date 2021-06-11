@@ -34,7 +34,7 @@ class MigratePaperclipToActiveStorage < ActiveRecord::Migration[6.1]
     SystemMapImage.all.each do |image|
       uri = image.paperclip_original_uri
 
-      next if uri.nil? || uri.include?("missing") || image.image.attached?
+      next if uri.nil? || uri.include?("missing") #|| image.image.attached?
 
       # create and perform a base resize on the image
       icount += 1
@@ -60,7 +60,7 @@ class MigratePaperclipToActiveStorage < ActiveRecord::Migration[6.1]
     ImageUpload.all.each do |image|
       uri = image.paperclip_original_uri
 
-      next if uri.nil? || uri.include?("missing") || image.image.attached?
+      next if uri.nil? || uri.include?("missing") #|| image.image.attached?
 
       # create and perform a base resize on the image
       icount += 1
