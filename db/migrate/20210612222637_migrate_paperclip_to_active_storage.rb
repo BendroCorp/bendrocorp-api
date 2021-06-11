@@ -9,7 +9,7 @@ class MigratePaperclipToActiveStorage < ActiveRecord::Migration[6.1]
       # uri = 'https://decider.com/wp-content/uploads/2020/12/the-mandalorian-14-boba-fett-headshot.jpg?quality=80&strip=all&w=1200'
       puts uri
       # not the right URI: /system/characters/avatars/000/000/001/original/rindzer.png >://
-      next if uri.nil? || uri.include?("missing") || character.avatar.attached?
+      next if uri.nil? || uri.include?("missing") #|| character.avatar.attached?
       # https://github.com/janko/image_processing/blob/master/doc/minimagick.md#resize_to_fill
       # actually make the move
       icount += 1
