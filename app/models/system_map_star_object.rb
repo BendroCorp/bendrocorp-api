@@ -30,7 +30,7 @@ class SystemMapStarObject < ApplicationRecord
   belongs_to :master, class_name: 'MasterId', optional: true, foreign_key: :id
 
   def primary_image_url
-    self.primary_image.image_url_thumbnail if self.primary_image
+    self.primary_image.image_url_big if self.primary_image
   end
 
   def primary_image_url_full
