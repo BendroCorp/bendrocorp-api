@@ -1,6 +1,6 @@
 include Error::WorkerErrorHandler
 
-puts "Sidekiq env #{RENV["RAILS_ENV"].to_sym}"
+puts "Sidekiq env #{ENV["RAILS_ENV"].to_sym}"
 
 Sidekiq.default_worker_options = { 'backtrace' => true }
 Sidekiq.configure_server do |config|
