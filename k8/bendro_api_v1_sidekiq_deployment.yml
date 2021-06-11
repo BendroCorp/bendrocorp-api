@@ -17,6 +17,11 @@ spec:
       - name: bendro-krakend-deployment
         image: ghcr.io/bendrocorp/bendrocorp-api-v1:latest
         env:
+        - name: RAILS_MASTER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bendro-v1-api-secrets
+              key: RAILS_MASTER_KEY
         - name: RACK_ENV
           valueFrom:
             secretKeyRef:
