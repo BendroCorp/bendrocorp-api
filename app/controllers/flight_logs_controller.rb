@@ -28,7 +28,7 @@ class FlightLogsController < ApplicationController
 
     @flight_logs = FlightLog.where(log_owner_id: current_user.main_character.id).where(archived: false).order("created_at desc")
 
-    render status: 200, json: @flight_logs.as_json(methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}})
+    render status: 200, json: @flight_logs.as_json(methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_thumbnail, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}})
 
   end
 
@@ -57,7 +57,7 @@ class FlightLogsController < ApplicationController
   def show
     @log = FlightLog.find_by_id(params[:flight_log_id])
     if @log && @log.log_owner = current_user.main_character
-      render status: 200, json: @log.as_json(methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_large, :image_url_small, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}})
+      render status: 200, json: @log.as_json(methods: [:log_time_ms, :full_location, :log_title], include: { image_uploads: { methods: [:image_url_thumbnail, :image_url_original] }, owned_ship: { include: { character: { methods: :full_name}, ship: {}}, methods: :full_ship_title }, system: { include: { planets: { include: { moons: {}} } }}, planet: {}})
     else
       render status: 404, json: { message: 'Flight log not found or you do not have accesss to it!' }
     end
