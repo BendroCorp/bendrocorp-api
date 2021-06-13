@@ -60,13 +60,13 @@ class ProfilesController < ApplicationController
 
         # if the user is not in the HR role
         if !current_user.isinrole(7)
-          if @character.update_attributes(character_params)
+          if @character.update(character_params)
             render status: 200, json: { message: 'Character updated!' }
           else
             render status: :unprocessable_entity, json: { message: "Character could not be updated because: #{@character.errors.full_messages.to_sentence}" }
           end
         else # if the user is in the HR role
-          if @character.update_attributes(character_admin_params)
+          if @character.update(character_admin_params)
             render status: 200, json: { message: 'Character updated (with HR rights)!' }
           else
             render status: :unprocessable_entity, json: { message: "Character could not be updated because: #{@character.errors.full_messages.to_sentence}" }
