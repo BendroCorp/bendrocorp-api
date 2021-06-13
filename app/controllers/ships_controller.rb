@@ -56,7 +56,7 @@ class ShipsController < ApplicationController
     @owned_ship = OwnedShip.find_by_id(params[:owned_ship][:id])
     if @owned_ship != nil
       if @owned_ship.character_id == current_user.main_character.id
-        if @owned_ship.update_attributes(owned_ship_params)
+        if @owned_ship.update(owned_ship_params)
           render status: 201, json: @owned_ship
         else
           render status: 500, json: { message: "Owned ship could not be updated because: #{@owned_ship.errors.full_messages.to_sentence}" }
@@ -141,7 +141,7 @@ class ShipsController < ApplicationController
         @crew_role = OwnedShipCrewRole.find_by_id(params[:crew_role][:id].to_i)
         if @crew_role != nil
           if @crew_role.editable == true
-            if @crew_role.update_attributes(crew_role_params)
+            if @crew_role.update(crew_role_params)
               render status: 200, json: { message: "Crew role updated." }
             else
               render status: 500, json: { message: "Error Occured: Crew role could not be updated." }

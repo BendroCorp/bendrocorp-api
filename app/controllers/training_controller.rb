@@ -58,7 +58,7 @@ class TrainingController < ApplicationController
     @course = TrainingCourse.find_by_id(params[:training_course][:id])
     @course.version += 1
     if @course
-      if @course.update_attributes(training_course_params)
+      if @course.update(training_course_params)
         render status: 200, json: @course.as_json(include: { training_items: { include: { training_item_completions: { }, training_item_type: { },  created_by: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } })
       else
         render status: 500, json: { message: "The course could not be updated because: #{@course.errors.full_messages.to_sentence}" }
@@ -104,7 +104,7 @@ class TrainingController < ApplicationController
     if @item
       @item.version += 1
       @item.training_course.version += 1
-      if @item.update_attributes(training_item_params)
+      if @item.update(training_item_params)
         render status: 200, json: @item.as_json(include: { training_item_completions: { }, training_item_type: { },  created_by: { only: [:id], methods: [:main_character] } } )
       else
         render status: 500, json: { message: "The training item could not be updated because: #{@item.errors.full_messages.to_sentence}" }

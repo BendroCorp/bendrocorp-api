@@ -26,7 +26,7 @@ class ChatController < ApplicationController
     if @chat
       # security check
       if current_user.id == @chat.user_id || current_user.is_in_one_role([2,3]) # execs, director
-        if @chat.update_attributes(chat_params)
+        if @chat.update(chat_params)
           render status: 200, json: { mode: "UPDATE", chat: @chat.as_json(include: { user: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] }}) }
         else
           render status: 500, json: { message: "Chat could not be updated because: #{@chat.errors.full_messages.to_sentence}" }

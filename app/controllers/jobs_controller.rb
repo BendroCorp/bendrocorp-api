@@ -38,7 +38,7 @@ class JobsController < ApplicationController
   def update
     @job = Job.find_by_id(params[:job][:id].to_i)
     if @job && !@job.read_only
-      if @job.update_attributes(job_params)
+      if @job.update(job_params)
         render status: 201, json: @job
       else
         render status: 500, json: { message: "Job could not be created because: #{@job.errors.full_messages.to_sentence}" }

@@ -32,7 +32,7 @@ class LawController < ApplicationController
     def update_law
         @law = JurisdictionLaw.find_by_id params[:law][:id].to_i
         if @law
-            if @law.update_attributes(law_params)
+            if @law.update(law_params)
                 render status: 200, json: @law
             else
                 render status: 500, json: { message: "Law could not be updated because: #{@law.errors.full_messages.to_sentence}" }
@@ -87,7 +87,7 @@ class LawController < ApplicationController
     def update_jurisdiction
         @jurisdiction = Jurisdiction.find_by_id params[:jurisdiction][:id].to_i
         if @jurisdiction
-            if @jurisdiction.update_attributes(jurisdiction_params)
+            if @jurisdiction.update(jurisdiction_params)
                 render status: 200, json: @jurisdiction
             else
                 render status: 500, json: { message: "Jurisdiction could not be updated because: #{@jurisdiction.errors.full_messages.to_sentence}" }
@@ -134,7 +134,7 @@ class LawController < ApplicationController
     def update_category
         @law_category = JurisdictionLawCategory.find_by_id params[:category][:id].to_i
         if @law_category
-            if @law_category.update_attributes(law_category_params)
+            if @law_category.update(law_category_params)
                 render status: 200, json: @law_category
             else
                 render status: 500, json: { message: "Law category could not be updated because: #{@law_category.errors.full_messages.to_sentence}" }

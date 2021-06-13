@@ -100,7 +100,7 @@ class PageEntriesController < ApplicationController
           @page.published_when = Time.now
         end
 
-        if @page.update_attributes(page_params)
+        if @page.update(page_params)
           refetch = Page.find_by_id(@page.id)
           render status: 200, json: refetch.as_json(include: { categories: {}, roles: {}, creator: { only: [:id], methods: [:main_character_full_name]}, page_entry_edits: { include: { user: { only:[], methods: [:main_character_full_name] } } } })
         else
@@ -262,7 +262,7 @@ class PageEntriesController < ApplicationController
   # def update_category
   #   @page_category = PageCategory.find_by_id(params[:page_category][:id])
   #   if @page_category != nil
-  #     if @page_category.update_attributes(category_params)
+  #     if @page_category.update(category_params)
   #       render status: 200, json: @page_category
   #     else
   #       render status: 500, json: { message: "Page category could not be updated because: #{@page_category.errors.full_messages.to_sentence}" }

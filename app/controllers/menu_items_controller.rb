@@ -44,7 +44,7 @@ class MenuItemsController < ApplicationController
   # PATCH api/menu
   def update
     @menu_item = MenuItem.find_by_id(params[:menu_item][:id])
-    if @menu_item.update_attributes(menu_item_params)
+    if @menu_item.update(menu_item_params)
       render status: 200, json: @menu_item
     else
       render status: 500, json: { message: "Menu item could not be updated because: #{@menu_item.errors.full_messages.to_sentence}" }

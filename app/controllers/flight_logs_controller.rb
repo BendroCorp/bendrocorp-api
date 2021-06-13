@@ -96,7 +96,7 @@ class FlightLogsController < ApplicationController
     @log = FlightLog.find_by_id(params[:flight_log][:id].to_i)
     if @log != nil
       if (@log.owned_ship_id != nil && can_create_log(@log.owned_ship_id)) || @log.owned_ship_id == nil
-        if @log.update_attributes(flight_log_params)
+        if @log.update(flight_log_params)
           if params["new_image_uploads"].to_a.count > 0
             params["new_image_uploads"].to_a.each do |image|
               # img = ImageUpload.create(image: "data:#{image[:image][:filetype]};base64,#{image[:image][:base64]}", image_file_name: image[:image][:filename], title: image[:title], description: image[:description], uploaded_by_id: current_user.id)

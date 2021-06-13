@@ -205,7 +205,7 @@ class OffenderReportsController < ApplicationController
         # end
 
         # Save back
-        if @offender_report.update_attributes(offender_report_update_params)
+        if @offender_report.update(offender_report_update_params)
           render status: 200, json: @offender_report.as_json(include: { infractions: {}, force_level_applied: {}, created_by:{}, system: { include: { planets: { include: { moons: { } } } } }, planet: { include: { moons: { } } }, moon: {}, ship: {}, violence_rating: {}, offender: { } }, methods: [:full_location, :occured_when_ms])
         else
           render status: 500, json: { message: "The offender report could not be updated because: #{@offender_report.errors.full_messages.to_sentence}" }

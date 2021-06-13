@@ -172,7 +172,7 @@ class EventsController < ApplicationController
       @briefing.published_when = Time.now
     end
     if @briefing != nil && !@briefing.event.submitted_for_certification
-      if @briefing.update_attributes(event_briefing_params)
+      if @briefing.update(event_briefing_params)
         render status: 200, json: @briefing
       else
         render status: 500, json: { message: 'Error Occured. Could not update event briefing.' }
@@ -190,7 +190,7 @@ class EventsController < ApplicationController
     @debriefing = EventDebriefing.find_by_id(params[:event_id])
     if @debriefing != nil && !@debriefing.event.submitted_for_certification
       if @debriefing.event.is_expired
-        if @debriefing.update_attributes(event_debriefing_params)
+        if @debriefing.update(event_debriefing_params)
           render status: 200, json: @debriefing
         else
           render status: 500, json: { message: 'Error Occured. Could not update event briefing.' }
@@ -358,7 +358,7 @@ class EventsController < ApplicationController
       # check to make sure debriefing is submitted
       # TODO: ^^ This
       # update the event first
-      if @event.update_attributes(event_certify_params)
+      if @event.update(event_certify_params)
         #create certification request
         ecr = EventCertificationRequest.new(event_id: @event.id)
         #create approval

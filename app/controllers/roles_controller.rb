@@ -39,7 +39,7 @@ class RolesController < ApplicationController
   def update_role
     @role = Role.find_by_id(params[:role][:id].to_i)
     if @role != nil
-      if @role.update_attributes(role_params)
+      if @role.update(role_params)
         render status: 200, json: { message: 'Role updated.' }
       else
         render status: 500, json: { message: 'Error Occured. Role could not be updated.' }

@@ -169,7 +169,7 @@ class TradeCalculationsController < ApplicationController
   #             @tc.trade_transactions << tt
   #           end
   #         end
-  #         if @tc.save #update_attributes(trade_calculation_params)
+  #         if @tc.save #update(trade_calculation_params)
   #           render status: 200, json: { message: "Trade calculation updated." }
   #         else
   #           render status: 500, json: { message: "Something went wrong. Trade calculation could not be updated." }

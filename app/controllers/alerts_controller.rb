@@ -38,7 +38,7 @@ class AlertsController < ApplicationController
   def update
     if !@alert.nil?
       @alert.expires = Time.at(params[:alert][:expires_ms] / 1000.0) if params[:alert][:expires_ms]
-      if @alert.update_attributes(alert_params)
+      if @alert.update(alert_params)
         render status: 200, json: @alert.as_json(include: { star_object: { methods: [:kind, :title_with_kind, :primary_image_url] }, alert_type: {}, user: { only:[:id], methods: [:main_character] } })
       else
         render status: 500, json: { message: "Alert could not be created because: #{@alert.errors.full_messages.to_sentence}"}

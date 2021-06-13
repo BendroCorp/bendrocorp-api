@@ -334,7 +334,7 @@ class StoreController < ApplicationController
     @item = StoreItem.find_by_id(params[:item][:id].to_i)
     if @item != nil
       @item.last_updated_by_id = current_user.id
-      if @item.update_attributes(item_params)
+      if @item.update(item_params)
         if @item.currency_type_id != 1
           @item.weight = nil
           @item.max_shipping_cost = nil
@@ -389,7 +389,7 @@ class StoreController < ApplicationController
     @item = StoreItemCategory.find_by_id(params[:category][:id].to_i)
     if @item != nil
       @item.last_updated_by_id = current_user.id
-      if @item.update_attributes(category_params)
+      if @item.update(category_params)
         render status: 200, json: { message: 'Category updated.' }
       else
         render status: 500, json: { message: 'Error Occured: Category could not be updated.' }

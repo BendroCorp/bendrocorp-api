@@ -199,7 +199,7 @@ class ReportsController < ApplicationController
           end # if the incoming params changes report to non-draft
 
           # attempt to update the report
-          if @report.update_attributes(report_update_params)
+          if @report.update(report_update_params)
             render json: @report.as_json(include: { approval: {}, report_for: {}, handler: {}, template: {}, user: { only: [], methods: [:main_character] }, fields: { include: { field: { methods: [:descriptors] }, field_value: { methods: [:descriptor_value] } } } } )
           else
             render json: { message: @report.errors.full_messages.to_sentence }, status: :unprocessable_entity

@@ -37,7 +37,7 @@ class DonationController < ApplicationController
   def update
     @item = DonationItem.find_by_id(params[:donation_item][:id])
     if @item
-      if @item.update_attributes(donation_item_params)
+      if @item.update(donation_item_params)
         render status: 200, json: @item.as_json(include: { donations: { include: { user: { only: [:id], methods: [:main_character] } } }, created_by: { only: [:id], methods: [:main_character] } }, methods: [:total_donations, :is_completed])
       else
         render status: 500, json: { message: "Donation item could not be updated because: #{@item.errors.full_messages.to_sentence}" }

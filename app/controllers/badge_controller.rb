@@ -27,7 +27,7 @@ class BadgeController < ApplicationController
   def update
     @badge = Badge.find_by_id(params[:badge][:id])
     if @badge
-      if @badge.update_attributes(badge_params)
+      if @badge.update(badge_params)
         render status: 200, json: @badge
       else
         render status: 500, json: { message: "Badge could not be updated because: #{@badge.errors.full_messages.to_sentence}" }

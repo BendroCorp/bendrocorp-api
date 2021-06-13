@@ -66,7 +66,7 @@ class SystemMapController < ApplicationController
     begin
       @system = SystemMapSystem.find_by_id(params[:system][:id])
       if @system != nil
-        if @system.update_attributes(system_create_params)
+        if @system.update(system_create_params)
           render status: 200, json: { message: 'Success' }
         else
           render status: 500, json: { message: "ERROR Occured: System could not be edited because: #{@system.errors.full_messages.to_sentence}"}

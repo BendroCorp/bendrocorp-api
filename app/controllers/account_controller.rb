@@ -63,7 +63,7 @@ class AccountController < ApplicationController
     @user = User.find_by password_reset_token: params[:user][:password_reset_token]
 
     if @user != nil && @user.login_allowed
-      @user.update_attributes(reset_params)
+      @user.update(reset_params)
       @user.password_reset_token = nil
       @user.password_reset_requested = false
       if @user.save
@@ -113,7 +113,7 @@ class AccountController < ApplicationController
 
   def update_user_info
     db_user = current_user.db_user
-    if db_user.user_information.update_attributes(user_info_params)
+    if db_user.user_information.update(user_info_params)
       render status: 200, json: { message: 'Personal information updated.' }
     else
       render status: 500, json: { message: 'Error Occured: Personal information could not be updated.' }

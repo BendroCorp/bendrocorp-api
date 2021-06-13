@@ -127,7 +127,7 @@ class ApplicationsController < ApplicationController
   def update_interview
     @interview = ApplicationInterview.find_by_id(params[:interview][:id])
     if @interview
-      if @interview.update_attributes(application_interview_params)
+      if @interview.update(application_interview_params)
         render status: 200, json: @interview
       else
         render status: 500, json: { message: "The application interview could not be updated because: #{@interview.errors.full_messages.to_sentence}" }

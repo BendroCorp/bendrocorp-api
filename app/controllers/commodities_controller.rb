@@ -42,7 +42,7 @@ class CommoditiesController < ApplicationController
   def update
     @trade_item = TradeItem.find_by_id(params[:ti_id])
     if @trade_item != nil
-      if @trade_item.update_attributes(trade_item_params)
+      if @trade_item.update(trade_item_params)
         render status: 200, json: { message: "Trade item updated." }
       else
         render status: 500, json: { message: "Something went wrong. Trade item could not be updated." }
