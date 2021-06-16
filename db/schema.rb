@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_04_222637) do
+ActiveRecord::Schema.define(version: 2021_07_08_003146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 2021_06_04_222637) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
-    t.bigint "record_id", null: false
+    t.text "record_id", null: false
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
@@ -756,20 +756,102 @@ ActiveRecord::Schema.define(version: 2021_06_04_222637) do
     t.index ["user_id"], name: "index_in_roles_on_user_id"
   end
 
-  create_table "intelligence_reports", force: :cascade do |t|
-    t.text "title"
+  create_table "incident_report_comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "comment"
+    t.bigint "created_by_id", null: false
+    t.uuid "incident_report_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by_id"], name: "index_incident_report_comments_on_created_by_id"
+    t.index ["incident_report_id"], name: "index_incident_report_comments_on_incident_report_id"
+  end
+
+  create_table "incident_report_infractions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "incident_report_id", null: false
+    t.uuid "infraction_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["incident_report_id"], name: "index_incident_report_infractions_on_incident_report_id"
+    t.index ["infraction_id"], name: "index_incident_report_infractions_on_infraction_id"
+  end
+
+  create_table "incident_reports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "description"
+    t.text "rsi_handle"
+    t.text "rsi_avatar_link"
+    t.text "rsi_org_avatar_link"
+    t.datetime "occured_when"
+    t.uuid "star_object_id"
+    t.uuid "intelligence_case_id", null: false
+    t.uuid "force_used_id"
+    t.bigint "ship_used_id"
+    t.uuid "threat_level_id", default: "cfa4b341-dc8d-498d-b68f-3db2482ce66c"
+    t.bigint "classification_level_id", default: 1, null: false
+    t.bigint "created_by_id", null: false
+    t.uuid "approval_status_id", default: "a067e0d6-018e-4afc-87c9-6c486c512a76"
+    t.boolean "show_in_safe", default: true
+    t.boolean "archived", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["approval_status_id"], name: "index_incident_reports_on_approval_status_id"
+    t.index ["classification_level_id"], name: "index_incident_reports_on_classification_level_id"
+    t.index ["created_by_id"], name: "index_incident_reports_on_created_by_id"
+    t.index ["force_used_id"], name: "index_incident_reports_on_force_used_id"
+    t.index ["intelligence_case_id"], name: "index_incident_reports_on_intelligence_case_id"
+    t.index ["ship_used_id"], name: "index_incident_reports_on_ship_used_id"
+    t.index ["star_object_id"], name: "index_incident_reports_on_star_object_id"
+    t.index ["threat_level_id"], name: "index_incident_reports_on_threat_level_id"
+  end
+
+  create_table "intelligence_case_comments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "comment"
+    t.bigint "created_by_id", null: false
+    t.uuid "intelligence_case_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["created_by_id"], name: "index_intelligence_case_comments_on_created_by_id"
+    t.index ["intelligence_case_id"], name: "index_intelligence_case_comments_on_intelligence_case_id"
+  end
+
+  create_table "intelligence_cases", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "title"
+    t.text "case_summary"
+    t.text "rsi_handle"
+    t.text "rsi_avatar_link"
+    t.text "rsi_org_avatar_link"
     t.text "tags"
-    t.bigint "classification_level_id"
-    t.bigint "submitted_by_id"
-    t.bigint "offender_report_offender_id"
-    t.bigint "offender_report_org_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["classification_level_id"], name: "index_intelligence_reports_on_classification_level_id"
-    t.index ["offender_report_offender_id"], name: "index_intelligence_reports_on_offender_report_offender_id"
-    t.index ["offender_report_org_id"], name: "index_intelligence_reports_on_offender_report_org_id"
-    t.index ["submitted_by_id"], name: "index_intelligence_reports_on_submitted_by_id"
+    t.uuid "last_seen_id"
+    t.boolean "show_in_safe", default: false
+    t.uuid "threat_level_id", default: "cfa4b341-dc8d-498d-b68f-3db2482ce66c"
+    t.bigint "classification_level_id", default: 2, null: false
+    t.bigint "created_by_id", null: false
+    t.bigint "assigned_to_id"
+    t.bigint "assigned_by_id"
+    t.boolean "archived", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["assigned_by_id"], name: "index_intelligence_cases_on_assigned_by_id"
+    t.index ["assigned_to_id"], name: "index_intelligence_cases_on_assigned_to_id"
+    t.index ["classification_level_id"], name: "index_intelligence_cases_on_classification_level_id"
+    t.index ["created_by_id"], name: "index_intelligence_cases_on_created_by_id"
+    t.index ["last_seen_id"], name: "index_intelligence_cases_on_last_seen_id"
+    t.index ["threat_level_id"], name: "index_intelligence_cases_on_threat_level_id"
+  end
+
+  create_table "intelligence_warrants", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "intelligence_case_id", null: false
+    t.text "description"
+    t.uuid "warrant_status_id", default: "efccc05a-c28d-455a-b4a4-f73334bb5d0a", null: false
+    t.bigint "user_id"
+    t.bigint "approval_id"
+    t.boolean "closed", default: false
+    t.boolean "archived", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["approval_id"], name: "index_intelligence_warrants_on_approval_id"
+    t.index ["intelligence_case_id"], name: "index_intelligence_warrants_on_intelligence_case_id"
+    t.index ["user_id"], name: "index_intelligence_warrants_on_user_id"
+    t.index ["warrant_status_id"], name: "index_intelligence_warrants_on_warrant_status_id"
   end
 
   create_table "job_board_mission_acceptors", force: :cascade do |t|
@@ -1725,7 +1807,7 @@ ActiveRecord::Schema.define(version: 2021_06_04_222637) do
   end
 
   create_table "ships", force: :cascade do |t|
-    t.text "name"
+    t.text "title"
     t.text "manufacturer"
     t.integer "size"
     t.integer "cargo_capacity", default: 0
@@ -2611,4 +2693,28 @@ ActiveRecord::Schema.define(version: 2021_06_04_222637) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "incident_report_comments", "incident_reports"
+  add_foreign_key "incident_report_comments", "users", column: "created_by_id"
+  add_foreign_key "incident_report_infractions", "field_descriptors", column: "infraction_id"
+  add_foreign_key "incident_report_infractions", "incident_reports"
+  add_foreign_key "incident_reports", "classification_levels"
+  add_foreign_key "incident_reports", "field_descriptors", column: "approval_status_id"
+  add_foreign_key "incident_reports", "field_descriptors", column: "force_used_id"
+  add_foreign_key "incident_reports", "field_descriptors", column: "threat_level_id"
+  add_foreign_key "incident_reports", "intelligence_cases"
+  add_foreign_key "incident_reports", "ships", column: "ship_used_id"
+  add_foreign_key "incident_reports", "system_map_star_objects", column: "star_object_id"
+  add_foreign_key "incident_reports", "users", column: "created_by_id"
+  add_foreign_key "intelligence_case_comments", "intelligence_cases"
+  add_foreign_key "intelligence_case_comments", "users", column: "created_by_id"
+  add_foreign_key "intelligence_cases", "classification_levels"
+  add_foreign_key "intelligence_cases", "field_descriptors", column: "threat_level_id"
+  add_foreign_key "intelligence_cases", "system_map_star_objects", column: "last_seen_id"
+  add_foreign_key "intelligence_cases", "users", column: "assigned_by_id"
+  add_foreign_key "intelligence_cases", "users", column: "assigned_to_id"
+  add_foreign_key "intelligence_cases", "users", column: "created_by_id"
+  add_foreign_key "intelligence_warrants", "approvals"
+  add_foreign_key "intelligence_warrants", "field_descriptors", column: "warrant_status_id"
+  add_foreign_key "intelligence_warrants", "intelligence_cases"
+  add_foreign_key "intelligence_warrants", "users"
 end

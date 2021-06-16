@@ -172,7 +172,7 @@ class User < ActiveRecord::Base
 
   def main_character_avatar_url
     if self.main_character != nil
-      self.main_character.avatar.url(:original)
+      self.main_character.avatar_thumbnail_url
     end
   end
 
@@ -227,12 +227,33 @@ class User < ActiveRecord::Base
     idArray
   end
 
+  def classification_check classification_id
+    # if the id is nil then just return true
+    return true if classification_id.nil? || classification_id == 1
+
+    # roles
+    # get_all_roles.each do |role|
+    #   return true if role.classification_levels.map(&[:id]).include?(classification_id)
+    # end
+    puts 'test'
+    mapped_role_ids = get_all_roles.map do |item|
+      item[:id]
+    end
+    puts mapped_role_ids
+    levels_count = ClassificationLevelRole.where(role_id: mapped_role_ids).count
+
+    return true if levels_count > 0
+
+    # if we get to this point, return false
+    false
+  end
+
   def points_count
-    #c = 0
-    #self.point_transactions.each do |trans|
+    # c = 0
+    # self.point_transactions.each do |trans|
     #  c += trans.amount
-    #end
-    #return c
+    # end
+    # return c
     self.point_transactions.sum(:amount)
   end
 

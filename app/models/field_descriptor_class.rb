@@ -7,11 +7,14 @@ class FieldDescriptorClass < ApplicationRecord
   validates :class_name, presence: true
   validates :class_field, presence: true
 
+  has_one :field
+
   def field_data
     # https://stackoverflow.com/questions/1407451/calling-a-method-from-a-string-with-the-methods-name-in-ruby
     # https://stackoverflow.com/questions/5924495/how-do-i-create-a-class-instance-from-a-string-name-in-ruby
 
     # get the class
+    puts class_name
     clazz = class_name.constantize
 
     # check to see if the class has an ordinal or archived attribute
@@ -20,7 +23,7 @@ class FieldDescriptorClass < ApplicationRecord
     has_approved = true if clazz.attribute_method? :approved
 
     # has an ordinal
-    results = clazz.all.order('ordinal') if !has_ordinal && has_archived
+    results = clazz.all.order('ordinal') if has_ordinal && !has_archived
 
     # has archived
     results = clazz.where(archived: false) if !has_ordinal && has_archived
@@ -44,9 +47,9 @@ class FieldDescriptorClass < ApplicationRecord
 
     mapped_results = results.map do |item|
       if has_ordinal
-        { id: item.id, title: item.instance_eval(class_field), created_at: item.created_at, ordinal: item.ordinal }
+        { id: item.id, title: item.instance_eval(class_field), created_at: item.created_at, ordinal: item.ordinal, field_id: field.id }
       else
-        { id: item.id, title: item.instance_eval(class_field), created_at: item.created_at }
+        { id: item.id, title: item.instance_eval(class_field), created_at: item.created_at, field_id: field.id }
       end
     end
 

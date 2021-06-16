@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  description: MyText
+  rsi_handle: MyText
+  occured_when: 2021-06-27 15:01:35
+  star_object: one
+  accepted: false
+  force_used: one
+  ship_used: one
+  threat_level: one
+  created_by: one
+  archived: false
+
+two:
+  description: MyText
+  rsi_handle: MyText
+  occured_when: 2021-06-27 15:01:35
+  star_object: two
+  accepted: false
+  force_used: two
+  ship_used: two
+  threat_level: two
+  created_by: two
+  archived: false

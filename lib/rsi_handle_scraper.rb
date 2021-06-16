@@ -7,8 +7,11 @@ module RSIHandleScraper
     # make the scrape happen
     def scrape(rsi_handle:)
       # It will be a sad day when CIG does something else with this page
-      page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{rsi_handle}")
+      uri = "https://robertsspaceindustries.com/citizens/#{rsi_handle}"
+      page = HTTParty.get(uri, timeout: 15)
 
+      # get and check the page code
+      code = page.code
       if page.code == 200
 
         parse_page = Nokogiri::HTML(page)
@@ -25,6 +28,8 @@ module RSIHandleScraper
           # 1 - Handle
           # 2 - forum title
         end
+
+        final_hash[:joined_date] = parse_page.css('.profile-content > .left-col').css('.inner').css('p.entry').css('.value').map.to_a[0].text
 
         # get picture
         toon_pic = ""
