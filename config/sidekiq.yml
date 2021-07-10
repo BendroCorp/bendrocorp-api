@@ -1,7 +1,7 @@
 :schedule:
-  offender_worker:
-    every: 10m # Runs once ever 10 minutes
-    class: OffenderScraperWorker
+  # offender_worker:
+  #   every: 10m # Runs once ever 10 minutes
+  #   class: OffenderScraperWorker
   kaiden_worker:
     every: 1m # Runs once per minute
     class: KaidenEventAnnouncerWorker

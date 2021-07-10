@@ -14,11 +14,21 @@ TrainingItemType.create([{ id: 1, title: 'Text' }, { id: 2, title: 'Link' }, { i
 ReportHandler.create([{ name: 'Generic Approval', ordinal: 1 }])
 
 # make a base field
-Field.create([{ name: 'Yes/No/Maybe' }])
-FieldDescriptor.create([{ title: 'Yes', field: Field.first }, { title: 'No', field: Field.first }, { title: 'Maybe', field: Field.first }])
+ynm_field = Field.create({ id: '616c3df9-4c5e-4882-bab4-08ec04c4f2da', name: 'Yes/No/Maybe' })
+FieldDescriptor.create([{ title: 'Yes', field: ynm_field }, { title: 'No', field: ynm_field }, { title: 'Maybe', field: ynm_field }])
 FieldDescriptorClass.create([{ title: 'Character Full Names', class_name: 'Character', class_field: 'full_name' },
                              { title: 'Roles', class_name: 'Role', class_field: 'name' },
                              { title: 'Jobs', class_name: 'Job', class_field: 'title' }])
+
+so_fdc = FieldDescriptorClass.create({ id: 'e1b7d9cc-d926-40e5-a4a1-e1bf1c104b02', title: 'Star Objects', class_name: 'SystemMapStarObject', class_field: 'title_with_kind'})
+Field.create({id: '65c22ae1-d724-409f-9d66-d9f544cc6be6', name: 'Star Objects', field_descriptor_class: so_fdc })
+
+ff_field = Field.create({ id: 'c08e36f8-d62d-4c8d-a631-835fa9336105', name: 'Force Levels'})
+FieldDescriptor.create([{ id: '9d480a31-1537-41c0-a553-fb7a983d1067', field: ff_field, title: 'None', description: 'No force was used to stop the offender (ex. verbal) (explain)', ordinal: 1 },
+                      { id: '336080b9-93df-4b9a-8131-f670d54e11e1', field: ff_field, title: 'Non-Lethal', description: 'Force not designed to cause harm was used to stop the offender.', ordinal: 2 },
+                      { id: '7e470edf-3830-4bb6-b34b-7f6120455bc5', field: ff_field, title: 'Less-than-lethal', description: 'Less-than-lethal force was used to subdue the offender. (ex. stun weapons, disrupters, warning shot)', ordinal: 3 },
+                      { id: 'a7f02954-1808-4230-8b5b-d3c8dbc3bec4', field: ff_field, title: 'Lethal', description: 'Lethal force was used to stop the offender', ordinal: 4 },
+                      { id: '938b3b26-bf9b-4f13-a8fe-41c2a0ac4b5a', field: ff_field, title: 'None (Unable)', description: 'Force could not be used to stop the offender (explain)', ordinal: 5 }])
 
 SystemMapMappingRule.create([{ id:"3f132e7f-9218-4189-a312-1b22fbe586f3", parent_id:"ba0fd9ae-a371-49de-9f78-0f58153dd4c4", note:"system object to system"}, 
   { id:"d2b10d5a-e20e-4ead-9f12-2e1481a54c4c", parent_id:"ba0fd9ae-a371-49de-9f78-0f58153dd4c4", child_id:"7a4697fc-8c8d-4443-8aa0-0d9451156e1e", note:"jump point to system"}, 
@@ -120,27 +130,25 @@ FieldDescriptor.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', field_id: 
                         { id: 'b8bdff1d-237e-4812-9e2d-ef33cc2bd76d', field_id: page_categories_field.id, title: 'Guides', read_only: true },
                         { id: 'f9b194cc-7ec3-48d5-93b9-467a6227823e', field_id: page_categories_field.id, title: 'Policy', read_only: true }])
 
-MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'fa-star', link: '/', ordinal: 1 },
-                 { id: 2, title: 'Profiles', icon: 'fa-users', link: '/profiles', ordinal: 2 },
-                 { id: 3, title: 'Events', icon: 'fa-calendar', link: '/events', ordinal: 3 },
-                 { id: 4, title: 'Job Board', icon: 'fa-briefcase', link: '/job-board', ordinal: 4 },
-                 { id: 5, title: 'Flight Logs', icon: 'fa-book', link: '/flight-logs', ordinal: 5 },
-                 { id: 6, title: 'Forms', icon: 'fa-file-alt', link: '/forms', ordinal: 6 },
-                 { id: 22, title: 'Pages', icon: 'fas fa-columns', link: '/pages', ordinal: 7 },
-                 { id: 8, title: 'Alerts', icon: 'fa-bell', link: '/alerts', ordinal: 8 },
-                #  { id: 9, title: 'Commodities', icon: 'fa-hand-holding-usd', link: '/commodities', ordinal: 9 },
-                 { id: 10, title: 'Offender Reports', icon: 'fa-shield-alt', link: '/offender-reports', ordinal: 10 },
-                 { id: 11, title: 'System Map', icon: 'fa-globe', link: '/system-map', ordinal: 11 },
-                 { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 13 },
+MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'star', link: '/dasboard', ordinal: 1 },
+                 { id: 2, title: 'Profiles', icon: 'people-circle', link: '/profiles', ordinal: 2 },
+                 { id: 3, title: 'Events', icon: 'calendar', link: '/events', ordinal: 3 },
+                 { id: 4, title: 'Job Board', icon: 'clipboard', link: '/job-board', ordinal: 4 },
+                 { id: 5, title: 'Flight Logs', icon: 'book', link: '/flight-logs', ordinal: 5 },
+                 { id: 6, title: 'Forms', icon: 'document-text', link: '/forms', ordinal: 6 },
+                 { id: 22, title: 'Pages', icon: 'documents', link: '/pages', ordinal: 7 },
+                 { id: 8, title: 'Alerts', icon: 'alert-circle', link: '/alerts', ordinal: 8 },
+                 { id: 11, title: 'System Map', icon: 'planet', link: '/system-map', ordinal: 11 },
+                #  { id: 12, title: 'Admin', icon: 'fas fa-user', ordinal: 13 },
                 #  { id: 13, title: 'Approvals', icon: 'far fa-check-circle', link: '/approvals', ordinal: 12 },
-                 { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 1, nested_under_id: 12 },
-                 { id: 15, title: 'Site Logs', icon: 'fas fa-user', link: '/site-logs', ordinal: 2, nested_under_id: 12 },
-                 { id: 16, title: 'Roles', icon: 'fas fa-key', link: '/roles', ordinal: 3, nested_under_id: 12 },
-                 { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
-                 { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
-                 { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
-                 { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 7, nested_under_id: 12 },
-                 { id: 21, title: 'Field Admin', icon: 'fas fa-toilet-paper', link: '/field-admin', ordinal: 8, nested_under_id: 12 },
+                #  { id: 14, title: 'Impersonation', icon: 'fas fa-user', link: '/impersonate', ordinal: 1, nested_under_id: 12 },
+                #  { id: 15, title: 'Site Logs', icon: 'fas fa-user', link: '/site-logs', ordinal: 2, nested_under_id: 12 },
+                #  { id: 16, title: 'Roles', icon: 'fas fa-key', link: '/roles', ordinal: 3, nested_under_id: 12 },
+                #  { id: 17, title: 'Liabilities', icon: 'fas fa-chart-line', link: '/liabilities', ordinal: 4, nested_under_id: 12 },
+                #  { id: 18, title: 'Jobs Admin', icon: 'fas fa-building', link: '/jobs', ordinal: 5, nested_under_id: 12 },
+                #  { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
+                #  { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 7, nested_under_id: 12 },
+                #  { id: 21, title: 'Field Admin', icon: 'fas fa-toilet-paper', link: '/field-admin', ordinal: 8, nested_under_id: 12 },
                  { id: 23, title: 'Application', icon: 'fas fa-toilet-paper', link: '/application', ordinal: 1}
                  ])
 # { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
@@ -259,76 +267,76 @@ OffenderReportForceLevel.create([{ id: 1, title: "None", description: "No force 
 #                             { id: 9, title: "Flora", class_name: "SystemMapFlora"},
 #                             { id: 10, title: "Jump Point", class_name: "SystemMapSystemConnection"}])
 
-ships = Ship.create([{ name: 'M50 Intercepter', manufacturer: 'ORIG'},
-                      { name: 'Mustang Beta', manufacturer: 'CNOU'},
-                      { name: 'Mustang Gamma', manufacturer: 'CNOU'},
-                      { name: 'Mustang Delta', manufacturer: 'CNOU'},
-                      { name: 'Mustang Omega', manufacturer: 'CNOU'},
-                      { name: 'Mustang Alpha', manufacturer: 'CNOU'},
-                      { name: 'Redeemer', manufacturer: 'AEGS'},
-                      { name: 'Gladius', manufacturer: 'AEGS'},
-                      { name: 'Aurora ES', manufacturer: 'RSI'},
-                      { name: 'Aurora LX', manufacturer: 'RSI'},
-                      { name: 'Aurora MR', manufacturer: 'RSI'},
-                      { name: 'Aurora CL', manufacturer: 'RSI'},
-                      { name: 'Aurora LN', manufacturer: 'RSI'},
-                      { name: '300i', manufacturer: 'ORIG'},
-                      { name: '315p', manufacturer: 'ORIG'},
-                      { name: '325a', manufacturer: 'ORIG'},
-                      { name: '350R', manufacturer: 'ORIG'},
-                      { name: 'F7C Hornet', manufacturer: 'ANVL'},
-                      { name: 'F7C-S Hornet Ghost', manufacturer: 'ANVL'},
-                      { name: 'F7C-R Hornet Tracker', manufacturer: 'ANVL'},
-                      { name: 'F7C-M Super Hornet', manufacturer: 'ANVL'},
-                      { name: 'F7CA Hornet', manufacturer: 'ANVL'},
-                      { name: 'Constellation Andromeda', manufacturer: 'RSI'},
-                      { name: 'Constellation Aquila', manufacturer: 'RSI'},
-                      { name: 'Constellation Taurus', manufacturer: 'RSI'},
-                      { name: 'Constellation Phoenix', manufacturer: 'RSI'},
-                      { name: 'Freelancer', manufacturer: 'MISC'},
-                      { name: 'Freelancer DUR', manufacturer: 'MISC'},
-                      { name: 'Freelancer MAX', manufacturer: 'MISC'},
-                      { name: 'Freelancer MIS', manufacturer: 'MISC'},
-                      { name: 'Cutlass Black', manufacturer: 'DRAK'},
-                      { name: 'Cutlass Red', manufacturer: 'DRAK'},
-                      { name: 'Cutlass Blue', manufacturer: 'DRAK'},
-                      { name: 'Avenger Stalker', manufacturer: ''},
-                      { name: 'Avenger Warlock', manufacturer: 'AEGS'},
-                      { name: 'Avenger Titan', manufacturer: 'AEGS'},
-                      { name: 'Gladiator', manufacturer: 'ANVL'},
-                      { name: 'Starfarer', manufacturer: 'MISC'},
-                      { name: 'Starfarer Gemini', manufacturer: 'MISC'},
-                      { name: 'Caterpillar', manufacturer: 'DRAK'},
-                      { name: 'Retaliator', manufacturer: 'AEGS'},
-                      { name: 'Scythe', manufacturer: 'VANDUUL'},
-                      { name: 'Idris-M', manufacturer: 'AEGS'},
-                      { name: 'Idris-P', manufacturer: 'AEGS'},
-                      { name: 'Khartu-al', manufacturer: 'XIAN'},
-                      { name: 'Merchantman', manufacturer: 'BANU'},
-                      { name: '890 Jump', manufacturer: 'ORIG'},
-                      { name: 'Carrack', manufacturer: 'ANVL'},
-                      { name: 'Herald', manufacturer: 'DRAK'},
-                      { name: 'Hull C', manufacturer: 'MISC'},
-                      { name: 'Hull A', manufacturer: 'MISC'},
-                      { name: 'Hull B', manufacturer: 'MISC'},
-                      { name: 'Hull D', manufacturer: 'MISC'},
-                      { name: 'Hull E', manufacturer: 'MISC'},
-                      { name: 'Orion', manufacturer: 'RSI'},
-                      { name: 'Reclaimer', manufacturer: 'AEGS'},
-                      { name: 'Javelin Class Destroyer', manufacturer: 'AEGS'},
-                      { name: 'Vanguard Warden', manufacturer: 'AEGS'},
-                      { name: 'Vanguard Harbinger', manufacturer: 'AEGS'},
-                      { name: 'Vanguard Sentinel', manufacturer: 'AEGS'},
-                      { name: 'Reliant Kore', manufacturer: 'MISC'},
-                      { name: 'Reliant Mako', manufacturer: 'MISC'},
-                      { name: 'Reliant Sen', manufacturer: 'MISC'},
-                      { name: 'Reliant Tana', manufacturer: 'MISC'},
-                      { name: 'Genesis Starliner', manufacturer: 'CRSD'},
-                      { name: 'Glaive', manufacturer: 'ESPERIA'},
-                      { name: 'Endeavor', manufacturer: 'MISC'},
-                      { name: 'Sabre', manufacturer: 'AEGS'},
-                      { name: 'Crucible', manufacturer: 'ANVL'},
-                      { name: 'Terrapin', manufacturer: 'ANVL'}])
+ships = Ship.create([{ title: 'M50 Intercepter', manufacturer: 'ORIG'},
+                      { title: 'Mustang Beta', manufacturer: 'CNOU'},
+                      { title: 'Mustang Gamma', manufacturer: 'CNOU'},
+                      { title: 'Mustang Delta', manufacturer: 'CNOU'},
+                      { title: 'Mustang Omega', manufacturer: 'CNOU'},
+                      { title: 'Mustang Alpha', manufacturer: 'CNOU'},
+                      { title: 'Redeemer', manufacturer: 'AEGS'},
+                      { title: 'Gladius', manufacturer: 'AEGS'},
+                      { title: 'Aurora ES', manufacturer: 'RSI'},
+                      { title: 'Aurora LX', manufacturer: 'RSI'},
+                      { title: 'Aurora MR', manufacturer: 'RSI'},
+                      { title: 'Aurora CL', manufacturer: 'RSI'},
+                      { title: 'Aurora LN', manufacturer: 'RSI'},
+                      { title: '300i', manufacturer: 'ORIG'},
+                      { title: '315p', manufacturer: 'ORIG'},
+                      { title: '325a', manufacturer: 'ORIG'},
+                      { title: '350R', manufacturer: 'ORIG'},
+                      { title: 'F7C Hornet', manufacturer: 'ANVL'},
+                      { title: 'F7C-S Hornet Ghost', manufacturer: 'ANVL'},
+                      { title: 'F7C-R Hornet Tracker', manufacturer: 'ANVL'},
+                      { title: 'F7C-M Super Hornet', manufacturer: 'ANVL'},
+                      { title: 'F7CA Hornet', manufacturer: 'ANVL'},
+                      { title: 'Constellation Andromeda', manufacturer: 'RSI'},
+                      { title: 'Constellation Aquila', manufacturer: 'RSI'},
+                      { title: 'Constellation Taurus', manufacturer: 'RSI'},
+                      { title: 'Constellation Phoenix', manufacturer: 'RSI'},
+                      { title: 'Freelancer', manufacturer: 'MISC'},
+                      { title: 'Freelancer DUR', manufacturer: 'MISC'},
+                      { title: 'Freelancer MAX', manufacturer: 'MISC'},
+                      { title: 'Freelancer MIS', manufacturer: 'MISC'},
+                      { title: 'Cutlass Black', manufacturer: 'DRAK'},
+                      { title: 'Cutlass Red', manufacturer: 'DRAK'},
+                      { title: 'Cutlass Blue', manufacturer: 'DRAK'},
+                      { title: 'Avenger Stalker', manufacturer: ''},
+                      { title: 'Avenger Warlock', manufacturer: 'AEGS'},
+                      { title: 'Avenger Titan', manufacturer: 'AEGS'},
+                      { title: 'Gladiator', manufacturer: 'ANVL'},
+                      { title: 'Starfarer', manufacturer: 'MISC'},
+                      { title: 'Starfarer Gemini', manufacturer: 'MISC'},
+                      { title: 'Caterpillar', manufacturer: 'DRAK'},
+                      { title: 'Retaliator', manufacturer: 'AEGS'},
+                      { title: 'Scythe', manufacturer: 'VANDUUL'},
+                      { title: 'Idris-M', manufacturer: 'AEGS'},
+                      { title: 'Idris-P', manufacturer: 'AEGS'},
+                      { title: 'Khartu-al', manufacturer: 'XIAN'},
+                      { title: 'Merchantman', manufacturer: 'BANU'},
+                      { title: '890 Jump', manufacturer: 'ORIG'},
+                      { title: 'Carrack', manufacturer: 'ANVL'},
+                      { title: 'Herald', manufacturer: 'DRAK'},
+                      { title: 'Hull C', manufacturer: 'MISC'},
+                      { title: 'Hull A', manufacturer: 'MISC'},
+                      { title: 'Hull B', manufacturer: 'MISC'},
+                      { title: 'Hull D', manufacturer: 'MISC'},
+                      { title: 'Hull E', manufacturer: 'MISC'},
+                      { title: 'Orion', manufacturer: 'RSI'},
+                      { title: 'Reclaimer', manufacturer: 'AEGS'},
+                      { title: 'Javelin Class Destroyer', manufacturer: 'AEGS'},
+                      { title: 'Vanguard Warden', manufacturer: 'AEGS'},
+                      { title: 'Vanguard Harbinger', manufacturer: 'AEGS'},
+                      { title: 'Vanguard Sentinel', manufacturer: 'AEGS'},
+                      { title: 'Reliant Kore', manufacturer: 'MISC'},
+                      { title: 'Reliant Mako', manufacturer: 'MISC'},
+                      { title: 'Reliant Sen', manufacturer: 'MISC'},
+                      { title: 'Reliant Tana', manufacturer: 'MISC'},
+                      { title: 'Genesis Starliner', manufacturer: 'CRSD'},
+                      { title: 'Glaive', manufacturer: 'ESPERIA'},
+                      { title: 'Endeavor', manufacturer: 'MISC'},
+                      { title: 'Sabre', manufacturer: 'AEGS'},
+                      { title: 'Crucible', manufacturer: 'ANVL'},
+                      { title: 'Terrapin', manufacturer: 'ANVL'}])
 
 # page_categories = PageCategory.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', title: 'Featured', read_only: true },
 #                                        { id: 'b8bdff1d-237e-4812-9e2d-ef33cc2bd76d', title: 'Guides', read_only: true },
@@ -428,12 +436,13 @@ MenuItemRole.create([{ menu_item_id: 12, role_id: 42 },
 { menu_item_id: 19, role_id: 43 },
 { menu_item_id: 23, role_id: -2 }])
 
-MenuItem.where('id NOT IN (12,14,15,16,17,18,19,23)').each { |item| MenuItemRole.create(menu_item_id: item.id, role_id: 0) }
+# NOTE: watch out for this
+MenuItem.where('id NOT IN (12,14,15,16,17,18,19,23,25)').each { |item| MenuItemRole.create(menu_item_id: item.id, role_id: 0) }
 
 ClassificationLevel.create([{ id: 1, title: 'Unclassified', description: 'Publically available corporate information.', ordinal: 1 },
-                           { id: 2, title: 'Confidential', description: 'Not publically available information. Available to all members.', ordinal: 2 },
-                           { id: 3, title: 'Secret', description: 'Sensitive non-compartmentalized information.', ordinal: 3 },
-                           { id: 4, title: 'Top Secret', description: 'Highly sensitive non-compartmentalized information.', ordinal: 4 },
+                           { id: 2, title: 'Internal', description: 'Not publically available information. Available to all members.', ordinal: 2 },
+                           { id: 3, title: 'Confidential', description: 'Sensitive non-compartmentalized information.', ordinal: 3 },
+                           { id: 4, title: 'Special Handling', description: 'Highly sensitive non-compartmentalized information.', ordinal: 4 },
                            { id: 5, title: 'Special Access E1', description: 'Special access executive group. CEO and COO only.', ordinal: 5, compartmentalized: true },
                            { id: 6, title: 'Special Access E2', description: 'Special access executive group. CEO, COO and HR only.', ordinal: 6, compartmentalized: true },
                            { id: 7, title: 'Special Access R0', description: 'Special access group. CEO and Director of Research only. Along with members of Division 0.', ordinal: 7, compartmentalized: true, hidden: true },
@@ -448,6 +457,9 @@ ClassificationLevel.create([{ id: 1, title: 'Unclassified', description: 'Public
                            { id: 16, title: 'Special Access S1', description: 'Special access group. CEO, COO and Director of Security.', ordinal: 16, compartmentalized: true },
                            { id: 17, title: 'Special Access D1', description: 'Special access group. All Executives and Directors.', ordinal: 17, compartmentalized: true },
                           ])
+
+# base class roles
+ClassificationLevelRole.create([{ classification_level_id: 2, role_id: 0 },{ classification_level_id: 3, role_id: 0 }])
 
 ClassificationLevelRole.create([{ classification_level_id: 5, role_id: 9 }, #CEO
                                 { classification_level_id: 5, role_id: 10 }, #COO
@@ -784,9 +796,9 @@ apptypes = ApplicationStatus.create([{ id: 1, title: 'Submitted', description: '
                                     { id: 8, title: 'Withdrawn', description: 'You have withdrawn your application.', ordinal:8}])
 
 
-user_sys = User.create(id: 0, username: 'System', email: 'no-reply@bendrocorp.com', password: 'gqsUIhu2uUhghJiMIdNr', password_confirmation: 'gqsUIsdfgdsfghu2uUhghJiMIdNrdsfg45', is_member: true, is_admin: true, email_verified: true, locked: true, login_allowed: false)
+user_sys = User.create(id: 0, username: 'System', email: 'no-reply@bendrocorp.com', password: 'gqsUIsdfgdsfghu2uUhghJiMIdNrdsfg45', password_confirmation: 'gqsUIsdfgdsfghu2uUhghJiMIdNrdsfg45', is_member: true, is_admin: true, email_verified: true, locked: true, login_allowed: false)
 user2 = User.create(id: 2, username: 'Stevo', email: 'dale@daleslab.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
-user1 = User.create(id: 1, username: 'Rindzer', email: 'dale.myszewski@gmail.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
+user1 = User.create(id: 1, rsi_handle:'Aayhan', username: 'Rindzer', email: 'dale.myszewski@gmail.com', password: 'Password12345', password_confirmation: 'Password12345', is_member: true, is_admin: true, email_verified: true)
 
 user1.roles << roles[8]
 user1.roles << Role.find_by_id(0)
@@ -873,6 +885,8 @@ DonationItem.create([{ title: 'Operating Budget 1', description: 'test data', go
   { title: 'Ship 1', description: 'test data', goal: 14, goal_date: Time.now + 4.days, ordinal: 3, donation_type_id: "c6a4a515-09a1-438e-a9f5-9227d7c9ee54", created_by_id: 1 },
   { title: 'Operating Budget 3', description: 'test data', goal: 50, goal_date: Time.now + 4.days, ordinal: 4, donation_type_id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", created_by_id: 1 },
   { title: 'Operating Budget 4', description: 'test data', goal: 500, goal_date: Time.now + 10.days, ordinal: 5, donation_type_id: "e7932112-1e6c-4d54-986f-9c4bfa312f9f", created_by_id: 1 }])
+
+SystemMapStarObject.create({ title: 'Stanton', description: 'The Stanton system', object_type_id: 'ba0fd9ae-a371-49de-9f78-0f58153dd4c4' })
 
 # keep this at the bottom
 UserCountry.create([{ code: 'BD', title:'Bangladesh' },

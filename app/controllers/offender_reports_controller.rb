@@ -42,58 +42,6 @@ class OffenderReportsController < ApplicationController
     render status: 200, json: page.code == 200
   end
 
-  # POST api/offender-reports/search/:rsi_handle
-  # params
-  def profile_search
-    page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{params[:rsi_handle]}")
-
-    if page.code != 200
-      render status: 200, json: { rsi_code: page.code, threat: false, data: nil }
-      return
-    end
-
-    handle_value = params[:rsi_handle].to_s
-
-    scrape_results = RSIHandleScraper.scrape(rsi_handle: handle_value)
-    rsi_avatar = "https://robertsspaceindustries.com#{scrape_results[:toon_pic]}"
-
-    # we care about if they are in an org
-    is_redacted = scrape_results[:is_redacted]
-    if !is_redacted
-      org_title = scrape_results[:org_title]
-      focus_one = scrape_results[:org_focus][0] if scrape_results[:org_focus][0]
-      focus_two = scrape_results[:org_focus][1] if scrape_results[:org_focus][1]
-      org_logo = "https://robertsspaceindustries.com#{scrape_results[:org_logo]}"
-    else 
-      org_logo = "https://robertsspaceindustries.com#{scrape_results[:org_logo]}"
-    end
-
-    is_in_pirate_group = !org_title.nil? && (focus_one.downcase == 'piracy' || focus_two.downcase == 'piracy') ? true : false
-
-    threat_assessment = is_in_pirate_group || is_redacted ? true : false
-
-    final_message = "#{handle_value} should be considered dangerous and caution should be exercised given their affiliation with pirate organizations." if is_in_pirate_group
-    final_message = "#{handle_value} has redacted their primary organization. This is a red flag in most instances. Exercise caution." if is_redacted
-    final_message ||= 'No additional information is available for this citizen. As always exercise caution with a stranger.' unless is_in_pirate_group
-
-    # TODO: Merge with offender reports and intel system
-
-    # return the result
-    render status: 200, json: {
-      rsi_code: page.code,
-      threat: threat_assessment,
-      message: final_message,
-      data: {
-        handle: handle_value,
-        rsi_avatar: rsi_avatar,
-        org_title: org_title,
-        focus_one: focus_one,
-        focus_two: focus_two,
-        org_logo: org_logo
-      }
-    }
-  end
-
   # GET api/offender-report/types
   def list_types
     render status: 200, json: OffenderReportViolenceRating.all.as_json

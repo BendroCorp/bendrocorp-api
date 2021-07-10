@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  # resources :intelligence_warrants
+  # resources :incident_reports
+  # resources :intelligence_cases
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
   # Mount action cable
@@ -140,6 +143,7 @@ Rails.application.routes.draw do
   get 'api/fields' => 'fields#list'
   get 'api/fields/classes' => 'fields#field_classes'
   get 'api/fields/:id' => 'fields#show'
+  post 'api/fields/multi' => 'fields#show_multi'
   get 'api/fields/:id/details' => 'fields#show_details'
   post 'api/fields/' => 'fields#create'
   put 'api/fields/' => 'fields#update'
@@ -162,6 +166,30 @@ Rails.application.routes.draw do
   post 'api/images' => 'image_uploads#create'
   delete 'api/images' => 'image_uploads#destroy'
 
+  # incidents (new offender reports)
+  get 'api/incident' => 'incident_reports#index'
+  get 'api/incident/my' => 'incident_reports#index_mine'
+  post 'api/incident/comment' => 'incident_reports#add_comment'
+  delete 'api/incident/comment/:id' => 'incident_reports#delete_comment'
+  get 'api/incident/:id' => 'incident_reports#show'
+  put 'api/incident/:id' => 'incident_reports#update'
+  get 'api/incident/:id/approve' => 'incident_reports#approve_report'
+  get 'api/incident/:id/decline' => 'incident_reports#decline_report'
+  post 'api/incident' => 'incident_reports#create'
+  post 'api/incident/:id/comment' => 'incident_reports#add_comment'
+  delete 'api/incident/:id/comment/:comment_id' => 'incident_reports#delete_comment'
+
+  # intel
+  get 'api/intel' => 'intelligence_cases#index'
+  get 'api/intel/officers' => 'intelligence_cases#list_assignable_officers'
+  post 'api/intel/comment' => 'intelligence_cases#add_comment'
+  delete 'api/intel/comment/:id' => 'intelligence_cases#delete_comment'
+  get 'api/intel/:id' => 'intelligence_cases#show'
+  put 'api/intel/:id' => 'intelligence_cases#update'
+  post 'api/intel' => 'intelligence_cases#create'
+  post 'api/intel/:id/comment' => 'intelligence_cases#add_comment'
+  delete 'api/intel/:id/comment/:comment_id' => 'intelligence_cases#delete_comment'
+
   # job Board
   get 'api/job-board/' => 'job_board#list'
   get 'api/job-board/types' => 'job_board#list_types'
@@ -172,6 +200,9 @@ Rails.application.routes.draw do
   post 'api/job-board/complete' => 'job_board#complete_mission'
   get 'api/job-board/:mission_id/' => 'job_board#show'
   delete 'api/job-board/:mission_id/' => 'job_board#delete'
+
+  # bendro safe
+  post 'api/safe/search' => 'bendro_safe#profile_search'
 
   # 'jobs' (as in employment ops)
   get 'api/job' => 'jobs#list'
@@ -345,73 +376,6 @@ Rails.application.routes.draw do
   post 'api/subscription' => 'subscription#create'
   delete 'api/subscription' => 'subscription#delete'
   post 'api/subscription/stripe_callback' => 'subscription#callback_for_stripe'
-
-  # system map routes
-  # get 'api/system-map/types' => 'system_map#list_types' # to be deprecated
-  # get 'api/system-map/details' => 'system_map#list_details'
-  # get 'api/system-map' => 'system_map#list'
-  # post 'api/system-map' => 'system_map#create'
-  # put 'api/system-map' => 'system_map#update'
-
-  # get 'api/system-map/planet' => 'system_map_planets#index'
-  # get 'api/system-map/planet/:id' => 'system_map_planets#show'
-  # post 'api/system-map/planet' => 'system_map_planets#create'
-  # put 'api/system-map/planet' => 'system_map_planets#update'
-  # delete 'api/system-map/planet/:planet_id' => 'system_map_planets#archive'
-
-  # get 'api/system-map/moon' => 'system_map_moons#index'
-  # get 'api/system-map/moon/:id' => 'system_map_moons#show'
-  # post 'api/system-map/moon' => 'system_map_moons#create'
-  # put 'api/system-map/moon' => 'system_map_moons#update'
-  # delete 'api/system-map/moon/:moon_id' => 'system_map_moons#archive'
-
-  # get 'api/system-map/system-object' => 'system_map_system_objects#index'
-  # get 'api/system-map/system-object/:id' => 'system_map_system_objects#show'
-  # post 'api/system-map/system-object' => 'system_map_system_objects#create'
-  # put 'api/system-map/system-object' => 'system_map_system_objects#update'
-  # delete 'api/system-map/system-object/:so_id' => 'system_map_system_objects#archive'
-
-  # get 'api/system-map/settlement' => 'system_map_settlements#index'
-  # get 'api/system-map/settlement/:id' => 'system_map_settlements#show'
-  # post 'api/system-map/settlement' => 'system_map_settlements#create'
-  # put 'api/system-map/settlement' => 'system_map_settlements#update'
-  # delete 'api/system-map/settlement/:settlement_id' => 'system_map_settlements#archive'
-
-  # get 'api/system-map/location' => 'system_map_locations#index'
-  # get 'api/system-map/location/:id' => 'system_map_locations#show'
-  # post 'api/system-map/location' => 'system_map_locations#create'
-  # put 'api/system-map/location' => 'system_map_locations#update'
-  # delete 'api/system-map/location/:so_id' => 'system_map_locations#archive'
-
-  # get 'api/system-map/mission-giver' => 'system_map_mission_givers#index'
-  # get 'api/system-map/mission-giver/:id' => 'system_map_mission_givers#show'
-  # post 'api/system-map/mission-giver' => 'system_map_mission_givers#create'
-  # put 'api/system-map/mission-giver' => 'system_map_mission_givers#update'
-  # delete 'api/system-map/mission-giver/:id' => 'system_map_mission_givers#archive'
-
-  # get 'api/system-map/flora' => 'system_map_floras#index'
-  # get 'api/system-map/flora/:id' => 'system_map_floras#show'
-  # post 'api/system-map/flora' => 'system_map_floras#create'
-  # put 'api/system-map/flora' => 'system_map_floras#update'
-  # delete 'api/system-map/flora/:id' => 'system_map_floras#archive'
-
-  # get 'api/system-map/fauna' => 'system_map_faunas#index'
-  # get 'api/system-map/fauna/:id' => 'system_map_faunas#show'
-  # post 'api/system-map/fauna' => 'system_map_faunas#create'
-  # put 'api/system-map/fauna' => 'system_map_faunas#update'
-  # delete 'api/system-map/fauna/:id' => 'system_map_faunas#archive'
-
-  # get 'api/system-map/gravity-well' => 'system_map_gravity_wells#index'
-  # get 'api/system-map/gravity-well/:id' => 'system_map_gravity_wells#show'
-  # post 'api/system-map/gravity-well' => 'system_map_gravity_wells#create'
-  # put 'api/system-map/gravity-well' => 'system_map_gravity_wells#update'
-  # delete 'api/system-map/gravity-well/:id' => 'system_map_gravity_wells#archive'
-
-  # get 'api/system-map/jump-point' => 'system_map_jump_points#index'
-  # get 'api/system-map/jump-point/:id' => 'system_map_jump_points#show'
-  # post 'api/system-map/jump-point' => 'system_map_jump_points#create'
-  # put 'api/system-map/jump-point' => 'system_map_jump_points#update'
-  # delete 'api/system-map/jump-point/:id' => 'system_map_jump_points#archive'
 
   # use of the above system map routes is deprecated and they will be removed
   get 'api/system-map/object' => 'star_object#list'

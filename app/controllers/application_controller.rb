@@ -2,6 +2,7 @@ include SendGrid # required to access the helper methods
 class ApplicationController < ActionController::API
   # Capture and handle any errors
   include Error::ErrorHandler
+  before_action :set_paper_trail_whodunnit
   # before_action :add_allow_credentials_headers
 
   # # Handle CORS requests

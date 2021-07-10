@@ -15,10 +15,30 @@ class SystemMapImagesController < ApplicationController
   # POST /system_map_images
   def create
     @system_map_image = SystemMapImage.new(system_map_image_params)
-    @system_map_image.image = params[:image][:new_image][:base64]
-    @system_map_image.image_file_name = params[:image][:new_image][:name]
-    @system_map_image.created_by_id = current_user.id
+    # old code
+    # @system_map_image.image = params[:image][:new_image][:base64]
+    # @system_map_image.image_file_name = params[:image][:new_image][:name]
+    # @system_map_image.created_by_id = current_user.id
 
+    # get the data
+    data = params[:image][:new_image][:base64].split(',')[1]
+
+    # create and perform a base resize on the image
+    image = MiniMagick::Image.read(StringIO.new(Base64.decode64(data)))
+    pipeline = ImageProcessing::MiniMagick.source(image)
+    resized_image = pipeline.convert('png').resize_to_fit!(1920, 1080)
+
+    # transform the data into the ActiveStorage blob
+    image_blob = ActiveStorage::Blob.create_after_upload!(
+      io: File.open(resized_image.path),
+      filename: "#{@star_object.id}.png",
+      content_type: 'image/png'
+    )
+
+    # attach the image to the object
+    @system_map_image.primary_image.image.attach(image_blob)
+
+    # create the new object
     if @system_map_image.save
       render json: @system_map_image, status: :created
     else

@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  intelligence_case: one
+  description: MyText
+  warrant_status: one
+  closed: false
+  archived: false
+
+two:
+  intelligence_case: two
+  description: MyText
+  warrant_status: two
+  closed: false
+  archived: false

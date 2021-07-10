@@ -28,7 +28,8 @@ class MenuItemsController < ApplicationController
       end
     end
     # Hand out the member items
-    render status: 200, json: @menu_items #.as_json(include: { nested_items: { } })
+    count = @menu_items.count
+    render status: 200, json: @menu_items.uniq { |s| s.title } #.as_json(include: { nested_items: { } })
   end
 
   # POST api/menu

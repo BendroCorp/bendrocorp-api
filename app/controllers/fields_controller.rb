@@ -3,7 +3,7 @@ class FieldsController < ApplicationController
   before_action :require_user
   before_action :require_member
 
-  before_action except: [:list, :show, :show_details] do |a|
+  before_action except: [:list, :show, :show_details, :show_multi] do |a|
     a.require_one_role([52]) # field admin
   end
 
@@ -14,12 +14,46 @@ class FieldsController < ApplicationController
 
   # GET api/fields/:id
   def show
-    @field = Field.where(id: params[:id], archived: false).first
+    @field = Field.find_by(id: params[:id], archived: false)
 
     if @field
       render json: @field.descriptors
     else
       render status: :not_found, json: { message: 'Field not found!' }
+    end
+  end
+
+  # POST api/fields/multi
+  def show_multi
+    # get data
+    @fields = Field.where(id: params[:field_id])
+    # @descriptors = @fields.map { |field| field.descriptors }
+    @descriptors = @fields.map do |field|
+      field_class = field.descriptors[0].class.name
+      # if its a descriptor
+      if field_class == 'FieldDescriptor'
+        mapped = field.descriptors.map do |desc|
+          hash = { id: desc.id, title: desc.title, field_id: desc.field_id }
+          hash[:ordinal] = desc.ordinal if desc.respond_to? :ordinal
+          # return
+          hash
+        end
+
+        # return
+        mapped
+      else # if its not a descriptor
+        field.descriptors
+      end
+    end
+
+    # flatten things
+    @descriptors.flatten!
+
+    # return
+    if @descriptors
+      render json: @descriptors
+    else
+      render status: :not_found, json: { message: 'Field(s) not found!' }
     end
   end
 
