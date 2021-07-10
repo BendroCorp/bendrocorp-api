@@ -6,10 +6,10 @@ class AddIntelSystemSeeds < ActiveRecord::Migration[6.1]
 
     MenuItem.where(id: 10).destroy_all # get rid of the old offender reports link
 
-    MenuItem.create({ id: 24, title: 'BendroSAFE', ordinal: 10, link: '/bendro-safe', icon: 'search'})
-    MenuItem.create({ id: 25, title: 'BenSEC', ordinal: 11, link: '/ben-sec', icon: 'journal'})
+    MenuItem.create({ id: 25, title: 'BendroSAFE', ordinal: 10, link: '/bendro-safe', icon: 'search'})
+    MenuItem.create({ id: 26, title: 'BenSEC', ordinal: 11, link: '/ben-sec', icon: 'journal'})
 
-    MenuItemRole.create({ menu_item_id: 25, role_id: 53 })
+    MenuItemRole.create({ menu_item_id: 26, role_id: 53 })
 
     NestedRole.create([{ role_id: 54, role_nested_id: 53 }, { role_id: 55, role_nested_id: 54 }]) # the reader role gives you access to the system
 
