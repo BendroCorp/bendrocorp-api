@@ -74,8 +74,11 @@ class IncidentReportsController < ApplicationController
       @incident_report.created_by_id = current_user.id
       # handle infractions
       # Handle adding the intial infractions from params[:incident_report][:infractions]
+      # puts [:incident_report][:infractions].inspect if [:incident_report][:infractions]
       params[:incident_report][:infractions].to_a.each do |infraction|
-        found_infraction = IncidentReportInfraction.find_by_id(infraction[:id].to_i)
+        puts infraction[:id]
+        found_infraction = FieldDescriptor.find_by_id(infraction[:id].to_s)
+        puts found_infraction
         @incident_report.incident_report_infractions << IncidentReportInfraction.new(infraction: found_infraction) if found_infraction
       end
 
@@ -94,6 +97,9 @@ class IncidentReportsController < ApplicationController
       end
 
       # save in the incident report
+      puts
+      puts "infractions #{@incident_report.infractions.count}"
+      puts "incident_report_infractions #{@incident_report.incident_report_infractions.count}"
       if @incident_report.save
         if @incident_report.approval_status_id == PENDING_GUID
           PushWorker.perform_async(@incident_report.intelligence_case.assigned_to.id, "#{@incident_report.created_by.main_character_full_name} has submitted an incident report for review!")

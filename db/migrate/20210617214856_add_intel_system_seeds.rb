@@ -29,8 +29,7 @@ class AddIntelSystemSeeds < ActiveRecord::Migration[6.1]
     field2 = Field.create({ id: '8b9a2eeb-bcf3-4113-9e47-1e1868319917', name: 'BenSec Filter Types' })
 
     FieldDescriptor.create([{ id: '5fe96a97-f186-45ed-8c68-d859e26e0741', field: field2, title: 'Incidents', description: 'A report in which an offender attempted harm against en employee or affiliate.', ordinal: 1 },
-                            { id: '47ecc588-cf98-49e6-995a-491e5629421f', field: field2, title: 'Cases', description: 'An investigatory case.', ordinal: 2 },
-                            { id: 'e2e007d7-71bd-4ccf-aae5-da5fd78dcd6e', field: field2, title: 'Warrants', description: 'A warrant is an open order to detain a person.', ordinal: 3 }])
+                            { id: '47ecc588-cf98-49e6-995a-491e5629421f', field: field2, title: 'Cases', description: 'An investigatory case.', ordinal: 2 }])
 
     field3 = Field.create({ id: '042e341b-7043-4d03-8c87-ecd76a0530ee', name: 'Incident Report Citables'})
 
