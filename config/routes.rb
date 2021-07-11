@@ -169,6 +169,7 @@ Rails.application.routes.draw do
   # incidents (new offender reports)
   get 'api/incident' => 'incident_reports#index'
   get 'api/incident/my' => 'incident_reports#index_mine'
+  get 'api/incident/assigned' => 'incident_reports#index_assigned'
   post 'api/incident/comment' => 'incident_reports#add_comment'
   delete 'api/incident/comment/:id' => 'incident_reports#delete_comment'
   get 'api/incident/:id' => 'incident_reports#show'

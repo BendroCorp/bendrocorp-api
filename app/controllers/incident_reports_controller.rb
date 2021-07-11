@@ -41,6 +41,20 @@ class IncidentReportsController < ApplicationController
     end
   end
 
+  # GET api/incident/assigned
+  def index_assigned
+    # var
+    @incident_reports = []
+
+    # get the ones we want
+    IntelligenceCase.where(assigned_to_id: current_user.id, archived: false).each do |intel_case|
+      @incident_reports << (incident_reports << intel_case.incident_reports).flatten! 
+    end
+
+    # return the results
+    render json: @incident_reports.as_json(include: { infractions: {}, intelligence_case: { only: [:id], include: { assigned_to: {  only: [:id], methods: [:main_character_full_name, :main_character_avatar_url]  } } }, approval_status: {}, comments: { include: { created_by: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] } } }, created_by: { only: [:id], methods: [:main_character_full_name, :main_character_avatar_url] }, star_object: {}, force_used: {}, ship_used: {} })
+  end
+
   # GET api/incident/1
   def show
     # security
