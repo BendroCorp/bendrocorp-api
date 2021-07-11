@@ -149,7 +149,7 @@ MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'star', link: '/dasboard', o
                 #  { id: 19, title: 'Law Library', icon: 'fas fa-gavel', link: '/law-library', ordinal: 6, nested_under_id: 12 },
                 #  { id: 20, title: 'Faction', icon: 'fas fa-gavel', link: '/faction-admin', ordinal: 7, nested_under_id: 12 },
                 #  { id: 21, title: 'Field Admin', icon: 'fas fa-toilet-paper', link: '/field-admin', ordinal: 8, nested_under_id: 12 },
-                 { id: 23, title: 'Application', icon: 'fas fa-toilet-paper', link: '/application', ordinal: 1}
+                 { id: 23, title: 'Application', icon: 'id-card', link: '/application', ordinal: 1}
                  ])
 # { id: 37, name: 'Roles Administrator', description: 'Can administrate roles.' },
 # { id: 38, name: 'Jobs Administrator', description: 'Can view the jobs administrative panel.' },
