@@ -130,7 +130,7 @@ FieldDescriptor.create([{ id: '951513f7-2d16-4234-a26a-aa521169b1e2', field_id: 
                         { id: 'b8bdff1d-237e-4812-9e2d-ef33cc2bd76d', field_id: page_categories_field.id, title: 'Guides', read_only: true },
                         { id: 'f9b194cc-7ec3-48d5-93b9-467a6227823e', field_id: page_categories_field.id, title: 'Policy', read_only: true }])
 
-MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'star', link: '/dasboard', ordinal: 1 },
+MenuItem.create([{ id: 1, title: 'Dashboard', icon: 'star', link: '/dashboard', ordinal: 1 },
                  { id: 2, title: 'Profiles', icon: 'people-circle', link: '/profiles', ordinal: 2 },
                  { id: 3, title: 'Events', icon: 'calendar', link: '/events', ordinal: 3 },
                  { id: 4, title: 'Job Board', icon: 'clipboard', link: '/job-board', ordinal: 4 },
