@@ -2,7 +2,7 @@ class BendroSafeController < ApplicationController
   before_action :require_user
 
   # POST api/safe/search
-  # params[:rsi_handle]
+  # handle_value
   # Used by BendroSAFE
   def profile_search
     rsi_data = {}
@@ -13,20 +13,22 @@ class BendroSafeController < ApplicationController
     final_message = ''
 
     # guard to make sure that the RSI handle is present
-    if params[:rsi_handle].nil?
+    if handle_value.nil?
       render status: :unprocessable_entity, json: { message: 'rsi_handle not supplied' }
       return
     end
 
+    # set handle value
+    handle_value = params[:rsi_handle].to_s.downcase
+
     # RSI scrape
     begin
-      @page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{params[:rsi_handle].to_s.downcase}", timeout: 15)
+      @page = HTTParty.get("https://robertsspaceindustries.com/citizens/#{handle_value}", timeout: 15)
 
       if @page.code != 200
         rsi_data = { rsi_code: @page.code, threat: false, data: nil, message: 'Data not found' } if @page.code == 404
         rsi_data = { rsi_code: @page.code, threat: false, data: nil, message: 'Could not retrieve Spectrum data' } if @page.code != 404
       else
-        handle_value = params[:rsi_handle].to_s
         threat_assessment = false
 
         scrape_results = RSIHandleScraper.scrape(rsi_handle: handle_value)
@@ -98,7 +100,7 @@ class BendroSafeController < ApplicationController
 
     # TODO: Merge with offender reports and intel system
     # Get intel system cases
-    intelligence_case = IntelligenceCase.where('archived = false AND rsi_handle = ?', params[:rsi_handle]).first
+    intelligence_case = IntelligenceCase.where('archived = false AND rsi_handle = ?', handle_value).first
     if intelligence_case
       # if not cfa4b341-dc8d-498d-b68f-3db2482ce66c <-- threat level - no threat
       # !current_user.db_user.classification_check(intelligence_case.classification_level
@@ -144,7 +146,7 @@ class BendroSafeController < ApplicationController
     end
 
     # offender cases
-    offender = OffenderReportOffender.find_by(offender_handle: params[:rsi_handle].to_s.downcase)
+    offender = OffenderReportOffender.find_by(offender_handle: handle_value)
 
     if offender && offender.rating_id > 1
       offender_data = {
@@ -163,7 +165,7 @@ class BendroSafeController < ApplicationController
     # Final assessment
     if rsi_data[:threat_assessment] || intel_data[:threat_assessment] || offender_data[:threat_assessment]
       summary_level = 'danger'
-      final_message = "#{params[:rsi_handle]} should be considered dangerous and caution should be exercised when interacting with them. See individual summaries for more information."
+      final_message = "#{handle_value} should be considered dangerous and caution should be exercised when interacting with them. See individual summaries for more information."
     else
       # set final message info
       summary_level = 'warning'
@@ -173,7 +175,7 @@ class BendroSafeController < ApplicationController
     # Add non-threat overrides
     # bendroCorp member
     user_is_bendro_member = Role.find_by_id(0).role_full_users.select do |user|
-      user if user.rsi_handle && user.rsi_handle != '' && user.rsi_handle.downcase == params[:rsi_handle].to_s.downcase
+      user if user.rsi_handle && user.rsi_handle != '' && user.rsi_handle.downcase == handle_value
     end
 
     # is bendrocorp
