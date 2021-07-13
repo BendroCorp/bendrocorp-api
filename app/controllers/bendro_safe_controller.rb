@@ -13,7 +13,7 @@ class BendroSafeController < ApplicationController
     final_message = ''
 
     # guard to make sure that the RSI handle is present
-    if handle_value.nil?
+    if params[:rsi_handle].nil?
       render status: :unprocessable_entity, json: { message: 'rsi_handle not supplied' }
       return
     end
