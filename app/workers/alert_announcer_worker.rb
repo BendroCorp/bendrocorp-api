@@ -11,13 +11,17 @@ class AlertAnnouncerWorker
           "A new #{alert_item.alert_type} has been posted!"
         end
 
-      PushWorker.perform_async(
-        user.id,
-        push_message,
-        'ALERT_NOTICE',
-        { alert: alert_item.id }
-      )
+      # for now it goes to all users
+      Role.find_by_id(0).role_full_users.each do |user|
+        PushWorker.perform_async(
+          user.id,
+          push_message,
+          'ALERT_NOTICE',
+          { alert: alert_item.id }
+        )
+      end
 
+      # mark the item as published and save
       alert_item.published = true
       alert_item.save
     end
