@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  division: one
+  parent: one
+  title: MyText
+  description: MyText
+  ordinal: 1
+
+two:
+  division: two
+  parent: two
+  title: MyText
+  description: MyText
+  ordinal: 1
