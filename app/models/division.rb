@@ -2,7 +2,7 @@ class Division < ActiveRecord::Base
   has_many :jobs
   has_many :characters, :through => :jobs
 
-  has_many :division_groups
+  has_many :profile_groups
 
   def division_members
     division_member_arr = []
