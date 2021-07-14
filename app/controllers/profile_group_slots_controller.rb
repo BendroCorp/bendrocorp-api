@@ -46,6 +46,6 @@ class ProfileGroupSlotsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def profile_group_slot_params
-      params.require(:profile_group_slot).permit(:profile_group_id, :character_id, :role_id, :title, :ordinal, :exempt)
+      params.require(:profile_group_slot).permit(:profile_group_id, :character_id, :slot_status_id, :role_id, :title, :ordinal, :exempt, :first_warn, :second_warn)
     end
 end

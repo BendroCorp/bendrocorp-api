@@ -3,15 +3,21 @@
 one:
   profile_group: one
   character: one
+  slot_status: one
   role: one
   title: MyText
   ordinal: 1
   exempt: false
+  first_warn: false
+  second_warn: false
 
 two:
   profile_group: two
   character: two
+  slot_status: two
   role: two
   title: MyText
   ordinal: 1
   exempt: false
+  first_warn: false
+  second_warn: false
