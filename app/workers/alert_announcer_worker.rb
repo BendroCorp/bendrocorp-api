@@ -8,7 +8,7 @@ class AlertAnnouncerWorker
         if alert_item.alert_type_id == 'b750318c-57ae-4801-bbef-9848c6e02880' && !alert_item.user.nil? # is CSAR
           "CSAR: #{alert_item.user.main_character.full_name} is requesting rescue from #{alert_item.star_object.title}!"
         else
-          "A new #{alert_item.alert_type} has been posted!"
+          "A new #{alert_item.alert_type.title} has been posted!"
         end
 
       # for now it goes to all users
