@@ -7,7 +7,7 @@ class Field < ApplicationRecord
   belongs_to :created_by, class_name: 'User', foreign_key: 'created_by_id', optional: true
   belongs_to :field_descriptor_class, optional: true
   belongs_to :field_descriptor_field, class_name: 'Field', foreign_key: :field_descriptor_field_id, optional: true
-  has_many :field_descriptors, -> { where(archived: false).order(:ordinal) }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
+  has_many :field_descriptors, -> { where(archived: false).where("ordinal >": 0).order(:ordinal) }, class_name: 'FieldDescriptor', foreign_key: 'field_id'
 
   belongs_to :presentation_type, class_name: 'FieldDescriptor', foreign_key: :presentation_type_id, optional: true
 

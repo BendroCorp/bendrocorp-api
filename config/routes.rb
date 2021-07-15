@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :profile_group_slots
+  resources :profile_groups
   # resources :intelligence_warrants
   # resources :incident_reports
   # resources :intelligence_cases
