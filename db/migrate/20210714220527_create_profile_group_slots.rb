@@ -12,6 +12,8 @@ class CreateProfileGroupSlots < ActiveRecord::Migration[6.1]
       t.boolean :first_warn, default: false
       t.boolean :second_warn, default: false
 
+      t.datetime :last_assigned
+
       t.boolean :archived, null: false, default: false
 
       t.timestamps
