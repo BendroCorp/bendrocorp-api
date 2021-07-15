@@ -22,6 +22,9 @@ class Character < ActiveRecord::Base
   has_many :owned_ships, -> { where hidden: false }, :dependent => :delete_all
   has_many :ships, through: :owned_ships
 
+  # profile groups
+  has_many :profile_group_slots
+
   # hr stuff
   has_many :service_notes
 
